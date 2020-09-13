@@ -103,16 +103,35 @@ class Board {
 
     }
 
-    fun move(from: String, to: String) {
+    fun move(from: String, to: String, playerMove: String) : String {
         val letterFrom = from.first().toUpperCase()
         val letterTo = to.first().toUpperCase()
         val colFrom = from.drop(1).toInt() - 1
-        val colTo = from.drop(1).toInt() - 1
+        val colTo = to.drop(1).toInt() - 1
         val rowFrom = letterToNumber(letterFrom)
-        val shipFrom = board[rowFrom][colFrom]
-        board[rowFrom][colFrom] = Ship()
         val rowTo = letterToNumber(letterTo)
+        val shipFrom = board[rowFrom][colFrom]
+        if(shipFrom.color != playerMove){
+            return "YOU ARE NOT ALLOWED TO MOVE THIS PIECE"
+        }
+        val shipFromType = shipFrom.type
+        if(shipFromType == "FlagShip") {
+            if(letterTo == 'A' || letterTo == 'K' || colTo == 0 || colTo == 10)
+            {
+                board[rowTo][colTo] = shipFrom
+                return "GAME WON by $playerMove"
+            }
+        }
+
+        board[rowFrom][colFrom] = Ship()
+        val shipTo = if(board[rowTo][colTo].name == " ") Ship() else board[rowTo][colTo]
+        println(shipTo.type)
+        if (shipTo.type == "FlagShip") {
+
+            return "GAME WON by $playerMove"
+        }
         board[rowTo][colTo] = shipFrom
+        return "No winner"
     }
 
     fun letterToNumber(letter: Char) : Int {

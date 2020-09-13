@@ -26,8 +26,8 @@ class MainController {
     }
 
     @PostMapping("move", produces = [APPLICATION_JSON_VALUE])
-    fun move(@RequestBody payload: Move) : Array<String>{
-        board.move(payload.from, payload.to)
-        return board.boardString()
+    fun move(@RequestBody payload: Move) : Map<String,Array<String>>{
+        val result = arrayOf(board.move(payload.from, payload.to, payload.player))
+        return mapOf("board" to board.boardString(), "result" to result)
     }
 }
