@@ -5,6 +5,13 @@ class Board {
     var board = Array(11) { Array<Ship>(11) { Ship() } }
 
     fun initialize() {
+        // To initialize board as empty, so if you want to restart
+        // everything is at the start position agian.
+        for(row in 0..10){
+            for(column in 0..10){
+                board[row][column] = Ship()
+            }
+        }
         board[1][3] = Escort("S")
         board[1][4] = Escort("S")
         board[1][5] = Escort("S")
@@ -111,6 +118,7 @@ class Board {
         val rowFrom = letterToNumber(letterFrom)
         val rowTo = letterToNumber(letterTo)
         val shipFrom = board[rowFrom][colFrom]
+        var stringReturn = ""
         if(shipFrom.color != playerMove){
             return "YOU ARE NOT ALLOWED TO MOVE THIS PIECE"
         }
@@ -118,8 +126,8 @@ class Board {
         if(shipFromType == "FlagShip") {
             if(letterTo == 'A' || letterTo == 'K' || colTo == 0 || colTo == 10)
             {
-                board[rowTo][colTo] = shipFrom
-                return "GAME WON by $playerMove"
+//                board[rowTo][colTo] = shipFrom
+                stringReturn = "GAME WON by $playerMove"
             }
         }
 
@@ -127,14 +135,14 @@ class Board {
         val shipTo = if(board[rowTo][colTo].name == " ") Ship() else board[rowTo][colTo]
         println(shipTo.type)
         if (shipTo.type == "FlagShip") {
-
-            return "GAME WON by $playerMove"
+            stringReturn = "GAME WON by $playerMove"
         }
         board[rowTo][colTo] = shipFrom
-        return "No winner"
+        stringReturn = if(stringReturn.isEmpty()) "No winner" else stringReturn
+        return stringReturn
     }
 
-    fun letterToNumber(letter: Char) : Int {
+    private fun letterToNumber(letter: Char) : Int {
         return when(letter) {
             'A' -> 10
             'B' -> 9
