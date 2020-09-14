@@ -6,7 +6,7 @@ class Board {
 
     fun initialize() {
         // To initialize board as empty, so if you want to restart
-        // everything is at the start position agian.
+        // everything is at the start position again.
         for(row in 0..10){
             for(column in 0..10){
                 board[row][column] = Ship()
@@ -51,17 +51,17 @@ class Board {
         val strBoard = Array(12) {""}
         for (row in 0..10) {
             when (row) {
-                0 -> strBoard[row] += "K| "
-                1 -> strBoard[row] += "J| "
-                2 -> strBoard[row] += "I| "
-                3 -> strBoard[row] += "H| "
-                4 -> strBoard[row] += "G| "
-                5 -> strBoard[row] += "F| "
-                6 -> strBoard[row] += "E| "
-                7 -> strBoard[row] += "D| "
-                8 -> strBoard[row] += "C| "
-                9 -> strBoard[row] += "B| "
-                10 -> strBoard[row] += "A| "
+                0 -> strBoard[row] += "11| "
+                1 -> strBoard[row] += "10| "
+                2 -> strBoard[row] += "9 | "
+                3 -> strBoard[row] += "8 | "
+                4 -> strBoard[row] += "7 | "
+                5 -> strBoard[row] += "6 | "
+                6 -> strBoard[row] += "5 | "
+                7 -> strBoard[row] += "4 | "
+                8 -> strBoard[row] += "3 | "
+                9 -> strBoard[row] += "2 | "
+                10 -> strBoard[row] += "1 | "
                 else -> print("Too many rows")
             }
             for (column in 0..20) {
@@ -74,7 +74,7 @@ class Board {
             strBoard[row] += " | "
 
         }
-        strBoard[11] += "    1     2     3     4     5     6     7     8     9    10    11"
+        strBoard[11] += "     A     B     C     D     E     F     G     H     I     J     K"
         return strBoard
     }
 
@@ -113,10 +113,10 @@ class Board {
     fun move(from: String, to: String, playerMove: String) : String {
         val letterFrom = from.first().toUpperCase()
         val letterTo = to.first().toUpperCase()
-        val colFrom = from.drop(1).toInt() - 1
-        val colTo = to.drop(1).toInt() - 1
-        val rowFrom = letterToNumber(letterFrom)
-        val rowTo = letterToNumber(letterTo)
+        val rowFrom = from.drop(1).toInt() - 1
+        val rowTo = to.drop(1).toInt() - 1
+        val colFrom = letterToNumber(letterFrom)
+        val colTo = letterToNumber(letterTo)
         val shipFrom = board[rowFrom][colFrom]
         var stringReturn = ""
         if(shipFrom.color != playerMove){
