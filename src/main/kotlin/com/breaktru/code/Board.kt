@@ -7,8 +7,8 @@ class Board {
     fun initialize() {
         // To initialize board as empty, so if you want to restart
         // everything is at the start position again.
-        for(row in 0..10){
-            for(column in 0..10){
+        for (row in 0..10) {
+            for (column in 0..10) {
                 board[row][column] = Ship()
             }
         }
@@ -47,8 +47,8 @@ class Board {
         board[9][7] = Escort("S")
     }
 
-    fun boardString() : Array<String> {
-        val strBoard = Array(12) {""}
+    fun boardString(): Array<String> {
+        val strBoard = Array(12) { "" }
         for (row in 0..10) {
             when (row) {
                 0 -> strBoard[row] += "11| "
@@ -66,7 +66,7 @@ class Board {
             }
             for (column in 0..20) {
                 if (column % 2 == 0) {
-                    strBoard[row] += "${board[row][column / 2].color}${board[row][column/2].name}"
+                    strBoard[row] += "${board[row][column / 2].color}${board[row][column / 2].name}"
                 } else {
                     strBoard[row] += " | "
                 }
@@ -82,22 +82,22 @@ class Board {
     fun print() {
         for (row in 0..10) {
             when (row) {
-                0 -> print("K| ")
-                1 -> print("J| ")
-                2 -> print("I| ")
-                3 -> print("H| ")
-                4 -> print("G| ")
-                5 -> print("F| ")
-                6 -> print("E| ")
-                7 -> print("D| ")
-                8 -> print("C| ")
-                9 -> print("B| ")
-                10 -> print("A| ")
+                0 -> print("1 | ")
+                1 -> print("2 | ")
+                2 -> print("3 | ")
+                3 -> print("4 | ")
+                4 -> print("5 | ")
+                5 -> print("6 | ")
+                6 -> print("7 | ")
+                7 -> print("8 | ")
+                8 -> print("9 | ")
+                9 -> print("10| ")
+                10 -> print("11| ")
                 else -> print("Too many rows")
             }
             for (column in 0..20) {
                 if (column % 2 == 0) {
-                    print("${board[row][column / 2].color}${board[row][column/2].name}")
+                    print("${board[row][column / 2].color}${board[row][column / 2].name}")
                 } else {
                     print(" | ")
                 }
@@ -106,11 +106,11 @@ class Board {
             println()
             println()
         }
-        println("    1     2     3     4     5     6     7     8     9    10    11")
+        println("     A     B     C     D     E     F     G     H     I     J     K")
 
     }
 
-    fun move(from: String, to: String, playerMove: String) : String {
+    fun move(from: String, to: String, playerMove: String): String {
         val letterFrom = from.first().toUpperCase()
         val letterTo = to.first().toUpperCase()
         val rowFrom = from.drop(1).toInt() - 1
@@ -118,32 +118,101 @@ class Board {
         val colFrom = letterToNumber(letterFrom)
         val colTo = letterToNumber(letterTo)
         val shipFrom = board[rowFrom][colFrom]
+        if ((rowTo != rowFrom && colTo != colFrom) ||
+                (rowTo != rowFrom - 1 && colTo != colFrom - 1) ||
+                (rowTo != rowFrom + 1 && colTo != colFrom + 1) ||
+                (rowTo != rowFrom - 1 && colTo != colFrom + 1) ||
+                (rowTo != rowFrom + 1 && colTo != colFrom - 1)) {
+            return "ILLEGAL MOVE"
+        }
         var stringReturn = ""
-        if(shipFrom.color != playerMove){
+        if (shipFrom.color != playerMove) {
             return "YOU ARE NOT ALLOWED TO MOVE THIS PIECE"
         }
         val shipFromType = shipFrom.type
-        if(shipFromType == "FlagShip") {
-            if(letterTo == 'A' || letterTo == 'K' || colTo == 0 || colTo == 10)
-            {
+        if (shipFromType == "FlagShip") {
+            if (letterTo == 'A' || letterTo == 'K' || colTo == 0 || colTo == 10) {
 //                board[rowTo][colTo] = shipFrom
                 stringReturn = "GAME WON by $playerMove"
             }
         }
 
         board[rowFrom][colFrom] = Ship()
-        val shipTo = if(board[rowTo][colTo].name == " ") Ship() else board[rowTo][colTo]
+        val shipTo = if (board[rowTo][colTo].name == " ") Ship() else board[rowTo][colTo]
         println(shipTo.type)
         if (shipTo.type == "FlagShip") {
             stringReturn = "GAME WON by $playerMove"
         }
         board[rowTo][colTo] = shipFrom
-        stringReturn = if(stringReturn.isEmpty()) "No winner" else stringReturn
+
+        stringReturn = if (stringReturn.isEmpty()) "No winner" else stringReturn
         return stringReturn
     }
 
-    private fun letterToNumber(letter: Char) : Int {
-        return when(letter) {
+    fun moveGenerator(color: String) {
+        val possibleMoves: MutableList<MutableList<Int>> = ArrayList()
+        for (row in 0..10) {
+            for (col in 0..10) {
+                if (board[row][col].color == color) {
+                    if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
+                        println("Capture Move")
+                        possibleMoves.add(mutableListOf(row - 1, col - 1))
+                    }
+                    if (board[row - 1][col + 1].color != color && board[row - 1][col + 1].color != " ") {
+                        println("Capture Move")
+
+                        possibleMoves.add(mutableListOf(row - 1, col + 1))
+                    }
+                    if (board[row + 1][col - 1].color != color && board[row + 1][col - 1].color != " ") {
+                        println("Capture Move")
+
+                        possibleMoves.add(mutableListOf(row + 1, col - 1))
+                    }
+                    if (board[row + 1][col + 1].color != color && board[row + 1][col + 1].color != " ") {
+                        println("Capture Move")
+                        possibleMoves.add(mutableListOf(row + 1, col + 1))
+                    }
+
+                    for (up in row - 1 downTo 0) {
+                        if (board[up][col].color != " ") {
+                            break
+                        } else {
+                            possibleMoves.add(mutableListOf(up, col))
+                        }
+                    }
+                    for (down in (row + 1)..10) {
+                        if (board[down][col].color != " ") {
+                            break
+                        } else {
+                            possibleMoves.add(mutableListOf(down, col))
+                        }
+                    }
+                    for (left in col - 1 downTo 0) {
+                        if (board[row][left].color != " ") {
+                            break
+                        } else {
+                            possibleMoves.add(mutableListOf(row, left))
+                        }
+                    }
+                    for (right in (row + 1)..10) {
+                        if (board[row][right].color != " ") {
+                            break
+                        } else {
+                            possibleMoves.add(mutableListOf(row, right))
+                        }
+                    }
+                }
+            }
+
+        }
+        //possibleMoves.add(mutableListOf(1,2))
+        //possibleMoves.add(mutableListOf(1,2))
+        println(possibleMoves)
+        println(possibleMoves.size)
+    }
+
+    private fun letterToNumber(letter: Char): Int {
+        return when (letter) {
             'A' -> 10
             'B' -> 9
             'C' -> 8
@@ -164,4 +233,5 @@ class Board {
 //    val board = Board();
 //    board.initialize()
 //    board.print();
+//    board.moveGenerator("S")
 //}
