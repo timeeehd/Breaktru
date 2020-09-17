@@ -10,7 +10,7 @@ app.config(['$qProvider', function ($qProvider) {
 app.controller('DemoAppController', function($http, $location, $uibModal) {
     const demoApp = this;
 
-    const apiBaseURL = "/api/example/";
+    const apiBaseURL = "/api/";
     let peers = [];
 
     $http.get(apiBaseURL + "me").then((response) => demoApp.thisNode = response.data.me);
@@ -31,6 +31,12 @@ app.controller('DemoAppController', function($http, $location, $uibModal) {
 
         modalInstance.result.then(() => {}, () => {});
     };
+
+    demoApp.init = () => $http.get(apiBaseURL + "init").then((response) => {
+        console.log("TEST");
+    });
+
+
 
     demoApp.getGreeting = () => $http.get("greeting")
             .then((response) => {

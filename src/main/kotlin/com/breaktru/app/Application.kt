@@ -11,11 +11,11 @@ import java.io.IOException
 class Application
 
 fun main(args: Array<String>) {
-    if (args.isEmpty()) {
-        TextAreaOutputStreamTest.mainRunner(args);
-    }
+//    if (args.isEmpty()) {
+//        TextAreaOutputStreamTest.mainRunner(args);
+//    }
     SpringApplication.run(Application::class.java, *args)
-    openHomePage();
+//    openHomePage();
 }
 
 @Throws(IOException::class)
