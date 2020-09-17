@@ -36,6 +36,10 @@ app.controller('DemoAppController', function($http, $location, $uibModal) {
         console.log("TEST");
     });
 
+    demoApp.test = () => $http.get(apiBaseURL + "test").then((response) => {
+            console.log("TEST");
+        });
+
 
 
     demoApp.getGreeting = () => $http.get("greeting")
@@ -133,3 +137,4 @@ app.controller('messageCtrl', function ($uibModalInstance, message) {
     const modalInstanceTwo = this;
     modalInstanceTwo.message = message.data;
 });
+
