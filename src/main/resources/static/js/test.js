@@ -223,7 +223,7 @@ function chessGame () {
               (from.row == to.row - 1) && (from.col == to.col + 1) ||
               (from.row == to.row + 1) && (from.col == to.col - 1) ||
               (from.row == to.row + 1) && (from.col == to.col + 1) ||
-              (piece == "GFS" && playersTurn == "G") {
+              (piece == "GFS" && playersTurn == "G")) {
               console.log("capture");
               remainingMoves = remainingMoves - 2;
               } else {
