@@ -113,15 +113,17 @@ class Board {
     fun move(from: String, to: String, playerMove: String): String {
         val letterFrom = from.first().toUpperCase()
         val letterTo = to.first().toUpperCase()
-        val rowFrom = from.drop(1).toInt() - 1
-        val rowTo = to.drop(1).toInt() - 1
+        val rowFrom = 10 - (from.drop(1).toInt() - 1)
+        println(rowFrom)
+        val rowTo = 10 - (to.drop(1).toInt() - 1)
+        println(rowTo)
         val colFrom = letterToNumber(letterFrom)
         val colTo = letterToNumber(letterTo)
         val shipFrom = board[rowFrom][colFrom]
-        if ((rowTo != rowFrom && colTo != colFrom) ||
-                (rowTo != rowFrom - 1 && colTo != colFrom - 1) ||
-                (rowTo != rowFrom + 1 && colTo != colFrom + 1) ||
-                (rowTo != rowFrom - 1 && colTo != colFrom + 1) ||
+        if ((rowTo != rowFrom && colTo != colFrom) &&
+                (rowTo != rowFrom - 1 && colTo != colFrom - 1) &&
+                (rowTo != rowFrom + 1 && colTo != colFrom + 1) &&
+                (rowTo != rowFrom - 1 && colTo != colFrom + 1) &&
                 (rowTo != rowFrom + 1 && colTo != colFrom - 1)) {
             return "ILLEGAL MOVE"
         }
@@ -149,10 +151,13 @@ class Board {
         return stringReturn
     }
 
-    fun moveGenerator(color: String) {
-        val possibleMoves: MutableList<MutableList<Int>> = ArrayList()
+    fun moveGenerator(color: String): MutableMap<MutableList<MutableList<Int>>, MutableList<MutableList<Int>>> {
+        var possibleMoves: MutableList<MutableList<Int>> = ArrayList()
+        val testMap = mutableMapOf<MutableList<MutableList<Int>>, MutableList<MutableList<Int>>>()
         for (row in 0..10) {
             for (col in 0..10) {
+                possibleMoves = ArrayList()
+                var currentPostion: MutableList<MutableList<Int>> = ArrayList()
                 if (board[row][col].color == color) {
                     if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
                         println("Capture Move")
@@ -160,7 +165,6 @@ class Board {
                     }
                     if (board[row - 1][col + 1].color != color && board[row - 1][col + 1].color != " ") {
                         println("Capture Move")
-
                         possibleMoves.add(mutableListOf(row - 1, col + 1))
                     }
                     if (board[row + 1][col - 1].color != color && board[row + 1][col - 1].color != " ") {
@@ -202,6 +206,13 @@ class Board {
                         }
                     }
                 }
+                if(possibleMoves.isNotEmpty()){
+                    println("IK kom hierin ${possibleMoves}")
+                    currentPostion.add(mutableListOf(row,col))
+                    println("Hierben ik nu $currentPostion")
+                    testMap[currentPostion] = possibleMoves
+                }
+
             }
 
         }
@@ -209,21 +220,22 @@ class Board {
         //possibleMoves.add(mutableListOf(1,2))
         println(possibleMoves)
         println(possibleMoves.size)
+        return testMap
     }
 
     private fun letterToNumber(letter: Char): Int {
         return when (letter) {
-            'A' -> 10
-            'B' -> 9
-            'C' -> 8
-            'D' -> 7
-            'E' -> 6
+            'A' -> 0
+            'B' -> 1
+            'C' -> 2
+            'D' -> 3
+            'E' -> 4
             'F' -> 5
-            'G' -> 4
-            'H' -> 3
-            'I' -> 2
-            'J' -> 1
-            'K' -> 0
+            'G' -> 6
+            'H' -> 7
+            'I' -> 8
+            'J' -> 9
+            'K' -> 10
             else -> 100
         }
     }

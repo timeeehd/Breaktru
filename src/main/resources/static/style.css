@@ -1,0 +1,697 @@
+/* Chess
+   ----------------------------- */
+
+@mixin prefix($name, $argument) {
+    -webkit-#{$name}: #{$argument};
+    -ms-#{$name}: #{$argument};
+    -moz-#{$name}: #{$argument};
+    -o-#{$name}: #{$argument};
+    #{$name}: #{$argument};
+}
+
+@import url(https://fonts.googleapis.com/css?family=Josefin+Sans);
+
+html,
+body,
+.viewport {
+    background: #f1eff0;
+    @include prefix(box-sizing, border-box);
+    width: 100%;
+    height: 100%;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 1em;
+}
+
+@mixin mshadow($level) {
+    @if $level == 1 {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    }
+    @else if $level == 2 {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    }
+    @else if $level == 3 {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  }
+}
+
+/* Layout
+   ----------------------------- */
+$sq: 12.5%;
+$full: 100%;
+.fluid-container {
+  max-width: 960px;
+}
+full-width {
+  width: $full;
+}
+.max {
+  max-width:  $sq * 16;
+}
+.center {
+  margin: 0 auto;
+}
+.center-text {
+  text-align: center;
+}
+.play-area {
+  padding-top: 0.5rem;
+  padding-left: 1.5rem;
+}
+.banner {
+  background: 24EAC7;
+  height: 10vh;
+  min-height: 100px;
+  padding: 1rem;
+}
+.banner-img {
+  height: 6rem;
+  widht: 6rem;
+  @include prefix(transition, 0.3s ease);
+  @include mshadow(1);
+   &:hover {
+     @include mshadow(2);
+  }
+}
+.banner-txt {
+  font-size: 2rem;
+}
+.about {
+  margin: 1rem;
+  padding: .5rem;
+  @include mshadow(1);
+  @include prefix(transition, 0.3s ease);
+  &:hover {
+     @include mshadow(2);
+  }
+}
+
+h1 {
+  display: inline;
+  font-size: 4rem;
+}
+p {
+  font-size: .75em;
+}
+/* Chess Board
+   ----------------------------- */
+.board {
+  @include mshadow(3);
+  min-width: 400px;
+}
+.chess-sq {
+    width: 70px;
+    height: 50px;
+    max-width: 120px;
+    padding: $sq / 3;
+    text-align: center;
+    font-size: .5rem;
+    @include prefix(transition, 0.2s ease-in-out);
+  &:hover {
+    @include mshadow(3);
+  }
+}
+@-webkit-keyframes build {
+    from {
+        opacity: 0;
+        @include prefix(transform, scale(0,0));
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes build {
+    from {
+        opacity: 0;
+        @include prefix(transform, scale(0,0));
+    }
+    to {
+        opacity: 1;
+    }
+}
+// body > main > div:nth-child(2) > div > div.board.col-xs-8 > div:nth-child(1) > div.col-xs-1.chess-sq.A8.BR
+    @for $i from 1 through 8 {
+  div:nth-child(#{$i}) > div.col-xs-1.chess-sq {
+            @include prefix(animation-duration, 1s);
+            @include prefix(animation-fill-mode, both);
+            @include prefix(animation-delay, (.1s * $i));
+            @include prefix(animation-duration, (.1s * $i));
+            @include prefix(animation-iteration-count, 1);
+            @include prefix(animation-timing-function, ease-in-out);
+            @include prefix(animation-fill-mode, both);
+            @include prefix(animation-name, build);
+        }
+    }
+.initial {
+  background-color: rgba(11,137,208, .6) !important;
+}
+.destination {
+ background-color: rgba(24,157,134, .6) !important;
+}
+
+$accent1: rgba(11,137,208, .6);
+$accent2: rgba(24,157,134, .6);
+.accent1 {
+  background-color: $accent1;
+}
+.accent2 {
+   background-color: $accent2;
+}
+
+//Duplicate of above but I need these !important specifier to change board colors.
+//And separate from my accents above otherwise we might add chess pieces to accents.
+.initial {
+  background-color: $accent1 !important;
+}
+.destination {
+ background-color: $accent2 !important;
+}
+
+.A1 {
+    background-color: #fff;
+}
+.A2 {
+    background-color: #ddd;
+}
+
+.A3 {
+    background-color: #fff;
+}
+.A4 {
+    background-color: #ddd;
+}
+
+.A5 {
+    background-color: #fff;
+}
+.A6 {
+    background-color: #ddd;
+}
+
+.A7 {
+    background-color: #fff;
+}
+.A8 {
+    background-color: #ddd;
+}
+.A9 {
+    background-color: #fff;
+}
+.A10 {
+    background-color: #ddd;
+}
+.A11 {
+    background-color: #fff;
+}
+
+.B1 {
+    background-color: #ddd;
+}
+.B2 {
+    background-color: #fff;
+}
+
+.B3 {
+    background-color: #ddd;
+}
+.B4 {
+    background-color: #fff;
+}
+
+.B5 {
+    background-color: #ddd;
+}
+.B6 {
+    background-color: #fff;
+}
+
+.B7 {
+    background-color: #ddd;
+}
+.B8 {
+    background-color: #fff;
+}
+.B9 {
+    background-color: #ddd;
+}
+.B10 {
+    background-color: #fff;
+}
+.B11 {
+   background-color: #ddd;
+}
+
+.C1 {
+    background-color: #fff;
+}
+.C2 {
+    background-color: #ddd;
+}
+
+.C3 {
+    background-color: #fff;
+}
+.C4 {
+    background-color: #ddd;
+}
+
+.C5 {
+    background-color: #fff;
+}
+.C6 {
+    background-color: #ddd;
+}
+
+.C7 {
+    background-color: #fff;
+}
+.C8 {
+    background-color: #ddd;
+}
+.C9 {
+    background-color: #fff;
+}
+.C10 {
+    background-color: #ddd;
+}
+.C11 {
+    background-color: #fff;
+}
+
+.D1 {
+    background-color: #ddd;
+}
+.D2 {
+    background-color: #fff;
+}
+
+.D3 {
+    background-color: #ddd;
+}
+.D4 {
+    background-color: #fff;
+}
+
+.D5 {
+    background-color: #ddd;
+}
+.D6 {
+    background-color: #fff;
+}
+
+.D7 {
+    background-color: #ddd;
+}
+.D8 {
+    background-color: #fff;
+}
+.D9 {
+    background-color: #ddd;
+}
+.D10 {
+    background-color: #fff;
+}
+.D11 {
+   background-color: #ddd;
+}
+
+.E1 {
+    background-color: #fff;
+}
+.E2 {
+    background-color: #ddd;
+}
+
+.E3 {
+    background-color: #fff;
+}
+.E4 {
+    background-color: #ddd;
+}
+
+.E5 {
+    background-color: #fff;
+}
+.E6 {
+    background-color: #ddd;
+}
+
+.E7 {
+    background-color: #fff;
+}
+.E8 {
+    background-color: #ddd;
+}
+.E9 {
+    background-color: #fff;
+}
+.E10 {
+    background-color: #ddd;
+}
+.E11 {
+    background-color: #fff;
+}
+
+.F1 {
+    background-color: #ddd;
+}
+.F2 {
+    background-color: #fff;
+}
+
+.F3 {
+    background-color: #ddd;
+}
+.F4 {
+    background-color: #fff;
+}
+
+.F5 {
+    background-color: #ddd;
+}
+.F6 {
+    background-color: #fff;
+}
+
+.F7 {
+    background-color: #ddd;
+}
+.F8 {
+    background-color: #fff;
+}
+.F9 {
+    background-color: #ddd;
+}
+.F10 {
+    background-color: #fff;
+}
+.F11 {
+   background-color: #ddd;
+}
+
+.G1 {
+    background-color: #fff;
+}
+.G2 {
+    background-color: #ddd;
+}
+
+.G3 {
+    background-color: #fff;
+}
+.G4 {
+    background-color: #ddd;
+}
+
+.G5 {
+    background-color: #fff;
+}
+.G6 {
+    background-color: #ddd;
+}
+
+.G7 {
+    background-color: #fff;
+}
+.G8 {
+    background-color: #ddd;
+}
+.G9 {
+    background-color: #fff;
+}
+.G10 {
+    background-color: #ddd;
+}
+.G11 {
+    background-color: #fff;
+}
+
+.H1 {
+    background-color: #ddd;
+}
+.H2 {
+    background-color: #fff;
+}
+
+.H3 {
+    background-color: #ddd;
+}
+.H4 {
+    background-color: #fff;
+}
+
+.H5 {
+    background-color: #ddd;
+}
+.H6 {
+    background-color: #fff;
+}
+
+.H7 {
+    background-color: #ddd;
+}
+.H8 {
+    background-color: #fff;
+}
+.H9 {
+    background-color: #ddd;
+}
+.H10 {
+    background-color: #fff;
+}
+.H11 {
+   background-color: #ddd;
+}
+
+.I1 {
+    background-color: #fff;
+}
+.I2 {
+    background-color: #ddd;
+}
+
+.I3 {
+    background-color: #fff;
+}
+.I4 {
+    background-color: #ddd;
+}
+
+.I5 {
+    background-color: #fff;
+}
+.I6 {
+    background-color: #ddd;
+}
+
+.I7 {
+    background-color: #fff;
+}
+.I8 {
+    background-color: #ddd;
+}
+.I9 {
+    background-color: #fff;
+}
+.I10 {
+    background-color: #ddd;
+}
+.I11 {
+    background-color: #fff;
+}
+
+.J1 {
+    background-color: #ddd;
+}
+.J2 {
+    background-color: #fff;
+}
+
+.J3 {
+    background-color: #ddd;
+}
+.J4 {
+    background-color: #fff;
+}
+
+.J5 {
+    background-color: #ddd;
+}
+.J6 {
+    background-color: #fff;
+}
+
+.J7 {
+    background-color: #ddd;
+}
+.J8 {
+    background-color: #fff;
+}
+.J9 {
+    background-color: #ddd;
+}
+.J10 {
+    background-color: #fff;
+}
+.J11 {
+   background-color: #ddd;
+}
+
+.K1 {
+    background-color: #fff;
+}
+.K2 {
+    background-color: #ddd;
+}
+
+.K3 {
+    background-color: #fff;
+}
+.K4 {
+    background-color: #ddd;
+}
+
+.K5 {
+    background-color: #fff;
+}
+.K6 {
+    background-color: #ddd;
+}
+
+.K7 {
+    background-color: #fff;
+}
+.K8 {
+    background-color: #ddd;
+}
+.K9 {
+    background-color: #fff;
+}
+.K10 {
+    background-color: #ddd;
+}
+.K11 {
+    background-color: #fff;
+}
+
+//TODO refactor this:
+//wrapped in an each loop with a $columns
+//list as reference
+  @for $i from 1 through 11 {
+      .A#{$i} {
+          background-color: #fff;
+      }
+    @if $i % 2 == 0 {
+      .A#{$i} {
+        background-color: #ddd;
+      }
+    }
+     .B#{$i} {
+       background-color: #ddd;
+      }
+    @if $i % 2 == 0 {
+      .B#{$i} {
+        background-color: #fff;
+      }
+    }
+     .C{$i} {
+          background-color: #fff;
+      }
+    @if $i % 2 == 0 {
+      .C{$i} {
+        background-color: #ddd;
+      }
+    }
+     .D#{$i} {
+        background-color: #ddd;
+      }
+    @if $i % 2 == 0 {
+      .D#{$i} {
+        background-color: #fff;
+      }
+    }
+     .E#{$i} {
+        background-color: #fff;
+      }
+    @if $i % 2 == 0 {
+      .E#{$i} {
+        background-color: #ddd;
+      }
+    }
+     .F#{$i} {
+        background-color: #ddd;
+      }
+    @if $i % 2 == 0 {
+      .F#{$i} {
+        background-color: #fff;
+      }
+    }
+     .G#{$i} {
+          background-color: #fff;
+      }
+    @if $i % 2 == 0 {
+      .G#{$i} {
+        background-color: #ddd;
+      }
+    }
+    .H#{$i} {
+          background-color: #ddd;
+      }
+    @if $i % 2 == 0 {
+      .H#{$i} {
+        background-color: #fff;
+      }
+    }
+  }
+/* Inputs
+   ----------------------------- */
+.movement {
+  @include mshadow(3);
+  position: relative;
+}
+.text-input {
+  border: transparent;
+  border-radius: .2rem;
+  margin: .5rem auto;
+  height: 2rem;
+  width: 100%;
+}
+
+/* Buttons
+   ----------------------------- */
+.cst-btn {
+    width: 15%;
+    padding: 1em;
+    text-align: center;
+    text-decoration: none;
+    border: transparent;
+    border-radius: .2rem;
+    color: white;
+    background: #1E2E37;
+    display: table-cell;
+    vertical-align: middle;
+    @include mshadow(3);
+    @include prefix(transition, 0.3s ease);
+    &:hover {
+        @include mshadow(2);
+    }
+}
+
+/* Chess pieces B / W
+   ----------------------------- */
+.GE {
+        background-image: url(gold-piece.png);
+        background-repeat: no-repeat;
+        background-position: center;
+
+}
+.SE {
+    background-image: url(silver-piece.png);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.GFS {
+        background-image: url(gold-flagship.png);
+        background-repeat: no-repeat;
+        background-position: center;
+}
