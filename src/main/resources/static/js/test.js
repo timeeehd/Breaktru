@@ -32,13 +32,14 @@ function chessGame () {
           var initial = angular.element('.initial');
           var destination = angular.element('.destination');
           console.log(initial[0].className);
-
+            console.log("destination " + destination[0].className);
 
           // Piece class e.g. 'WP'
           var piece = initial[0].className.split(' ')[3];
+          console.log("piece " + piece);
 
           var checkPos = destination[0].className.split(' ');
-          console.log(checkPos);
+          console.log("check " + checkPos);
           console.log(initial[0].className.split(' ')[3].toString().charAt(0));
 
           var moveObj = new Object();
@@ -59,8 +60,9 @@ function chessGame () {
             console.log(response);
           });
 
-
-          var blkWht = checkPos[checkPos.length - 2].substring(0, 1);
+          //TODO: BLKWHT doesn't work!!!
+          var blkWht = checkPos[3].substring(0, 1);
+          console.log("blkWht " + blkWht);
           //check if position is white or black piece already
           if (blkWht === 'S' || blkWht === 'G') {
 
@@ -74,17 +76,18 @@ function chessGame () {
 
           //reset square
           initial.removeClass(piece);
+          console.log(initial);
 
           //reset ng-class values
           this.initialIdx = false;
           this.destinationIdx = false;
 
           var from = new Object();
-          from.row = letterToNumber(initial[0].className.split(' ')[2].toString().charAt(0));
-          from.col = parseInt(initial[0].className.split(' ')[2].toString().substring(1));
+          from.col = letterToNumber(initial[0].className.split(' ')[2].toString().charAt(0));
+          from.row = parseInt(initial[0].className.split(' ')[2].toString().substring(1));
           var to = new Object();
-          to.row = letterToNumber(destination[0].className.split(' ')[2].toString().charAt(0));
-          to.col = parseInt(destination[0].className.split(' ')[2].toString().substring(1));
+          to.col = letterToNumber(destination[0].className.split(' ')[2].toString().charAt(0));
+          to.row = parseInt(destination[0].className.split(' ')[2].toString().substring(1));
 
           if((from.row == to.row - 1) && (from.col == to.col - 1) ||
               (from.row == to.row - 1) && (from.col == to.col + 1) ||
@@ -92,12 +95,14 @@ function chessGame () {
               (from.row == to.row + 1) && (from.col == to.col + 1)) {
               console.log("capture");
               remainingMoves = remainingMoves - 2;
+              } else if(piece == "GFS" && playersTurn == "G") {
+                 remainingMoves = remainingMoves - 2;
               } else {
-                 remainingMoves--;
+                remainingMoves--;
               }
           console.log(remainingMoves);
           if(remainingMoves == 0) {
-            if(player == "G"){
+            if(playersTurn == "G"){
                 playersTurn = "S";
                 remainingMoves = 2;
             } else {
@@ -214,16 +219,41 @@ function chessGame () {
           destination[0].classList.add(initial[0].className.split(' ')[3]);
                     initial[0].classList.remove(piece);
 
-
+          if((from.row == to.row - 1) && (from.col == to.col - 1) ||
+              (from.row == to.row - 1) && (from.col == to.col + 1) ||
+              (from.row == to.row + 1) && (from.col == to.col - 1) ||
+              (from.row == to.row + 1) && (from.col == to.col + 1) ||
+              (piece == "GFS" && playersTurn == "G") {
+              console.log("capture");
+              remainingMoves = remainingMoves - 2;
+              } else {
+                console.log("remaining " + remainingMoves);
+                remainingMoves--;
+                 console.log("123 Move");
+                 console.log("TEST " + remainingMoves);
+              }
 
         });
 
-       setInterval(function(){
-        if(playersTurn == AI){
-            while(remainingMoves > 0){
-                $scope.moveGenerator();
-                remainingMoves--;
-            }
+       setInterval(async function(){
+//       console.log("Check");
+//       console.log("playersTurn " + playersTurn)
+        if(playersTurn == AI && remainingMoves >= 0){
+                console.log("AI moves remainging: " + remainingMoves);
+                await $scope.moveGenerator();
+               console.log("AI moves remainging: " + remainingMoves);
+
+//                remainingMoves--;
+                if(remainingMoves == 0) {
+                  if(playersTurn == "G"){
+                        playersTurn = "S";
+                         remainingMoves = 2;
+                        } else {
+                            playersTurn = "G";
+                            remainingMoves = 2;
+                        }
+                      }
+
         }
        }, 1000)
     }
