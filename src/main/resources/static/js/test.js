@@ -46,6 +46,7 @@ function chessGame() {
           moveObj.from = initial[0].className.split(' ')[2];
           moveObj.to = destination[0].className.split(' ')[2];
           moveObj.player = initial[0].className.split(' ')[3].toString().charAt(0);
+          moveObj.remainingMoves = remainingMoves;
 
 
           var jsonMove = JSON.stringify(moveObj);
@@ -223,6 +224,7 @@ function chessGame() {
           moveObj.from = initial[0].className.split(' ')[2];
           moveObj.to = destination[0].className.split(' ')[2];
           moveObj.player = initial[0].className.split(' ')[3].toString().charAt(0);
+          moveObj.remainingMoves = remainingMoves;
 
 
           let headers = {

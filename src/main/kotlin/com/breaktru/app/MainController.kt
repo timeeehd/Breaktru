@@ -33,7 +33,7 @@ class MainController {
     fun move(@RequestBody payload: Move): Map<String, Array<String>> {
         println("from: ${payload.from}")
         println(payload.to)
-        val result = arrayOf(board.move(payload.from, payload.to, payload.player))
+        val result = arrayOf(board.move(payload.from, payload.to, payload.player, payload.remainingMoves))
         return mapOf("board" to board.boardString(), "result" to result)
     }
 

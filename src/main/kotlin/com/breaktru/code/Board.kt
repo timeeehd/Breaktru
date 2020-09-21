@@ -110,7 +110,7 @@ class Board {
 
     }
 
-    fun move(from: String, to: String, playerMove: String): String {
+    fun move(from: String, to: String, playerMove: String, remainingMoves: Int): String {
         val letterFrom = from.first().toUpperCase()
         val letterTo = to.first().toUpperCase()
         val rowFrom = 10 - (from.drop(1).toInt() - 1)
@@ -120,6 +120,7 @@ class Board {
         val colFrom = letterToNumber(letterFrom)
         val colTo = letterToNumber(letterTo)
         val shipFrom = board[rowFrom][colFrom]
+        val shipTo = if (board[rowTo][colTo].name == " ") Ship() else board[rowTo][colTo]
         if ((rowTo != rowFrom && colTo != colFrom) &&
                 (rowTo != rowFrom - 1 && colTo != colFrom - 1) &&
                 (rowTo != rowFrom + 1 && colTo != colFrom + 1) &&
@@ -140,7 +141,6 @@ class Board {
         }
 
         board[rowFrom][colFrom] = Ship()
-        val shipTo = if (board[rowTo][colTo].name == " ") Ship() else board[rowTo][colTo]
         println(shipTo.type)
         if (shipTo.type == "FlagShip") {
             stringReturn = "GAME WON by $playerMove"
