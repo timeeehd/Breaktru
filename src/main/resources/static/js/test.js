@@ -57,7 +57,12 @@ function chessGame() {
 
 
           $http.post("/api/move", moveObj, headers).then((response) => {
-            console.log(response);
+            console.log("response: " + JSON.stringify(response));
+            console.log("response message " + response.data.result);
+            if(response.data.result == ( "GAME WON by " + moveObj.player) ) {
+                remainingMoves = -100;
+                toastr.success( "GAME WON by " + moveObj.player)
+            }
           });
 
           //TODO: BLKWHT doesn't work!!!
@@ -88,7 +93,7 @@ function chessGame() {
           var to = new Object();
           to.col = letterToNumber(destination[0].className.split(' ')[2].toString().charAt(0));
           to.row = parseInt(destination[0].className.split(' ')[2].toString().substring(1));
-               console.log(remainingMoves);
+          console.log(remainingMoves);
 
           if ((from.row == to.row - 1) && (from.col == to.col - 1) ||
             (from.row == to.row - 1) && (from.col == to.col + 1) ||
@@ -98,7 +103,7 @@ function chessGame() {
             remainingMoves = remainingMoves - 2;
           } else if (piece == "GFS" && playersTurn == "G") {
             remainingMoves = remainingMoves - 2;
-                           console.log(remainingMoves);
+            console.log(remainingMoves);
 
           } else {
             remainingMoves--;
@@ -253,25 +258,26 @@ function chessGame() {
       }
 
       setInterval(async function () {
-               console.log(remainingMoves);
+        console.log(remainingMoves);
         //       console.log("playersTurn " + playersTurn)
         if (playersTurn == AI && remainingMoves > 0) {
           console.log("AI moves remainging: " + remainingMoves);
           await $scope.moveGenerator();
           setTimeout(() => {
-          console.log("AI moves remainging: " + remainingMoves);
+            console.log("AI moves remainging: " + remainingMoves);
 
-                                       //                remainingMoves--;
-                                       if (remainingMoves == 0) {
-                                         console.log("Swap players");
-                                         if (playersTurn == "G") {
-                                           playersTurn = "S";
-                                           remainingMoves = 2;
-                                         } else {
-                                           playersTurn = "G";
-                                           remainingMoves = 2;
-                                         }
-                                       }}, 100);
+            //                remainingMoves--;
+            if (remainingMoves == 0) {
+              console.log("Swap players");
+              if (playersTurn == "G") {
+                playersTurn = "S";
+                remainingMoves = 2;
+              } else {
+                playersTurn = "G";
+                remainingMoves = 2;
+              }
+            }
+          }, 100);
 
 
         }
