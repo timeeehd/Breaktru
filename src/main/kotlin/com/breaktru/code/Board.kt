@@ -121,13 +121,17 @@ class Board {
         val colTo = letterToNumber(letterTo)
         val shipFrom = board[rowFrom][colFrom]
         val shipTo = if (board[rowTo][colTo].name == " ") Ship() else board[rowTo][colTo]
-        if ((rowTo != rowFrom && colTo != colFrom) &&
+        if (((rowTo != rowFrom && colTo != colFrom) &&
                 (rowTo != rowFrom - 1 && colTo != colFrom - 1) &&
                 (rowTo != rowFrom + 1 && colTo != colFrom + 1) &&
                 (rowTo != rowFrom - 1 && colTo != colFrom + 1) &&
-                (rowTo != rowFrom + 1 && colTo != colFrom - 1)) {
+                (rowTo != rowFrom + 1 && colTo != colFrom - 1)) ||
+                (shipFrom.type == "FlagShip" && remainingMoves != 2)){
             return "ILLEGAL MOVE"
         }
+//        if ((shipFrom.type == "FlagShip" && remainingMoves != 2)) {
+//            return "ILLEGAL MOVE"
+//        }
         var stringReturn = ""
         if (shipFrom.color != playerMove) {
             return "YOU ARE NOT ALLOWED TO MOVE THIS PIECE"

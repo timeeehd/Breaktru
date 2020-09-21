@@ -64,6 +64,10 @@ function chessGame() {
                 remainingMoves = -100;
                 toastr.success( "GAME WON by " + moveObj.player)
             }
+            if(response.data.result == ("ILLEGAL MOVE")) {
+                remainingMoves = -100;
+                toastr.error("ILLEGAL MOVE BY: " + moveObj.player);
+            }
           });
 
           //TODO: BLKWHT doesn't work!!!
