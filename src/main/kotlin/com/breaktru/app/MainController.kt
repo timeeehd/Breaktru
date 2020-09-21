@@ -37,19 +37,22 @@ class MainController {
         return mapOf("board" to board.boardString(), "result" to result)
     }
 
-    @GetMapping("generatedMove", produces = [APPLICATION_JSON_VALUE])
-    fun genMove(): Map<String, String> {
-        val generatedMoves = board.moveGenerator("S")
+    @PostMapping("generatedMove", produces = [APPLICATION_JSON_VALUE])
+    fun genMove(@RequestBody payload: MoveGen): Map<String, String> {
+        val generatedMoves = board.moveGenerator(payload.player, payload.remainingMoves)
         println(generatedMoves.size)
 
         val random = (Math.random() * generatedMoves.size).toInt()
         val entry = generatedMoves.entries.elementAt(random)
+        println(entry)
         val entryKey = entry.key
         println(entryKey)
 
-        val from = numberToLetter(entryKey[0][1]).toString() + (entryKey[0][0] + 1).toString()
+        val from = numberToLetter(entryKey[0][1]).toString() + (10 - entryKey[0][0] + 1).toString()
         val random2 = (Math.random() * (generatedMoves[entryKey]!!.size)).toInt()
-        val to = numberToLetter(entry.value[random2][1]).toString() + (entry.value[random2][0] + 1).toString()
+        val to = numberToLetter(entry.value[random2][1]).toString() + (10 - entry.value[random2][0] + 1).toString()
+        println(entry.value[random2][1])
+        println("to: $to   from: $from" )
 //        val returnString = numberToLetter(generatedMoves[random][0]).toString() + generatedMoves[random][1].toString()
         return mapOf("From" to from, "To" to to)
     }

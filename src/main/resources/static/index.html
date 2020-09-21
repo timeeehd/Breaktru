@@ -1,68 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Example CorDapp</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-2.2.3.js" integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <title>Breaktru</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+        integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-2.2.3.js"
+        integrity="sha256-laXWtGydpwqJ8JA+X9x2miwmaiKhn8tVmOVEigRNtP4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
 
-    <script
-            src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
 
     <script src="https://npmcdn.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
     <script src="js/test.js"></script>
     <link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
     <link rel="stylesheet" href="style.css" />
 </head>
-<body ng-app="myApp" ng-keydown="rm($event)" key-event>
-<main class="fluid-container center" chess-game>
-<!--    <div class="row center">-->
-<!--        <div class="col-xs-12 banner">-->
-<!--            <img class="banner-img" src="https://icons.iconarchive.com/icons/blackvariant/shadow135-system/1024/Chess-icon.png"></img>-->
-<!--            <h1 class="banner-txt">Angular-chess</h1>-->
-<!--        </div>-->
-<!--    </div>-->
-    <div class="row center">
-        <div class="container-fluid">
-            <button class="cst-btn center" ng-click="init()">Initialize / Restart</button>
-            <button class="cst-btn center" ng-click="gold()">Play as Gold</button>
-        </div>
-    </div>
-    <div class="row center">
-        <div class="col-xs-12 play-area">
 
-            <div class="board col-xs-8">
-                <div class="row" ng-repeat="col in columns | orderBy:'-'">
-                    <div class="col-xs-1 chess-sq {{row}}{{col}}" ng-repeat="row in rows" ng-click="getInitial(col, row, $index, $parent.$index)" ng-class="[{ 'initial': $index === initialIdx[0] && $parent.$index === initialIdx[1],'destination': $index === destinationIdx[0] && $parent.$index === destinationIdx[1]}]">
-                        {{row}}{{col}}
+<body ng-app="myApp" ng-keydown="rm($event)" key-event>
+    <main class="fluid-container center" chess-game>
+        <!--    <div class="row center">-->
+        <!--        <div class="col-xs-12 banner">-->
+        <!--            <img class="banner-img" src="https://icons.iconarchive.com/icons/blackvariant/shadow135-system/1024/Chess-icon.png"></img>-->
+        <!--            <h1 class="banner-txt">Angular-chess</h1>-->
+        <!--        </div>-->
+        <!--    </div>-->
+        <div class="row center">
+            <div class="container-fluid">
+                <button class="cst-btn center" ng-click="init()">Initialize / Restart</button>
+                <button class="cst-btn center" ng-click="gold()">Play as Gold</button>
+            </div>
+        </div>
+        <div class="row center">
+            <div class="col-xs-12 play-area">
+
+                <div class="board col-xs-8">
+                    <div class="row" ng-repeat="col in columns | orderBy:'-'">
+                        <div class="col-xs-1 chess-sq {{row}}{{col}}" ng-repeat="row in rows"
+                            ng-click="getInitial(col, row, $index, $parent.$index)"
+                            ng-class="[{ 'initial': $index === initialIdx[0] && $parent.$index === initialIdx[1],'destination': $index === destinationIdx[0] && $parent.$index === destinationIdx[1]}]">
+                            {{row}}{{col}}
+                        </div>
                     </div>
                 </div>
+
+                <div class="col-xs-4">
+                    <button class="cst-btn center" ng-click="move()">MOVE</button>
+                    <form ng-submit="textMove()">
+                        <h4>PIECE</h4>
+                        <input class="text-input" type="text" ng-model="text" name="text"
+                            placeholder="ex: WPA2 (white pawn A2)" required />
+                        <h4>DESTINATION</h4>
+
+                        <input class="text-input" type="text" ng-model="dest" name="text" placeholder="ex: A3"
+                            required />
+                        <input class="cst-btn center" type="submit" value="Submit" />
+                        <div class="about">
+                            <h4>ABOUT</h4>
+                            <H4><strong>click</strong> to select</h4>
+                            <H4><strong class="accent1">Selected</strong></h4>
+                            <H4><strong class="accent2">Destination</strong></h4>
+                            <H4>Reselect: click again</h4>
+                            <H4>Delete: select + delete key</h4>
+                        </div>
+                    </form>
+                </div>
+
             </div>
-
-            <div class="col-xs-4">
-                <button class="cst-btn center" ng-click="move()">MOVE</button>
-                <form ng-submit="textMove()">
-                    <h4>PIECE</h4>
-                    <input class="text-input" type="text" ng-model="text" name="text" placeholder="ex: WPA2 (white pawn A2)" required/>
-                    <h4>DESTINATION</h4>
-
-                    <input class="text-input" type="text" ng-model="dest" name="text" placeholder="ex: A3" required/>
-                    <input class="cst-btn center" type="submit" value="Submit" />
-                    <div class="about">
-                        <h4>ABOUT</h4>
-                        <H4><strong>click</strong> to select</h4>
-                        <H4><strong class="accent1">Selected</strong></h4>
-                        <H4><strong class="accent2">Destination</strong></h4>
-                        <H4>Reselect: click again</h4>
-                        <H4>Delete: select + delete key</h4>
-                    </div>
-                </form>
-            </div>
-
         </div>
-    </div>
-</main>
+    </main>
 </body>

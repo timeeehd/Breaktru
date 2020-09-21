@@ -1,7 +1,7 @@
 var app = angular.module('myApp', ['toastr'])
-          .directive('chessGame', chessGame);
+  .directive('chessGame', chessGame);
 
-function chessGame () {
+function chessGame() {
   return {
     restrict: 'A',
     controller: function (toastr, $scope, $http) {
@@ -32,7 +32,7 @@ function chessGame () {
           var initial = angular.element('.initial');
           var destination = angular.element('.destination');
           console.log(initial[0].className);
-            console.log("destination " + destination[0].className);
+          console.log("destination " + destination[0].className);
 
           // Piece class e.g. 'WP'
           var piece = initial[0].className.split(' ')[3];
@@ -50,10 +50,10 @@ function chessGame () {
 
           var jsonMove = JSON.stringify(moveObj);
           let headers = {
-                    headers : {
-                        "Content-Type": "application/json"
-                    }
-                };
+            headers: {
+              "Content-Type": "application/json"
+            }
+          };
 
 
           $http.post("/api/move", moveObj, headers).then((response) => {
@@ -68,7 +68,7 @@ function chessGame () {
 
             //remove the overtaken piece class
             destination.removeClass(checkPos[checkPos.length - 2].substring(0, 2));
-//            toastr.success('Wow! Nice move!')
+            //            toastr.success('Wow! Nice move!')
           }
 
           //Add class to overtaken position
@@ -88,55 +88,59 @@ function chessGame () {
           var to = new Object();
           to.col = letterToNumber(destination[0].className.split(' ')[2].toString().charAt(0));
           to.row = parseInt(destination[0].className.split(' ')[2].toString().substring(1));
+               console.log(remainingMoves);
 
-          if((from.row == to.row - 1) && (from.col == to.col - 1) ||
-              (from.row == to.row - 1) && (from.col == to.col + 1) ||
-              (from.row == to.row + 1) && (from.col == to.col - 1) ||
-              (from.row == to.row + 1) && (from.col == to.col + 1)) {
-              console.log("capture");
-              remainingMoves = remainingMoves - 2;
-              } else if(piece == "GFS" && playersTurn == "G") {
-                 remainingMoves = remainingMoves - 2;
-              } else {
-                remainingMoves--;
-              }
+          if ((from.row == to.row - 1) && (from.col == to.col - 1) ||
+            (from.row == to.row - 1) && (from.col == to.col + 1) ||
+            (from.row == to.row + 1) && (from.col == to.col - 1) ||
+            (from.row == to.row + 1) && (from.col == to.col + 1)) {
+            console.log("capture");
+            remainingMoves = remainingMoves - 2;
+          } else if (piece == "GFS" && playersTurn == "G") {
+            remainingMoves = remainingMoves - 2;
+                           console.log(remainingMoves);
+
+          } else {
+            remainingMoves--;
+          }
           console.log(remainingMoves);
-          if(remainingMoves == 0) {
-            if(playersTurn == "G"){
-                playersTurn = "S";
-                remainingMoves = 2;
+          if (remainingMoves == 0) {
+            if (playersTurn == "G") {
+              playersTurn = "S";
+              remainingMoves = 2;
             } else {
-                playersTurn = "G";
-                remainingMoves = 2;
+              playersTurn = "G";
+              remainingMoves = 2;
             }
           }
         }
       }
 
-      $scope.init = function() {
+      $scope.init = function () {
         console.log('init');
-        $http.get("/api/init").then((response) => {});
+        playersTurn = "G";
+        $http.get("/api/init").then((response) => { });
         var squares = document.getElementsByClassName("chess-sq");
         for (let i = 0; i < squares.length; i++) {
-            if(squares[i].classList.contains("SE")){
-                squares[i].classList.remove("SE")
-            }
-            if(squares[i].classList.contains("GE")){
-              squares[i].classList.remove("GE")
-            }
-            if(squares[i].classList.contains("GFS")){
-                squares[i].classList.remove("GFS")
-            }
-            let row = squares[i].classList[2].toString().charAt(0);
-            let column = squares[i].classList[2].toString().slice(1);
-            let newClass = $scope.piece(row, column);
-            if(newClass) {
-                squares[i].classList.add(newClass);
-            }
+          if (squares[i].classList.contains("SE")) {
+            squares[i].classList.remove("SE")
+          }
+          if (squares[i].classList.contains("GE")) {
+            squares[i].classList.remove("GE")
+          }
+          if (squares[i].classList.contains("GFS")) {
+            squares[i].classList.remove("GFS")
+          }
+          let row = squares[i].classList[2].toString().charAt(0);
+          let column = squares[i].classList[2].toString().slice(1);
+          let newClass = $scope.piece(row, column);
+          if (newClass) {
+            squares[i].classList.add(newClass);
+          }
         }
       }
 
-      $scope.gold = function() {
+      $scope.gold = function () {
         player = "G";
         AI = "S";
         remainingMoves = 2;
@@ -162,40 +166,53 @@ function chessGame () {
       $scope.piece = (row, col) => {
         var sqr = row + col;
 
-//        //white
-//        if (col == 2) return 'WP';
-//        if (sqr == 'A1' || sqr == 'H1') return 'WR';
-//        if (sqr == 'B1' || sqr == 'G1') return 'WH';
-//        if (sqr == 'C1' || sqr == 'F1') return 'WB';
-//        if (sqr == 'D1') return 'WQ';
-//        if (sqr == 'E1') return 'WK';
-        if(sqr == 'B4' || sqr == 'B5' || sqr == 'B6' || sqr == 'B7' || sqr == 'B8') return 'SE'
-        if(sqr == 'J4' || sqr == 'J5' || sqr == 'J6' || sqr == 'J7' || sqr == 'J8') return 'SE'
-        if(sqr == 'D10' || sqr == 'E10' || sqr == 'F10' || sqr == 'G10' || sqr == 'H10') return 'SE'
-        if(sqr == 'D2' || sqr == 'E2' || sqr == 'F2' || sqr == 'G2' || sqr == 'H2') return 'SE'
+        //        //white
+        //        if (col == 2) return 'WP';
+        //        if (sqr == 'A1' || sqr == 'H1') return 'WR';
+        //        if (sqr == 'B1' || sqr == 'G1') return 'WH';
+        //        if (sqr == 'C1' || sqr == 'F1') return 'WB';
+        //        if (sqr == 'D1') return 'WQ';
+        //        if (sqr == 'E1') return 'WK';
+        if (sqr == 'B4' || sqr == 'B5' || sqr == 'B6' || sqr == 'B7' || sqr == 'B8') return 'SE'
+        if (sqr == 'J4' || sqr == 'J5' || sqr == 'J6' || sqr == 'J7' || sqr == 'J8') return 'SE'
+        if (sqr == 'D10' || sqr == 'E10' || sqr == 'F10' || sqr == 'G10' || sqr == 'H10') return 'SE'
+        if (sqr == 'D2' || sqr == 'E2' || sqr == 'F2' || sqr == 'G2' || sqr == 'H2') return 'SE'
 
         //Black
-//                if (col == 7) return 'BP';
-//                if (sqr == 'H8' || sqr == 'H8') return 'BR';
-//                if (sqr == 'A8' || sqr == 'H8') return 'BR';
-//                if (sqr == 'B8' || sqr == 'G8') return 'BH';
-//                if (sqr == 'C8' || sqr == 'F8') return 'BB';
-//                if (sqr == 'D8') return 'BQ';
-//                if (sqr == 'E8') return 'BK';
-        if(sqr == 'D5' || sqr == 'D6' || sqr == 'D7') return 'GE'
-        if(sqr == 'H5' || sqr == 'H6' || sqr == 'H7') return 'GE'
-        if(sqr == 'E8' || sqr == 'F8' || sqr == 'G8') return 'GE'
-        if(sqr == 'E4' || sqr == 'F4' || sqr == 'G4') return 'GE'
-        if(sqr == 'F6') return 'GFS'
+        //                if (col == 7) return 'BP';
+        //                if (sqr == 'H8' || sqr == 'H8') return 'BR';
+        //                if (sqr == 'A8' || sqr == 'H8') return 'BR';
+        //                if (sqr == 'B8' || sqr == 'G8') return 'BH';
+        //                if (sqr == 'C8' || sqr == 'F8') return 'BB';
+        //                if (sqr == 'D8') return 'BQ';
+        //                if (sqr == 'E8') return 'BK';
+        if (sqr == 'D5' || sqr == 'D6' || sqr == 'D7') return 'GE'
+        if (sqr == 'H5' || sqr == 'H6' || sqr == 'H7') return 'GE'
+        if (sqr == 'E8' || sqr == 'F8' || sqr == 'G8') return 'GE'
+        if (sqr == 'E4' || sqr == 'F4' || sqr == 'G4') return 'GE'
+        if (sqr == 'F6') return 'GFS'
 
       }
 
-      $scope.moveGenerator = () => $http.get("/api/generatedMove").then((response) => {
-            console.log(response);
-            var from = response.data.From;
-            var to = response.data.To;
-            var initial = document.getElementsByClassName(from);
-            var destination = document.getElementsByClassName(to);
+      $scope.moveGenerator = async () => {
+        var genMove = new Object();
+        genMove.remainingMoves = remainingMoves;
+        genMove.player = AI;
+
+        let headers = {
+          headers: {
+            "Content-Type": "application/json"
+          }
+        };
+
+
+        $http.post("/api/generatedMove", genMove, headers).then((response) => {
+
+          console.log(response);
+          var from = response.data.From;
+          var to = response.data.To;
+          var initial = document.getElementsByClassName(from);
+          var destination = document.getElementsByClassName(to);
 
           var moveObj = new Object();
           moveObj.from = initial[0].className.split(' ')[2];
@@ -203,12 +220,11 @@ function chessGame () {
           moveObj.player = initial[0].className.split(' ')[3].toString().charAt(0);
 
 
-          var jsonMove = JSON.stringify(moveObj);
           let headers = {
-                    headers : {
-                        "Content-Type": "application/json"
-                    }
-                };
+            headers: {
+              "Content-Type": "application/json"
+            }
+          };
 
 
           $http.post("/api/move", moveObj, headers).then((response) => {
@@ -217,89 +233,93 @@ function chessGame () {
           var piece = initial[0].className.split(' ')[3];
 
           destination[0].classList.add(initial[0].className.split(' ')[3]);
-                    initial[0].classList.remove(piece);
+          initial[0].classList.remove(piece);
 
-          if((from.row == to.row - 1) && (from.col == to.col - 1) ||
-              (from.row == to.row - 1) && (from.col == to.col + 1) ||
-              (from.row == to.row + 1) && (from.col == to.col - 1) ||
-              (from.row == to.row + 1) && (from.col == to.col + 1) ||
-              (piece == "GFS" && playersTurn == "G")) {
-              console.log("capture");
-              remainingMoves = remainingMoves - 2;
-              } else {
-                console.log("remaining " + remainingMoves);
-                remainingMoves--;
-                 console.log("123 Move");
-                 console.log("TEST " + remainingMoves);
-              }
+          if ((from.row == to.row - 1) && (from.col == to.col - 1) ||
+            (from.row == to.row - 1) && (from.col == to.col + 1) ||
+            (from.row == to.row + 1) && (from.col == to.col - 1) ||
+            (from.row == to.row + 1) && (from.col == to.col + 1) ||
+            (piece == "GFS" && playersTurn == "G")) {
+            console.log("capture");
+            remainingMoves = remainingMoves - 2;
+          } else {
+            console.log("remaining " + remainingMoves);
+            remainingMoves--;
+            console.log("123 Move");
+            console.log("TEST " + remainingMoves);
+          }
 
         });
+      }
 
-       setInterval(async function(){
-//       console.log("Check");
-//       console.log("playersTurn " + playersTurn)
-        if(playersTurn == AI && remainingMoves >= 0){
-                console.log("AI moves remainging: " + remainingMoves);
-                await $scope.moveGenerator();
-               console.log("AI moves remainging: " + remainingMoves);
+      setInterval(async function () {
+               console.log(remainingMoves);
+        //       console.log("playersTurn " + playersTurn)
+        if (playersTurn == AI && remainingMoves > 0) {
+          console.log("AI moves remainging: " + remainingMoves);
+          await $scope.moveGenerator();
+          setTimeout(() => {
+          console.log("AI moves remainging: " + remainingMoves);
 
-//                remainingMoves--;
-                if(remainingMoves == 0) {
-                  if(playersTurn == "G"){
-                        playersTurn = "S";
-                         remainingMoves = 2;
-                        } else {
-                            playersTurn = "G";
-                            remainingMoves = 2;
-                        }
-                      }
+                                       //                remainingMoves--;
+                                       if (remainingMoves == 0) {
+                                         console.log("Swap players");
+                                         if (playersTurn == "G") {
+                                           playersTurn = "S";
+                                           remainingMoves = 2;
+                                         } else {
+                                           playersTurn = "G";
+                                           remainingMoves = 2;
+                                         }
+                                       }}, 100);
+
 
         }
-       }, 1000)
+      }, 1000)
     }
 
   };
 
 }
 
-function letterToNumber(letter){
-    switch(letter){
-        case 'A':
-            return 1;
-            break;
-        case 'B':
-            return 2;
-            break;
-        case 'C':
-            return 3;
-            break;
-        case 'D':
-            return 4;
-            break;
-        case 'E':
-            return 5;
-            break;
-        case 'F':
-            return 6;
-            break;
-        case 'G':
-            return 7;
-            break;
-        case 'H':
-            return 8;
-            break;
-        case 'I':
-            return 9;
-            break;
-        case 'J':
-            return 10;
-            break;
-        case 'K':
-            return 11;
-            break;
-        default:
-            return 100;
-            break;
-    }
+function letterToNumber(letter) {
+  switch (letter) {
+    case 'A':
+      return 1;
+      break;
+    case 'B':
+      return 2;
+      break;
+    case 'C':
+      return 3;
+      break;
+    case 'D':
+      return 4;
+      break;
+    case 'E':
+      return 5;
+      break;
+    case 'F':
+      return 6;
+      break;
+    case 'G':
+      return 7;
+      break;
+    case 'H':
+      return 8;
+      break;
+    case 'I':
+      return 9;
+      break;
+    case 'J':
+      return 10;
+      break;
+    case 'K':
+      return 11;
+      break;
+    default:
+      return 100;
+      break;
+  }
 
 }
