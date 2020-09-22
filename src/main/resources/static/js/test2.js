@@ -101,7 +101,8 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       var to = new Object();
       to.col = letterToNumber(destination[0].className.split(' ')[2].toString().charAt(0));
       to.row = parseInt(destination[0].className.split(' ')[2].toString().substring(1));
-      logs[count] = "moves";
+      logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+      moveObj.from + ' to ' + moveObj.to;
       count++;
       //TODO: UPDATE LOG FUNCTIONALITY!!
       console.log(logs);
@@ -173,7 +174,8 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     $scope.goldPlayer = "Human";
     $scope.silverPlayer = "AI";
     $scope.object = { turn: "G" };
-    $scope.object.count = 0;
+    $scope.object.count = 1;
+    turnCount = 1;
   }
 
   $scope.textMove = () => {
@@ -265,7 +267,9 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
 
       destination[0].classList.add(initial[0].className.split(' ')[3]);
       initial[0].classList.remove(piece);
-
+      logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+      moveObj.from + ' to ' + moveObj.to;
+      count++;
       if ((from.row == to.row - 1) && (from.col == to.col - 1) ||
         (from.row == to.row - 1) && (from.col == to.col + 1) ||
         (from.row == to.row + 1) && (from.col == to.col - 1) ||
@@ -290,10 +294,8 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     console.log(remainingMoves);
     //       console.log("playersTurn " + playersTurn)
     if (playersTurn == AI && remainingMoves > 0) {
-      console.log("AI moves remainging: " + remainingMoves);
       await $scope.moveGenerator();
       setTimeout(() => {
-        console.log("AI moves remainging: " + remainingMoves);
 
         //                remainingMoves--;
         if (remainingMoves == 0) {
@@ -305,19 +307,18 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
             $scope.$apply(() => {
               $scope.object = { turn: "S" };
               $scope.object.count = turnCount;
+              $scope.object.logs = logs;
             });
             remainingMoves = 2;
-            console.log("turn" + $scope.turn);
           } else {
             console.log("Gold turn");
             playersTurn = "G";
             $scope.$apply(() => {
               $scope.object = { turn: "G" };
               $scope.object.count = turnCount;
+              $scope.object.logs = logs;
             });
-            console.log("WC");
             remainingMoves = 2;
-            console.log("turn" + $scope.turn);
           }
         }
       }, 100);
