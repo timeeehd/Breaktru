@@ -17,23 +17,24 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
 
     <script src="https://npmcdn.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
-    <script src="js/test.js"></script>
+    <script src="js/test2.js"></script>
     <link rel="stylesheet" href="https://npmcdn.com/angular-toastr/dist/angular-toastr.css" />
     <link rel="stylesheet" href="style.css" />
 </head>
 
-<body ng-app="myApp" ng-keydown="rm($event)" key-event>
+<body ng-app="myApp" ng-controller="BreaktruController" ng-keydown="rm($event)" key-event>
     <main class="fluid-container center" chess-game>
-        <!--    <div class="row center">-->
-        <!--        <div class="col-xs-12 banner">-->
-        <!--            <img class="banner-img" src="https://icons.iconarchive.com/icons/blackvariant/shadow135-system/1024/Chess-icon.png"></img>-->
-        <!--            <h1 class="banner-txt">Angular-chess</h1>-->
-        <!--        </div>-->
-        <!--    </div>-->
         <div class="row center">
             <div class="container-fluid">
                 <button class="cst-btn center" ng-click="init()">Initialize / Restart</button>
                 <button class="cst-btn center" ng-click="gold()">Play as Gold</button>
+            </div>
+        </div>
+        <div class="row center">
+            <div class="container-fluid">
+                <pre class="tab">
+                    <b>Gold:</b> {{goldPlayer}}         <b>Silver:</b> {{silverPlayer}}         <b>playersTurn:</b> {{object.turn}}         <b>Turn:</b>{{object.count}}
+                </pre>
             </div>
         </div>
         <div class="row center">
@@ -51,24 +52,9 @@
 
                 <div class="col-xs-4">
                     <button class="cst-btn center" ng-click="move()">MOVE</button>
-                    <form ng-submit="textMove()">
-                        <h4>PIECE</h4>
-                        <input class="text-input" type="text" ng-model="text" name="text"
-                            placeholder="ex: WPA2 (white pawn A2)" required />
-                        <h4>DESTINATION</h4>
-
-                        <input class="text-input" type="text" ng-model="dest" name="text" placeholder="ex: A3"
-                            required />
-                        <input class="cst-btn center" type="submit" value="Submit" />
-                        <div class="about">
-                            <h4>ABOUT</h4>
-                            <H4><strong>click</strong> to select</h4>
-                            <H4><strong class="accent1">Selected</strong></h4>
-                            <H4><strong class="accent2">Destination</strong></h4>
-                            <H4>Reselect: click again</h4>
-                            <H4>Delete: select + delete key</h4>
-                        </div>
-                    </form>
+                    <div class="row" ng-repeat="log in object.logs">
+                        {{log}}
+                    </div>
                 </div>
 
             </div>

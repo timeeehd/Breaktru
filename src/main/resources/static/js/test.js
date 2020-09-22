@@ -4,15 +4,15 @@ var app = angular.module('myApp', ['toastr'])
 function chessGame() {
   return {
     restrict: 'A',
-    controller: function (toastr, $scope, $http) {
-
+    controller: function (toastr, $scope, $rootScope, $http) {
       $scope.rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
       $scope.columns = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
       let player = "";
       let AI = "";
-      let playersTurn = "G"
+      let playersTurn = "G";
       let remainingMoves = 0;
+      $rootScope.goldPlayer = "Test";
 
       var pos = [];
 
@@ -60,13 +60,13 @@ function chessGame() {
           $http.post("/api/move", moveObj, headers).then((response) => {
             console.log("response: " + JSON.stringify(response));
             console.log("response message " + response.data.result);
-            if(response.data.result == ( "GAME WON by " + moveObj.player) ) {
-                remainingMoves = -100;
-                toastr.success( "GAME WON by " + moveObj.player)
+            if (response.data.result == ("GAME WON by " + moveObj.player)) {
+              remainingMoves = -100;
+              toastr.success("GAME WON by " + moveObj.player)
             }
-            if(response.data.result == ("ILLEGAL MOVE")) {
-                remainingMoves = -100;
-                toastr.error("ILLEGAL MOVE BY: " + moveObj.player);
+            if (response.data.result == ("ILLEGAL MOVE")) {
+              remainingMoves = -100;
+              toastr.error("ILLEGAL MOVE BY: " + moveObj.player);
             }
           });
 
@@ -127,6 +127,7 @@ function chessGame() {
       }
 
       $scope.init = function () {
+        $rootScope.goldPlayer = "Test";
         console.log('init');
         playersTurn = "G";
         $http.get("/api/init").then((response) => { });

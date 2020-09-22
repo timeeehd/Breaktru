@@ -122,11 +122,11 @@ class Board {
         val shipFrom = board[rowFrom][colFrom]
         val shipTo = if (board[rowTo][colTo].name == " ") Ship() else board[rowTo][colTo]
         if (((rowTo != rowFrom && colTo != colFrom) &&
-                (rowTo != rowFrom - 1 && colTo != colFrom - 1) &&
-                (rowTo != rowFrom + 1 && colTo != colFrom + 1) &&
-                (rowTo != rowFrom - 1 && colTo != colFrom + 1) &&
-                (rowTo != rowFrom + 1 && colTo != colFrom - 1)) ||
-                (shipFrom.type == "FlagShip" && remainingMoves != 2)){
+                        (rowTo != rowFrom - 1 && colTo != colFrom - 1) &&
+                        (rowTo != rowFrom + 1 && colTo != colFrom + 1) &&
+                        (rowTo != rowFrom - 1 && colTo != colFrom + 1) &&
+                        (rowTo != rowFrom + 1 && colTo != colFrom - 1)) ||
+                (shipFrom.type == "FlagShip" && remainingMoves != 2)) {
             return "ILLEGAL MOVE"
         }
 //        if ((shipFrom.type == "FlagShip" && remainingMoves != 2)) {
@@ -170,94 +170,73 @@ class Board {
                 if (board[row][col].color == color) {
                     if (remainingMoves == 1 && board[row][col].name == "GFS") break
                     if (remainingMoves != 1) {
-                        if (row == 0) {
-                            if (col == 0) {
-                                if (board[row + 1][col + 1].color != color && board[row + 1][col + 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row + 1, col + 1))
-                                }
-                            } else if (col == 10) {
-                                if (board[row + 1][col - 1].color != color && board[row + 1][col - 1].color != " ") {
-                                    println("Capture Move")
+                        if (row == 0 && col == 0) {
 
-                                    possibleMoves.add(mutableListOf(row + 1, col - 1))
-                                }
-                            } else {
-                                if (board[row + 1][col - 1].color != color && board[row + 1][col - 1].color != " ") {
-                                    println("Capture Move")
+                            if (board[row + 1][col + 1].color != color && board[row + 1][col + 1].color != " ") {
+                                println("Capture Move")
+                                possibleMoves.add(mutableListOf(row + 1, col + 1))
+                            }
+                        } else if (row == 0 && col == 10) {
+                            if (board[row + 1][col - 1].color != color && board[row + 1][col - 1].color != " ") {
+                                println("Capture Move")
 
-                                    possibleMoves.add(mutableListOf(row + 1, col - 1))
-                                }
-                                if (board[row + 1][col + 1].color != color && board[row + 1][col + 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row + 1, col + 1))
-                                }
+                                possibleMoves.add(mutableListOf(row + 1, col - 1))
+                            }
+                        } else if (row == 0) {
+                            if (board[row + 1][col - 1].color != color && board[row + 1][col - 1].color != " ") {
+                                println("Capture Move")
+
+                                possibleMoves.add(mutableListOf(row + 1, col - 1))
+                            }
+                            if (board[row + 1][col + 1].color != color && board[row + 1][col + 1].color != " ") {
+                                println("Capture Move")
+                                possibleMoves.add(mutableListOf(row + 1, col + 1))
+                            }
+
+                        } else if (row == 10 && col == 0) {
+
+                            if (board[row - 1][col + 1].color != color && board[row - 1][col + 1].color != " ") {
+                                println("Capture Move")
+                                possibleMoves.add(mutableListOf(row - 1, col + 1))
+                            }
+                        } else if (row == 10 && col == 10) {
+                            if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
+                                println("Capture Move")
+                                possibleMoves.add(mutableListOf(row - 1, col - 1))
                             }
                         } else if (row == 10) {
-                            if (col == 0) {
-                                if (board[row - 1][col + 1].color != color && board[row - 1][col + 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row - 1, col + 1))
-                                }
-                            } else if (col == 10) {
-                                if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row - 1, col - 1))
-                                }
-                            } else {
-                                if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row - 1, col - 1))
-                                }
-                                if (board[row - 1][col + 1].color != color && board[row - 1][col + 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row - 1, col + 1))
-                                }
+                            if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
+                                println("Capture Move")
+                                possibleMoves.add(mutableListOf(row - 1, col - 1))
                             }
+                            if (board[row - 1][col + 1].color != color && board[row - 1][col + 1].color != " ") {
+                                println("Capture Move")
+                                possibleMoves.add(mutableListOf(row - 1, col + 1))
+                            }
+
                         } else if (col == 0) {
-                            if (row == 0) {
-                                if (board[row + 1][col + 1].color != color && board[row + 1][col + 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row + 1, col + 1))
-                                }
-                            } else if (row == 10) {
-                                if (board[row - 1][col + 1].color != color && board[row - 1][col + 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row - 1, col + 1))
-                                }
-                            } else {
-                                if (board[row + 1][col + 1].color != color && board[row + 1][col + 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row + 1, col + 1))
-                                }
-                                if (board[row - 1][col + 1].color != color && board[row - 1][col + 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row - 1, col + 1))
-                                }
+
+                            if (board[row + 1][col + 1].color != color && board[row + 1][col + 1].color != " ") {
+                                println("Capture Move")
+                                possibleMoves.add(mutableListOf(row + 1, col + 1))
                             }
+                            if (board[row - 1][col + 1].color != color && board[row - 1][col + 1].color != " ") {
+                                println("Capture Move")
+                                possibleMoves.add(mutableListOf(row - 1, col + 1))
+                            }
+
                         } else if (col == 10) {
-                            if (row == 0) {
-                                if (board[row + 1][col - 1].color != color && board[row + 1][col - 1].color != " ") {
-                                    println("Capture Move")
 
-                                    possibleMoves.add(mutableListOf(row + 1, col - 1))
-                                }
-                            } else if (row == 10) {
-                                if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row - 1, col - 1))
-                                }
-                            } else {
-                                if (board[row + 1][col - 1].color != color && board[row + 1][col - 1].color != " ") {
-                                    println("Capture Move")
+                            if (board[row + 1][col - 1].color != color && board[row + 1][col - 1].color != " ") {
+                                println("Capture Move")
 
-                                    possibleMoves.add(mutableListOf(row + 1, col - 1))
-                                }
-                                if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
-                                    println("Capture Move")
-                                    possibleMoves.add(mutableListOf(row - 1, col - 1))
-                                }
+                                possibleMoves.add(mutableListOf(row + 1, col - 1))
                             }
+                            if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
+                                println("Capture Move")
+                                possibleMoves.add(mutableListOf(row - 1, col - 1))
+                            }
+
                         } else {
                             if (board[row - 1][col - 1].color != color && board[row - 1][col - 1].color != " ") {
                                 println("Capture Move")
