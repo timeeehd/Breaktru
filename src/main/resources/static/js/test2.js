@@ -31,19 +31,19 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     if (pos.length >= 4) pos.splice(0);
 
     $scope.move = function () {
-      console.log("move");
+//      console.log("move");
       var initial = angular.element('.initial');
       var destination = angular.element('.destination');
-      console.log(initial[0].className);
-      console.log("destination " + destination[0].className);
+//      console.log(initial[0].className);
+//      console.log("destination " + destination[0].className);
 
       // Piece class e.g. 'WP'
       var piece = initial[0].className.split(' ')[3];
-      console.log("piece " + piece);
+//      console.log("piece " + piece);
 
       var checkPos = destination[0].className.split(' ');
-      console.log("check " + checkPos);
-      console.log(initial[0].className.split(' ')[3].toString().charAt(0));
+//      console.log("check " + checkPos);
+//      console.log(initial[0].className.split(' ')[3].toString().charAt(0));
 
       var moveObj = new Object();
       moveObj.from = initial[0].className.split(' ')[2];
@@ -247,6 +247,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       var toVar = response.data.To;
       var initial = document.getElementsByClassName(fromVar);
       var destination = document.getElementsByClassName(toVar);
+//      var destination = [].slice.call(document.getElementsByClassName('testing'));
 
       var moveObj = new Object();
       moveObj.from = initial[0].className.split(' ')[2];
@@ -266,16 +267,17 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         console.log(response);
       });
       var piece = initial[0].className.split(' ')[3];
-
+      var test8 = destination[0];
       var checkPos = destination[0].className.split(' ');
-      console.log('ceck' + checkPos);
+//      console.log('ceck' + checkPos);
       if (checkPos.length == 4) {
         var blkWht = checkPos[3].substring(0, 1);
         //check if position is white or black piece already
         if (blkWht === 'S' || blkWht === 'G') {
-
+            console.log("Hierk om ik");
           //remove the overtaken piece class
-          destination.removeClass(checkPos[checkPos.length - 2].substring(0, 2));
+          destination[0].classList.remove(checkPos[checkPos.length - 1].substring(0, 2))
+          destination = document.getElementsByClassName(toVar);
           //            toastr.success('Wow! Nice move!')
         }
       }
@@ -292,7 +294,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       to["row"] = toVar.substring(1);
       to["col"] = letterToNumber(toVar.substring(0, 1));
       console.log("from" + JSON.stringify(from));
-      //      console.log("to" + JSON.stringify(to));
+            console.log("to" + JSON.stringify(to));
       if ((from["row"] == to["row"] - 1) && (from["col"] == to["col"] - 1)) {
         console.log("capture");
         remainingMoves = remainingMoves - 2;
@@ -307,12 +309,12 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         remainingMoves = remainingMoves - 2;
       } else if (piece == "GFS" && playersTurn == "G") {
         remainingMoves = remainingMoves - 2;
-        console.log(remainingMoves);
+//        console.log(remainingMoves);
 
       } else {
-        console.log("remaining " + remainingMoves);
+//        console.log("remaining " + remainingMoves);
         remainingMoves--;
-        console.log("123 Move");
+//        console.log("123 Move");
       }
 
     });
@@ -323,8 +325,8 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
   }
 
   setInterval(async function () {
-    console.log(remainingMoves);
-    console.log("playersTurn " + playersTurn);
+//    console.log(remainingMoves);
+//    console.log("playersTurn " + playersTurn);
     if (((goldSide == "AI" && playersTurn == "G") || (silverSide == "AI" && playersTurn == "S")) && remainingMoves > 0) {
       await $scope.moveGenerator();
       setTimeout(() => {
@@ -332,9 +334,9 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         //                remainingMoves--;
         if (remainingMoves == 0) {
           turnCount++;
-          console.log("Swap players");
+//          console.log("Swap players");
           if (playersTurn == "G") {
-            console.log("Silver turn");
+//            console.log("Silver turn");
             playersTurn = "S";
             $scope.$apply(() => {
               $scope.object = { turn: "S" };
@@ -343,7 +345,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
             });
             remainingMoves = 2;
           } else {
-            console.log("Gold turn");
+//            console.log("Gold turn");
             playersTurn = "G";
             $scope.$apply(() => {
               $scope.object = { turn: "G" };

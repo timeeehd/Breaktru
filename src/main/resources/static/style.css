@@ -166,6 +166,11 @@ $accent2: rgba(24,157,134, .6);
  background-color: $accent2 !important;
 }
 
+.scroll-div {
+    height: 500px;
+    overflow: scroll;
+}
+
 .A1 {
     background-color: #fff;
 }

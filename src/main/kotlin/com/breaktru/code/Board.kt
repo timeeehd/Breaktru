@@ -171,11 +171,7 @@ class Board {
                 possibleMoves = ArrayList()
                 var currentPostion: MutableList<MutableList<Int>> = ArrayList()
                 if (board[row][col].color == color) {
-                    println(board[row][col].id)
-                    println(lastMove)
                     if (board[row][col].id != lastMove) {
-                        println(board[row][col].id)
-                        println()
                         if (remainingMoves == 1 && board[row][col].name == "FS") {
 //                        println("Hier mag ik niet komen")
                             break
