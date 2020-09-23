@@ -1,6 +1,8 @@
 package com.breaktru.code
 
-open class Ship(open val name: String = " ", open val color: String = " ", open val type: String = " ") {
+import java.util.*
+
+open class Ship(open val name: String = "  ", open val color: String = " ", open val type: String = " ", open val id: UUID = UUID.randomUUID()) {
     //val captured = false
 }
 

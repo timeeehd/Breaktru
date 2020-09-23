@@ -4,8 +4,8 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
   $scope.rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
   $scope.columns = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-  let player = "";
-  let AI = "";
+  let goldSide = "";
+  let silverSide = "";
   let playersTurn = "";
   let remainingMoves = 0;
   let turnCount = 0;
@@ -102,16 +102,16 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       to.col = letterToNumber(destination[0].className.split(' ')[2].toString().charAt(0));
       to.row = parseInt(destination[0].className.split(' ')[2].toString().substring(1));
       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-      moveObj.from + ' to ' + moveObj.to;
+        moveObj.from + ' to ' + moveObj.to;
       count++;
       //TODO: UPDATE LOG FUNCTIONALITY!!
       console.log(logs);
       $scope.object.logs = logs;
       console.log($scope.object.logs);
-      if ((from.row == to.row - 1) && (from.col == to.col - 1) ||
-        (from.row == to.row - 1) && (from.col == to.col + 1) ||
-        (from.row == to.row + 1) && (from.col == to.col - 1) ||
-        (from.row == to.row + 1) && (from.col == to.col + 1)) {
+      if (((from.row == to.row - 1) && (from.col == to.col - 1)) ||
+        ((from.row == to.row - 1) && (from.col == to.col + 1)) ||
+        ((from.row == to.row + 1) && (from.col == to.col - 1)) ||
+        ((from.row == to.row + 1) && (from.col == to.col + 1))) {
         console.log("capture");
         remainingMoves = remainingMoves - 2;
       } else if (piece == "GFS" && playersTurn == "G") {
@@ -146,6 +146,11 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
   $scope.init = function () {
     console.log('init');
     playersTurn = "G";
+    turnCount = 0;
+    remainingMoves = -1;
+    logs = {};
+    $scope.object.logs = {};
+    $scope.object.count = null;
     $http.get("/api/init").then((response) => { });
     var squares = document.getElementsByClassName("chess-sq");
     for (let i = 0; i < squares.length; i++) {
@@ -168,8 +173,8 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
   }
 
   $scope.gold = function () {
-    player = "G";
-    AI = "S";
+    goldSide = "Human";
+    silverSide = "AI";
     remainingMoves = 2;
     $scope.goldPlayer = "Human";
     $scope.silverPlayer = "AI";
@@ -178,46 +183,43 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     turnCount = 1;
   }
 
-  $scope.textMove = () => {
-    if ($scope.text.length === 4) {
-      var piece = this.text.substring(0, 2).toUpperCase();
-      var position = this.text.substring(2, 4).toUpperCase();
-      var init = angular.element(`.${position}`);
-      init.removeClass(piece);
-    }
-    if ($scope.dest.length === 2) {
-      var position = this.dest.substring(0, 2).toUpperCase();
-      var destination = angular.element(`.${position}`);
-      destination.addClass(piece);
-    }
+  $scope.silver = function () {
+    goldSide = "AI";
+    silverSide = "Human";
+    remainingMoves = 2;
+    $scope.goldPlayer = "AI";
+    $scope.silverPlayer = "Human";
+    $scope.object = { turn: "G" };
+    $scope.object.count = 1;
+    turnCount = 1;
+  }
 
-  };
+  $scope.twoAI = function () {
+    goldSide = "AI";
+    silverSide = "AI";
+    remainingMoves = 2;
+    $scope.goldPlayer = "AI";
+    $scope.silverPlayer = "AI";
+    $scope.object = { turn: "G" };
+    $scope.object.count = 1;
+    turnCount = 1;
+    playersTurn = "G";
+
+  }
+
+
+
 
   // This function is called inside of the ng-class object, for each div that is repeated,
   // It sets up the initial pieces classes for each side.
   $scope.piece = (row, col) => {
     var sqr = row + col;
 
-    //        //white
-    //        if (col == 2) return 'WP';
-    //        if (sqr == 'A1' || sqr == 'H1') return 'WR';
-    //        if (sqr == 'B1' || sqr == 'G1') return 'WH';
-    //        if (sqr == 'C1' || sqr == 'F1') return 'WB';
-    //        if (sqr == 'D1') return 'WQ';
-    //        if (sqr == 'E1') return 'WK';
     if (sqr == 'B4' || sqr == 'B5' || sqr == 'B6' || sqr == 'B7' || sqr == 'B8') return 'SE'
     if (sqr == 'J4' || sqr == 'J5' || sqr == 'J6' || sqr == 'J7' || sqr == 'J8') return 'SE'
     if (sqr == 'D10' || sqr == 'E10' || sqr == 'F10' || sqr == 'G10' || sqr == 'H10') return 'SE'
     if (sqr == 'D2' || sqr == 'E2' || sqr == 'F2' || sqr == 'G2' || sqr == 'H2') return 'SE'
 
-    //Black
-    //                if (col == 7) return 'BP';
-    //                if (sqr == 'H8' || sqr == 'H8') return 'BR';
-    //                if (sqr == 'A8' || sqr == 'H8') return 'BR';
-    //                if (sqr == 'B8' || sqr == 'G8') return 'BH';
-    //                if (sqr == 'C8' || sqr == 'F8') return 'BB';
-    //                if (sqr == 'D8') return 'BQ';
-    //                if (sqr == 'E8') return 'BK';
     if (sqr == 'D5' || sqr == 'D6' || sqr == 'D7') return 'GE'
     if (sqr == 'H5' || sqr == 'H6' || sqr == 'H7') return 'GE'
     if (sqr == 'E8' || sqr == 'F8' || sqr == 'G8') return 'GE'
@@ -229,7 +231,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
   $scope.moveGenerator = async () => {
     var genMove = new Object();
     genMove.remainingMoves = remainingMoves;
-    genMove.player = AI;
+    genMove.player = playersTurn;
 
     let headers = {
       headers: {
@@ -241,10 +243,10 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     $http.post("/api/generatedMove", genMove, headers).then((response) => {
 
       console.log(response);
-      var from = response.data.From;
-      var to = response.data.To;
-      var initial = document.getElementsByClassName(from);
-      var destination = document.getElementsByClassName(to);
+      var fromVar = response.data.From;
+      var toVar = response.data.To;
+      var initial = document.getElementsByClassName(fromVar);
+      var destination = document.getElementsByClassName(toVar);
 
       var moveObj = new Object();
       moveObj.from = initial[0].className.split(' ')[2];
@@ -265,15 +267,42 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       });
       var piece = initial[0].className.split(' ')[3];
 
+      var checkPos = destination[0].className.split(' ');
+      console.log('ceck' + checkPos);
+      if (checkPos.length == 4) {
+        var blkWht = checkPos[3].substring(0, 1);
+        //check if position is white or black piece already
+        if (blkWht === 'S' || blkWht === 'G') {
+
+          //remove the overtaken piece class
+          destination.removeClass(checkPos[checkPos.length - 2].substring(0, 2));
+          //            toastr.success('Wow! Nice move!')
+        }
+      }
+
       destination[0].classList.add(initial[0].className.split(' ')[3]);
       initial[0].classList.remove(piece);
       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-      moveObj.from + ' to ' + moveObj.to;
+        moveObj.from + ' to ' + moveObj.to;
       count++;
-      if ((from.row == to.row - 1) && (from.col == to.col - 1) ||
-        (from.row == to.row - 1) && (from.col == to.col + 1) ||
-        (from.row == to.row + 1) && (from.col == to.col - 1) ||
-        (from.row == to.row + 1) && (from.col == to.col + 1)) {
+      var from = {};
+      var to = {};
+      from["row"] = fromVar.substring(1);
+      from["col"] = letterToNumber(fromVar.substring(0, 1));
+      to["row"] = toVar.substring(1);
+      to["col"] = letterToNumber(toVar.substring(0, 1));
+      console.log("from" + JSON.stringify(from));
+      //      console.log("to" + JSON.stringify(to));
+      if ((from["row"] == to["row"] - 1) && (from["col"] == to["col"] - 1)) {
+        console.log("capture");
+        remainingMoves = remainingMoves - 2;
+      } else if ((from["row"] == to["row"] - 1) && (from["col"] == to["col"] + 1)) {
+        console.log("capture");
+        remainingMoves = remainingMoves - 2;
+      } else if ((from["row"] == to["row"] + 1) && (from["col"] == to["col"] - 1)) {
+        console.log("capture");
+        remainingMoves = remainingMoves - 2;
+      } else if ((from["row"] == to["row"] + 1) && (from["col"] == to["col"] + 1)) {
         console.log("capture");
         remainingMoves = remainingMoves - 2;
       } else if (piece == "GFS" && playersTurn == "G") {
@@ -284,16 +313,19 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         console.log("remaining " + remainingMoves);
         remainingMoves--;
         console.log("123 Move");
-        console.log("TEST " + remainingMoves);
       }
 
     });
   }
 
+  $scope.pause = () => {
+    remainingMoves = -1;
+  }
+
   setInterval(async function () {
     console.log(remainingMoves);
-    //       console.log("playersTurn " + playersTurn)
-    if (playersTurn == AI && remainingMoves > 0) {
+    console.log("playersTurn " + playersTurn);
+    if (((goldSide == "AI" && playersTurn == "G") || (silverSide == "AI" && playersTurn == "S")) && remainingMoves > 0) {
       await $scope.moveGenerator();
       setTimeout(() => {
 
@@ -325,7 +357,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
 
 
     }
-  }, 1000)
+  }, 1000);
 
 });
 
