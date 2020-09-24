@@ -31,6 +31,7 @@
                 <button class="cst-btn center" ng-click="silver()">Play as Silver</button>
                 <button class="cst-btn center" ng-click="twoAI()">Both Sides AI</button>
                 <button class="cst-btn center" ng-click="pause()">Pause</button>
+                <button class="cst-btn center" ng-click="startAgain()">Continue</button>
             </div>
         </div>
         <div class="row center">
@@ -59,11 +60,17 @@
                     </div>
                     <div class="row scroll-div">
                         <div class="col-xs-8">
-                            <div class="row" ng-repeat="log in object.logs">
-                            {{log}}
+                            <div class="row" ng-repeat="(key,data) in object.logs">
+                                <div ng-if="data.includes('G m')" class="gold">
+                                    {{data}}
+                                </div>
+                                <div ng-if="data.includes('S m')" class="silver">
+                                    {{data}}
+                                </div>
                         </div>
                         </div>
                     </div>
+                    <button ng-click="download()">Create file</button>
                 </div>
 
             </div>

@@ -167,14 +167,14 @@ class Board {
         var possibleMoves: MutableList<MutableList<Int>> = ArrayList()
         val testMap = mutableMapOf<MutableList<MutableList<Int>>, MutableList<MutableList<Int>>>()
         for (row in 0..10) {
-            for (col in 0..10) {
+            col@ for (col in 0..10) {
                 possibleMoves = ArrayList()
                 var currentPostion: MutableList<MutableList<Int>> = ArrayList()
                 if (board[row][col].color == color) {
                     if (board[row][col].id != lastMove) {
                         if (remainingMoves == 1 && board[row][col].name == "FS") {
-//                        println("Hier mag ik niet komen")
-                            break
+                        println("Hier mag ik niet komen")
+                            continue@col
                         }
                         if (remainingMoves != 1) {
                             if (row == 0 && col == 0) {
@@ -329,7 +329,8 @@ class Board {
 //    val board = Board();
 //    board.initialize()
 //    board.print();
-//    board.move("E8", "E9", "G")
-//    board.move("F8", "F9", "G")
-//    board.moveGenerator("S",2)
+//    board.moveGenerator("G",1)
+////    board.move("E8", "E9", "G")
+////    board.move("F8", "F9", "G")
+////    board.moveGenerator("S",2)
 //}
