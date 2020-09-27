@@ -66,11 +66,11 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         console.log("response message " + response.data.result);
         if (response.data.result == ("GAME WON by " + moveObj.player)) {
           remainingMoves = -100;
-          toastr.success("GAME WON by " + moveObj.player, {timeOut: 1000000})
+          toastr.success("GAME WON by " + moveObj.player, { timeOut: 1000000 })
         }
         if (response.data.result == ("ILLEGAL MOVE")) {
           remainingMoves = -100;
-          toastr.error("ILLEGAL MOVE BY: " + moveObj.player,  {timeOut: 1000000});
+          toastr.error("ILLEGAL MOVE BY: " + moveObj.player, { timeOut: 1000000 });
         }
       });
 
@@ -205,6 +205,146 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     turnCount = 1;
     playersTurn = "G";
 
+    // while (remainingMoves >= 0) {
+    //   console.log("IK KOM IN DE WHILE LOOP");
+    //   var genMove = new Object();
+    //   genMove.remainingMoves = remainingMoves;
+    //   genMove.player = playersTurn;
+
+    //   let headers = {
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   };
+
+
+    //   $http.post("/api/alphaBeta", genMove, headers).then((response) => {
+
+    //     console.log(response);
+    //     var fromVar = response.data.From;
+    //     var toVar = response.data.To;
+    //     var initial = document.getElementsByClassName(fromVar);
+    //     var destination = document.getElementsByClassName(toVar);
+    //     //      var destination = [].slice.call(document.getElementsByClassName('testing'));
+
+    //     var moveObj = new Object();
+    //     moveObj.from = initial[0].className.split(' ')[2];
+    //     moveObj.to = destination[0].className.split(' ')[2];
+    //     moveObj.player = initial[0].className.split(' ')[3].toString().charAt(0);
+    //     moveObj.remainingMoves = remainingMoves;
+
+
+    //     let headers = {
+    //       headers: {
+    //         "Content-Type": "application/json"
+    //       }
+    //     };
+
+
+    //     $http.post("/api/move", moveObj, headers).then((response) => {
+    //       //        console.log("response: " + JSON.stringify(response));
+    //       //        console.log("response message " + response.data.result);
+    //       if (response.data.result == ("GAME WON by " + moveObj.player)) {
+    //         remainingMoves = -100;
+    //         toastr.success("GAME WON by " + moveObj.player, { timeOut: 1000000 })
+    //       }
+    //       if (response.data.result == ("ILLEGAL MOVE")) {
+    //         remainingMoves = -100;
+    //         toastr.error("ILLEGAL MOVE BY: " + moveObj.player, { timeOut: 1000000 });
+    //       }
+    //     });
+    //     var piece = initial[0].className.split(' ')[3];
+    //     var test8 = destination[0];
+    //     var checkPos = destination[0].className.split(' ');
+    //     //      console.log('ceck' + checkPos);
+    //     if (checkPos.length == 4) {
+    //       var blkWht = checkPos[3].substring(0, 1);
+    //       //check if position is white or black piece already
+    //       if (blkWht === 'S' || blkWht === 'G') {
+    //         console.log("Hierk om ik");
+    //         //remove the overtaken piece class
+    //         destination[0].classList.remove(checkPos[checkPos.length - 1].substring(0, 2))
+    //         destination = document.getElementsByClassName(toVar);
+    //         //            toastr.success('Wow! Nice move!')
+    //       }
+    //     }
+
+    //     destination[0].classList.add(initial[0].className.split(' ')[3]);
+    //     initial[0].classList.remove(piece);
+    //     var from = {};
+    //     var to = {};
+    //     from["row"] = parseInt(fromVar.substring(1));
+    //     from["col"] = letterToNumber(fromVar.substring(0, 1));
+    //     to["row"] = parseInt(toVar.substring(1));
+    //     to["col"] = letterToNumber(toVar.substring(0, 1));
+    //     console.log("from" + JSON.stringify(from));
+    //     console.log("to" + JSON.stringify(to));
+    //     if ((from["row"] == to["row"] - 1) && (from["col"] == to["col"] - 1)) {
+    //       console.log("capture");
+    //       remainingMoves = remainingMoves - 2;
+    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+    //         moveObj.from + ' to ' + moveObj.to + '       Capture';
+
+    //     } else if ((from["row"] == to["row"] - 1) && (from["col"] == to["col"] + 1)) {
+    //       console.log("capture");
+    //       remainingMoves = remainingMoves - 2;
+    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+    //         moveObj.from + ' to ' + moveObj.to + '       Capture';
+    //     } else if ((from["row"] == to["row"] + 1) && (from["col"] == to["col"] - 1)) {
+    //       console.log("capture");
+    //       remainingMoves = remainingMoves - 2;
+    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+    //         moveObj.from + ' to ' + moveObj.to + '       Capture';
+    //     } else if ((from["row"] == to["row"] + 1) && (from["col"] == to["col"] + 1)) {
+    //       console.log("capture");
+    //       remainingMoves = remainingMoves - 2;
+    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+    //         moveObj.from + ' to ' + moveObj.to + '       Capture';
+    //     } else if (piece == "GFS" && playersTurn == "G") {
+    //       remainingMoves = remainingMoves - 2;
+    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+    //         moveObj.from + ' to ' + moveObj.to + '       Flagship';
+    //       //        console.log(remainingMoves);
+
+    //     } else {
+    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+    //         moveObj.from + ' to ' + moveObj.to;
+
+    //       //        console.log("remaining " + remainingMoves);
+    //       remainingMoves--;
+    //     }
+    //     console.log('hoi' + remainingMoves);
+    //     setTimeout(() => {
+
+    //       //                remainingMoves--;
+    //       if (remainingMoves == 0) {
+    //         turnCount++;
+    //         //          console.log("Swap players");
+    //         if (playersTurn == "G") {
+    //           //            console.log("Silver turn");
+    //           playersTurn = "S";
+    //           $scope.$apply(() => {
+    //             $scope.object = { turn: "S" };
+    //             $scope.object.count = turnCount;
+    //             $scope.object.logs = logs;
+    //           });
+    //           remainingMoves = 2;
+    //         } else {
+    //           //            console.log("Gold turn");
+    //           playersTurn = "G";
+    //           $scope.$apply(() => {
+    //             $scope.object = { turn: "G" };
+    //             $scope.object.count = turnCount;
+    //             $scope.object.logs = logs;
+    //           });
+    //           remainingMoves = 2;
+    //         }
+    //       }
+    //     }, 10);
+
+    //     count++;
+    //   });
+    // };
   }
 
 
@@ -229,6 +369,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
   }
 
   $scope.moveGenerator = async () => {
+
     var genMove = new Object();
     genMove.remainingMoves = remainingMoves;
     genMove.player = playersTurn;
@@ -240,7 +381,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     };
 
 
-    $http.post("/api/generatedMove", genMove, headers).then((response) => {
+    $http.post("/api/alphaBeta", genMove, headers).then((response) => {
 
       console.log(response);
       var fromVar = response.data.From;
@@ -264,15 +405,15 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
 
 
       $http.post("/api/move", moveObj, headers).then((response) => {
-//        console.log("response: " + JSON.stringify(response));
-//        console.log("response message " + response.data.result);
+        //        console.log("response: " + JSON.stringify(response));
+        //        console.log("response message " + response.data.result);
         if (response.data.result == ("GAME WON by " + moveObj.player)) {
           remainingMoves = -100;
-          toastr.success("GAME WON by " + moveObj.player, {timeOut: 1000000})
+          toastr.success("GAME WON by " + moveObj.player, { timeOut: 1000000 })
         }
         if (response.data.result == ("ILLEGAL MOVE")) {
           remainingMoves = -100;
-          toastr.error("ILLEGAL MOVE BY: " + moveObj.player, {timeOut: 1000000});
+          toastr.error("ILLEGAL MOVE BY: " + moveObj.player, { timeOut: 1000000 });
         }
       });
       var piece = initial[0].className.split(' ')[3];
@@ -304,81 +445,38 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       if ((from["row"] == to["row"] - 1) && (from["col"] == to["col"] - 1)) {
         console.log("capture");
         remainingMoves = remainingMoves - 2;
-              logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-                moveObj.from + ' to ' + moveObj.to + '       Capture';
+        logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+          moveObj.from + ' to ' + moveObj.to + '       Capture';
 
       } else if ((from["row"] == to["row"] - 1) && (from["col"] == to["col"] + 1)) {
         console.log("capture");
         remainingMoves = remainingMoves - 2;
-         logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-                        moveObj.from + ' to ' + moveObj.to + '       Capture';
+        logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+          moveObj.from + ' to ' + moveObj.to + '       Capture';
       } else if ((from["row"] == to["row"] + 1) && (from["col"] == to["col"] - 1)) {
         console.log("capture");
         remainingMoves = remainingMoves - 2;
-         logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-                        moveObj.from + ' to ' + moveObj.to + '       Capture';
+        logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+          moveObj.from + ' to ' + moveObj.to + '       Capture';
       } else if ((from["row"] == to["row"] + 1) && (from["col"] == to["col"] + 1)) {
         console.log("capture");
         remainingMoves = remainingMoves - 2;
-         logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-                        moveObj.from + ' to ' + moveObj.to + '       Capture';
+        logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+          moveObj.from + ' to ' + moveObj.to + '       Capture';
       } else if (piece == "GFS" && playersTurn == "G") {
         remainingMoves = remainingMoves - 2;
-         logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-                        moveObj.from + ' to ' + moveObj.to + '       Flagship';
+        logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+          moveObj.from + ' to ' + moveObj.to + '       Flagship';
         //        console.log(remainingMoves);
 
       } else {
-            logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-              moveObj.from + ' to ' + moveObj.to;
+        logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+          moveObj.from + ' to ' + moveObj.to;
 
         //        console.log("remaining " + remainingMoves);
         remainingMoves--;
-        //        console.log("123 Move");
       }
-        count++;
-    });
-  }
-
-  $scope.pause = () => {
-    rememberMoves = remainingMoves;
-    remainingMoves = -1;
-  }
-
-  $scope.startAgain = () => {
-    if(rememberMoves == 0) {
-        remainingMoves = 2;
-    } else {
-        remainingMoves = rememberMoves;
-    };
-    rememberMoves = 0;
-  }
-
-  $scope.download = function() {
-      var file = new Blob([JSON.stringify(logs)], {type: 'application/json'});
-      let currentTime = Date.now();
-
-      if (window.navigator.msSaveOrOpenBlob) // IE10+
-          window.navigator.msSaveOrOpenBlob(file, "logFile-G" + goldSide + "-S"+silverSide + "-" + currentTime +".txt");
-      else { // Others
-          var a = document.createElement("a"),
-                  url = URL.createObjectURL(file);
-          a.href = url;
-          a.download = "logFile-G" + goldSide + "-S"+silverSide + "-" +currentTime +".txt";
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(function() {
-              document.body.removeChild(a);
-              window.URL.revokeObjectURL(url);
-          }, 0);
-      }
-  }
-
-  setInterval(async function () {
-    //    console.log(remainingMoves);
-    //    console.log("playersTurn " + playersTurn);
-    if (((goldSide == "AI" && playersTurn == "G") || (silverSide == "AI" && playersTurn == "S")) && remainingMoves > 0) {
-      await $scope.moveGenerator();
+      console.log('hoi' + remainingMoves);
       setTimeout(() => {
 
         //                remainingMoves--;
@@ -405,11 +503,55 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
             remainingMoves = 2;
           }
         }
-      }, 100);
+      }, 10);
 
+      count++;
+    });
+  }
 
+  $scope.pause = () => {
+    rememberMoves = remainingMoves;
+    remainingMoves = -1;
+  }
+
+  $scope.startAgain = async () => {
+    //    if (rememberMoves == 0) {
+    //      remainingMoves = 2;
+    //    } else {
+    //      remainingMoves = rememberMoves;
+    //    };
+    //    rememberMoves = 0;
+    $scope.moveGenerator()
+  }
+
+  $scope.download = function () {
+    var file = new Blob([JSON.stringify(logs)], { type: 'application/json' });
+    let currentTime = Date.now();
+
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+      window.navigator.msSaveOrOpenBlob(file, "logFile-G" + goldSide + "-S" + silverSide + "-" + currentTime + ".txt");
+    else { // Others
+      var a = document.createElement("a"),
+        url = URL.createObjectURL(file);
+      a.href = url;
+      a.download = "logFile-G" + goldSide + "-S" + silverSide + "-" + currentTime + ".txt";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      }, 0);
     }
-  }, 500);
+  }
+
+//    setInterval(async function () {
+//      console.log(remainingMoves);
+//      console.log("playersTurn " + playersTurn);
+//      if (((goldSide == "AI" && playersTurn == "G") || (silverSide == "AI" && playersTurn == "S")) && remainingMoves > 0) {
+//        await $scope.moveGenerator();
+//
+//      }
+//    }, 10000);
 
 });
 
