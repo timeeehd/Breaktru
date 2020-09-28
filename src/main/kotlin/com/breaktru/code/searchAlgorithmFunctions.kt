@@ -181,10 +181,7 @@ fun alphaBeta(boardInput: Board, depth:Int, alpha: Int, beta:Int, playersTurn: S
                     result = - alphaBeta(boardCopy,depth - 1, -upperbound, -lowerbound, "G", 2)["score"]!![0]
                 }
             }
-            if(result == 10) {
-//                boardCopy.print()
-//                println("TEST")
-            }
+
             if (result > score) {
                 score = result
                 moveFrom = position.key[0]
@@ -237,11 +234,11 @@ fun evaluatePieces(board: Board, playersTurn: String): Int {
         for (row in 0..10) {
             for (col in 0..10){
                 if (board.board[row][col].color == "S") {
-                    value -= 10
+                    value -= 100
                 } else if(board.board[row][col].color == "G" && board.board[row][col].name == "FS") {
-                    value += 80
+                    value += 800
                 } else if(board.board[row][col].color == "G") {
-                    value += 10
+                    value += 100
                 }
             }
         }
@@ -249,11 +246,11 @@ fun evaluatePieces(board: Board, playersTurn: String): Int {
         for (row in 0..10) {
             for (col in 0..10){
                 if (board.board[row][col].color == "S") {
-                    value += 10
+                    value += 100
                 } else if(board.board[row][col].color == "G" && board.board[row][col].name == "FS") {
-                    value -= 80
+                    value -= 800
                 } else if(board.board[row][col].color == "G") {
-                    value -= 10
+                    value -= 100
                 }
             }
         }
@@ -272,8 +269,11 @@ fun evaluatePieces(board: Board, playersTurn: String): Int {
         println("HOI")
     }
 
+    val random = rand(-10,10)
 
-    return value + rand(-10,10)
+//    println(random)
+
+    return value + random
 }
 
 fun calcRemainingMoves(boardInput: Board, from: MutableList<Int>, to:MutableList<Int>, remainingMoves: Int): Int{
@@ -307,49 +307,49 @@ fun main() {
 //    }
 
 
-//    val board = Board();
-//    board.initialize()
-//    board.print();
-//    var abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "G", 2)
-//    println(abResult)
-//    var from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    var to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "G", 2)
-//    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "G", 1)
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "G", 1)
-////    board.print()
-//    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE -10, "S", 2)
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 2)
-//    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "S", 1)
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 1)
-//     abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "G", 2)
-//    println(abResult)
-//     from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//     to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "G", 2)
+    val board = Board();
+    board.initialize()
+    board.print();
+    var abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "G", 2)
+    println(abResult)
+    var from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
+    var to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
+    board.moveFrontEnd(from, to, "G", 2)
+    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "G", 1)
+    println(abResult)
+    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
+    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
+    board.moveFrontEnd(from, to, "G", 1)
 //    board.print()
-//    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "S", 2)
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 2)
-//    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "S", 1)
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 1)
-////    board.print()
-//    abResult = alphaBeta(board, 2, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "G", 2)
-//    println(abResult)
+    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE -10, "S", 2)
+    println(abResult)
+    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
+    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
+    board.moveFrontEnd(from, to, "S", 2)
+    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "S", 1)
+    println(abResult)
+    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
+    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
+    board.moveFrontEnd(from, to, "S", 1)
+     abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "G", 2)
+    println(abResult)
+     from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
+     to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
+    board.moveFrontEnd(from, to, "G", 2)
+    board.print()
+    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "S", 2)
+    println(abResult)
+    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
+    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
+    board.moveFrontEnd(from, to, "S", 2)
+    abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "S", 1)
+    println(abResult)
+    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
+    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
+    board.moveFrontEnd(from, to, "S", 1)
+//    board.print()
+    abResult = alphaBeta(board, 2, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, "G", 2)
+    println(abResult)
 
 
 }
