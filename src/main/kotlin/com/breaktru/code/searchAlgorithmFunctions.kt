@@ -332,7 +332,7 @@ fun evaluate(board: Board, playersTurn: String): Int {
     val (silverPos, goldPos) = evaluatePositionBoard(board, playersTurn)
     val posGFS = evaluatePositionToGFS(board, playersTurn)
 //    board.print()
-    if (playersTurn=="G") return 21 * pieces + 10 * goldPos + 1 * posGFS + rand(-10, 10)
+    if (playersTurn=="G") return (21 * pieces + 10 * goldPos + 1 * posGFS + rand(-10, 10))
     if (playersTurn=="S") return (21 * pieces + 10 * silverPos + 1 * posGFS + rand(-10, 10))
     return 0
 }
@@ -523,18 +523,18 @@ fun evaluatePositionToGFS(board: Board, playersTurn: String): Int {
                     if (board.board[row][col + 1].color == "G") {
                         goldEval += -20
                     }
-//                    if (board.board[row - 1][col - 1].color == "G") {
-//                        goldEval += 50
-//                    }
-//                    if (board.board[row + 1][col + 1].color == "G") {
-//                        goldEval += 50
-//                    }
-//                    if (board.board[row - 1][col + 1].color == "G") {
-//                        goldEval += 50
-//                    }
-//                    if (board.board[row + 1][col - 1].color == "G") {
-//                        goldEval += 50
-//                    }
+                    if (board.board[row - 1][col - 1].color == "G") {
+                        goldEval += 20
+                    }
+                    if (board.board[row + 1][col + 1].color == "G") {
+                        goldEval += 20
+                    }
+                    if (board.board[row - 1][col + 1].color == "G") {
+                        goldEval += 20
+                    }
+                    if (board.board[row + 1][col - 1].color == "G") {
+                        goldEval += 20
+                    }
                 }
             }
         }
