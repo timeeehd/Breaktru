@@ -95,32 +95,36 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       //reset ng-class values
       this.initialIdx = false;
       this.destinationIdx = false;
-
       var from = new Object();
       from.col = letterToNumber(initial[0].className.split(' ')[2].toString().charAt(0));
       from.row = parseInt(initial[0].className.split(' ')[2].toString().substring(1));
       var to = new Object();
       to.col = letterToNumber(destination[0].className.split(' ')[2].toString().charAt(0));
       to.row = parseInt(destination[0].className.split(' ')[2].toString().substring(1));
-      logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-        moveObj.from + ' to ' + moveObj.to;
-      count++;
-      console.log(logs);
-      $scope.object.logs = logs;
-      console.log($scope.object.logs);
+
       if (((from.row == to.row - 1) && (from.col == to.col - 1)) ||
         ((from.row == to.row - 1) && (from.col == to.col + 1)) ||
         ((from.row == to.row + 1) && (from.col == to.col - 1)) ||
         ((from.row == to.row + 1) && (from.col == to.col + 1))) {
-        console.log("capture");
+        console.log("capture test");
+        logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+                moveObj.from + ' to ' + moveObj.to + ' Capture';
         remainingMoves = remainingMoves - 2;
       } else if (piece == "GFS" && playersTurn == "G") {
         remainingMoves = remainingMoves - 2;
+        logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+                moveObj.from + ' to ' + moveObj.to + ' FlagShip';
         console.log(remainingMoves);
 
       } else {
+      logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+              moveObj.from + ' to ' + moveObj.to;
         remainingMoves--;
       }
+            console.log(logs);
+            $scope.object.logs = logs;
+            console.log($scope.object.logs);
+
       console.log(remainingMoves);
       if (remainingMoves == 0) {
         turnCount++;
@@ -140,6 +144,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
           remainingMoves = 2;
         }
       }
+      count++;
     }
   }
 

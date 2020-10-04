@@ -2,6 +2,7 @@ package com.breaktru.app
 
 import com.breaktru.code.Board
 import com.breaktru.code.alphaBeta
+import com.breaktru.code.alphaBeta2
 import com.breaktru.code.moveGenerator
 import com.breaktru.code.numberToLetter
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -60,7 +61,22 @@ class MainController {
 
     @PostMapping("alphaBeta", produces = [APPLICATION_JSON_VALUE])
     fun alphaBetaCall(@RequestBody payload: MoveGen): Map<String, String> {
-        val abResult = alphaBeta(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
+        var abResult = mutableMapOf("hi" to mutableListOf(1,1))
+//        if(payload.player == "G") {
+        var start = System.currentTimeMillis()
+        var depth = 1
+        var timeSpent = 0L
+        while (timeSpent + 7500 < 10000) {
+            abResult = alphaBeta2(board, depth, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
+            depth++
+            timeSpent = System.currentTimeMillis() - start
+            println("Depth: $depth")
+            println("Timespent: $timeSpent")
+        }
+        println(depth)
+//        } else if(payload.player == "S") {
+//            abResult = alphaBeta2(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
+//        }
 //        val generatedMoves = moveGenerator(board, payload.player, payload.remainingMoves)
         println(abResult)
         println(abResult["from"]!![0])
