@@ -310,19 +310,19 @@ fun evaluate(board: Board, playersTurn: String): Int {
 //    println("TEST")
     val (silverWin, goldWin) = terminalNode(board)
     if(silverWin && playersTurn == "S"){
-        println("Silver Win")
+//        println("Silver Win")
         return 100000
     }
     if(silverWin && playersTurn == "G"){
-        println("Silver Win")
+//        println("Silver Win")
         return -100000
     }
     if(goldWin && playersTurn == "G"){
-        println("Gold Win")
+//        println("Gold Win")
         return 100000
     }
     if(goldWin && playersTurn == "S"){
-        println("Gold Win")
+//        println("Gold Win")
         return -100000
     }
 
@@ -332,7 +332,7 @@ fun evaluate(board: Board, playersTurn: String): Int {
     val (silverPos, goldPos) = evaluatePositionBoard(board, playersTurn)
     val posGFS = evaluatePositionToGFS(board, playersTurn)
 //    board.print()
-    if (playersTurn=="G") return (21 * pieces + 10 * goldPos + 1 * posGFS + rand(-10, 10))
+    if (playersTurn=="G") return (11 * pieces + 2 * goldPos + 1 * posGFS + rand(-10, 10))
     if (playersTurn=="S") return (21 * pieces + 10 * silverPos + 1 * posGFS + rand(-10, 10))
     return 0
 }
@@ -367,9 +367,9 @@ fun evaluatePieces(board: Board, playersTurn: String): Int {
 
     val (silverWin, goldWin) = terminalNode(board)
     if (silverWin) {
-        value += 10000
+        value += 100000
     } else if (goldWin) {
-        value -= -10000
+        value -= -100000
     }
 //    if (playersTurn == "G") {
 //        value = -value

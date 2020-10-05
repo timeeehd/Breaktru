@@ -66,7 +66,7 @@ class MainController {
         var start = System.currentTimeMillis()
         var depth = 1
         var timeSpent = 0L
-        while (timeSpent + 7500 < 10000) {
+        while (timeSpent + 8500 < 10000) {
             abResult = alphaBeta2(board, depth, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
             depth++
             timeSpent = System.currentTimeMillis() - start

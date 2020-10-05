@@ -519,6 +519,19 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     remainingMoves = -1;
   }
 
+  $scope.pass = () => {
+          remainingMoves = 2;
+                  logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' move: PASS ';
+                  turnCount = turnCount + 1;
+//          $scope.$apply(() => {
+                        $scope.object = { turn: "S" };
+                        $scope.object.count = turnCount;
+                        $scope.object.logs = logs;
+//                      });
+          playersTurn = "S";
+          count++;
+    }
+
   $scope.startAgain = async () => {
     //    if (rememberMoves == 0) {
     //      remainingMoves = 2;

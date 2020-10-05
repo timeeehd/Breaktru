@@ -38,11 +38,11 @@ fun getZobristHash(board: Board, escortTable: Array<Array<Array<Long>>>, fsTable
     return zobristHash
 }
 
-fun main() {
-    val (escortTable, fSTable) = buildZobristTable()
-
-    val board = Board()
-    board.initialize()
-    val zobristHash = getZobristHash(board,escortTable,fSTable)
-    println(zobristHash)
-}
+//fun main() {
+//    val (escortTable, fSTable) = buildZobristTable()
+//
+//    val board = Board()
+//    board.initialize()
+//    val zobristHash = getZobristHash(board,escortTable,fSTable)
+//    println(zobristHash)
+//}
