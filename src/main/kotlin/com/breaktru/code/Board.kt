@@ -102,7 +102,13 @@ class Board {
             }
             for (column in 0..20) {
                 if (column % 2 == 0) {
-                    print("${board[row][column / 2].color}${board[row][column / 2].name}")
+                    if(board[row][column / 2].name == "  "){
+                        print("        ")
+                    } else if((board[row][column / 2].name == "E")) {
+                        print("${board[row][column / 2].color}${board[row][column / 2].name}   ")
+                    } else {
+                        print("${board[row][column / 2].color}${board[row][column / 2].name}")
+                    }
                 } else {
                     print(" | ")
                 }
@@ -162,7 +168,7 @@ class Board {
         return stringReturn
     }
 
-    fun moveBackEnd(from: MutableList<Int>, to:MutableList<Int>, remainingMoves: Int) {
+    fun moveBackEnd(from: MutableList<Int>, to: MutableList<Int>, remainingMoves: Int) {
         val fromRow = from[0]
         val fromCol = from[1]
         val toRow = to[0]
@@ -172,7 +178,6 @@ class Board {
         board[toRow][toCol] = board[fromRow][fromCol]
         board[fromRow][fromCol] = Ship()
     }
-
 
 
     private fun letterToNumber(letter: Char): Int {

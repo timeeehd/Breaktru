@@ -14,10 +14,6 @@ class MainController {
 
     val board = Board()
 
-
-    @GetMapping("test", produces = [APPLICATION_JSON_VALUE])
-    fun test() = "test"
-
     @GetMapping("init", produces = [APPLICATION_JSON_VALUE])
     fun init(): Array<String> {
         board.initialize()
@@ -61,17 +57,22 @@ class MainController {
 
     @PostMapping("alphaBeta", produces = [APPLICATION_JSON_VALUE])
     fun alphaBetaCall(@RequestBody payload: MoveGen): Map<String, String> {
-        var abResult = mutableMapOf("hi" to mutableListOf(1,1))
+        println("HOI")
+        var abResult = mutableMapOf("hi" to mutableListOf(1, 1))
+        var bestBoard = Board()
 //        if(payload.player == "G") {
         var start = System.currentTimeMillis()
         var depth = 1
         var timeSpent = 0L
         while (timeSpent + 8500 < 10000) {
-            abResult = alphaBeta2(board, depth, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
-            depth++
+            var returnedValue = alphaBeta2(board, depth, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
+            abResult = returnedValue.first
+            bestBoard = returnedValue.second
+            bestBoard.print()
             timeSpent = System.currentTimeMillis() - start
             println("Depth: $depth")
             println("Timespent: $timeSpent")
+            depth++
         }
         println(depth)
 //        } else if(payload.player == "S") {

@@ -79,9 +79,8 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       console.log("blkWht " + blkWht);
       //check if position is white or black piece already
       if (blkWht === 'S' || blkWht === 'G') {
-
         //remove the overtaken piece class
-        destination.removeClass(checkPos[checkPos.length - 2].substring(0, 2));
+        destination.removeClass(checkPos[checkPos.length - 2].substring(0, checkPos[checkPos.length - 2].length));
         //            toastr.success('Wow! Nice move!')
       }
 
@@ -108,22 +107,22 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         ((from.row == to.row + 1) && (from.col == to.col + 1))) {
         console.log("capture test");
         logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-                moveObj.from + ' to ' + moveObj.to + ' Capture';
+          moveObj.from + ' to ' + moveObj.to + ' Capture';
         remainingMoves = remainingMoves - 2;
       } else if (piece == "GFS" && playersTurn == "G") {
         remainingMoves = remainingMoves - 2;
         logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-                moveObj.from + ' to ' + moveObj.to + ' FlagShip';
+          moveObj.from + ' to ' + moveObj.to + ' FlagShip';
         console.log(remainingMoves);
 
       } else {
-      logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-              moveObj.from + ' to ' + moveObj.to;
+        logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
+          moveObj.from + ' to ' + moveObj.to;
         remainingMoves--;
       }
-            console.log(logs);
-            $scope.object.logs = logs;
-            console.log($scope.object.logs);
+      console.log(logs);
+      $scope.object.logs = logs;
+      console.log($scope.object.logs);
 
       console.log(remainingMoves);
       if (remainingMoves == 0) {
@@ -431,7 +430,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         if (blkWht === 'S' || blkWht === 'G') {
           console.log("Hierk om ik");
           //remove the overtaken piece class
-          destination[0].classList.remove(checkPos[checkPos.length - 1].substring(0, 2))
+          destination[0].classList.remove(checkPos[checkPos.length - 1].substring(0, checkPos[checkPos.length - 1].length))
           destination = document.getElementsByClassName(toVar);
           //            toastr.success('Wow! Nice move!')
         }
@@ -520,17 +519,17 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
   }
 
   $scope.pass = () => {
-          remainingMoves = 2;
-                  logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' move: PASS ';
-                  turnCount = turnCount + 1;
-//          $scope.$apply(() => {
-                        $scope.object = { turn: "S" };
-                        $scope.object.count = turnCount;
-                        $scope.object.logs = logs;
-//                      });
-          playersTurn = "S";
-          count++;
-    }
+    remainingMoves = 2;
+    logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' move: PASS ';
+    turnCount = turnCount + 1;
+    //          $scope.$apply(() => {
+    $scope.object = { turn: "S" };
+    $scope.object.count = turnCount;
+    $scope.object.logs = logs;
+    //                      });
+    playersTurn = "S";
+    count++;
+  }
 
   $scope.startAgain = async () => {
     //    if (rememberMoves == 0) {
@@ -562,14 +561,14 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     }
   }
 
-//    setInterval(async function () {
-//      console.log(remainingMoves);
-//      console.log("playersTurn " + playersTurn);
-//      if (((goldSide == "AI" && playersTurn == "G") || (silverSide == "AI" && playersTurn == "S")) && remainingMoves > 0) {
-//        await $scope.moveGenerator();
-//
-//      }
-//    }, 10000);
+  //    setInterval(async function () {
+  //      console.log(remainingMoves);
+  //      console.log("playersTurn " + playersTurn);
+  //      if (((goldSide == "AI" && playersTurn == "G") || (silverSide == "AI" && playersTurn == "S")) && remainingMoves > 0) {
+  //        await $scope.moveGenerator();
+  //
+  //      }
+  //    }, 10000);
 
 });
 

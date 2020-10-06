@@ -6,13 +6,13 @@ open class Ship(open val name: String = "  ", open val color: String = " ", open
     //val captured = false
 }
 
-class FlagShip(override val color: String): Ship() {
+class FlagShip(override val color: String) : Ship() {
     override val name = "FS"
     override val type = "FlagShip"
 }
 
-class Escort(override val color: String): Ship(){
-    override val name = "E "
+class Escort(override val color: String) : Ship() {
+    override val name = "E"
     override val type = "Escort"
 }
 
