@@ -321,7 +321,7 @@ fun moveGenerator2(board: Board, color: String, remainingMoves: Int): Map<String
                 }
             }
             if (captureMoveOnePosition.isNotEmpty()) {
-                captureMoves[currentPostion] = possibleMovesOnePosition
+                captureMoves[currentPostion] = captureMoveOnePosition
             }
 
         }
@@ -465,13 +465,13 @@ fun alphaBeta2(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     return Pair(mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo), bestBoard)
 }
 
-fun alphaBeta3(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int): MutableMap<String, MutableList<Int>> {
+fun alphaBeta3(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int): Pair<MutableMap<String, MutableList<Int>>, Board> {
 
     var boardCopy = boardCopy(boardInput)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
 //        println("TEST")
-        return mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn)))
+        return Pair(mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn))), boardCopy)
     }
 
     var score = Int.MIN_VALUE
@@ -481,26 +481,40 @@ fun alphaBeta3(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     var moveTo = mutableListOf(0, 0)
 
     var remainingMovesAB = 0
+    var bestBoard = boardCopy(boardInput)
 
     val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
 
     for (option in possibleMoves) {
-            println(option.key[0])
+//            println(option.key[0])
 //            println(possibleMoves[position.key])
         for (position in possibleMoves[option.key]!!) {
             for (move in possibleMoves[option.key]!![position.key]!!) {
                 var result = Int.MIN_VALUE
+                var returnedBoard = Board()
                 remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
                 boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
 //            boardCopy.print()
                 if (remainingMovesAB == 1) {
 //                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
-                    result = alphaBeta3(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"]!![0]
+                    var test = alphaBeta3(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)
+                    var bestMove = test.first
+                    returnedBoard = test.second
+                    result = bestMove["score"]!![0]
+//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 } else if (remainingMovesAB == 0) {
                     if (playersTurn == "G") {
-                        result = -alphaBeta3(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2)["score"]!![0]
+                        var test = alphaBeta3(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2)
+                        var bestMove = test.first
+                        returnedBoard = test.second
+                        result = -bestMove["score"]!![0]
+//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     } else if (playersTurn == "S") {
-                        result = -alphaBeta3(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2)["score"]!![0]
+                        var test = alphaBeta3(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2)
+                        var bestMove = test.first
+                        returnedBoard = test.second
+                        result = -bestMove["score"]!![0]
+//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     }
                 }
 
@@ -508,16 +522,22 @@ fun alphaBeta3(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
                     score = result
                     moveFrom = position.key[0]
                     moveTo = move
+                    bestBoard = boardCopy(returnedBoard)
+//                bestBoard.print()
+//                println("MoveFrom = $moveFrom")
+//                println("moveTo = $moveTo")
                 }
                 if (score > lowerbound) lowerbound = score
 //            boardInput.print()
                 boardCopy = boardCopy(boardInput)
 //            boardInput.print()
-                if (score >= upperbound) break
+                if (score >= upperbound) {
+                    break
+                }
             }
         }
     }
-    return mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo)
+    return Pair(mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo), bestBoard)
 }
 
 fun boardCopy(board: Board): Board {
@@ -585,7 +605,7 @@ fun evaluate(board: Board, playersTurn: String): Int {
 //        println("HOI")
 //    }
     if (playersTurn == "G") sendBack = (11 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS)
-    if (playersTurn == "S") sendBack = (11 * pieces + 2 * (silverPos - goldPos) + 2 * posGFS)
+    if (playersTurn == "S") sendBack = (21 * pieces + 2 * (silverPos - goldPos) + 2 * posGFS)
 //    if (sendBack < 0) return rand(sendBack/20, -sendBack/20)
     return sendBack
 }

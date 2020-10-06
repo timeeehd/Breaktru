@@ -2,7 +2,7 @@ package com.breaktru.app
 
 import com.breaktru.code.Board
 import com.breaktru.code.alphaBeta
-import com.breaktru.code.alphaBeta2
+import com.breaktru.code.*
 import com.breaktru.code.moveGenerator
 import com.breaktru.code.numberToLetter
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
@@ -65,7 +65,7 @@ class MainController {
         var depth = 1
         var timeSpent = 0L
         while (timeSpent + 8500 < 10000) {
-            var returnedValue = alphaBeta2(board, depth, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
+            var returnedValue = alphaBeta3(board, depth, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
             abResult = returnedValue.first
             bestBoard = returnedValue.second
             bestBoard.print()
