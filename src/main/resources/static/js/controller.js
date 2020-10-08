@@ -18,6 +18,8 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
   $scope.object = { logs: {} };
   let rememberMoves = null;
 
+  let prevMoves = [];
+
   var pos = [];
 
   //Toggle of selected / destination markers on board
@@ -40,7 +42,10 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
 
       // Piece class e.g. 'WP'
       var piece = initial[0].className.split(' ')[3];
-      //      console.log("piece " + piece);
+      var position = initial[0].className.split(' ')[2];
+      console.log("postion " + position);
+      var positionTo = destination[0].className.split(' ')[2];
+      console.log("postion " + positionTo);
 
       var checkPos = destination[0].className.split(' ');
       //      console.log("check " + checkPos);
@@ -77,13 +82,31 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       //TODO: BLKWHT doesn't work!!!
       var blkWht = checkPos[3].substring(0, 1);
       console.log("blkWht " + blkWht);
+      console.log(initial);
+      if (prevMoves.length == 2) {
+        prevMoves.shift();
+      }
       //check if position is white or black piece already
       if (blkWht === 'S' || blkWht === 'G') {
         //remove the overtaken piece class
+        var pieceTo = checkPos[checkPos.length - 2].substring(0, checkPos[checkPos.length - 2].length);
+        prevMoves.push({
+          "piece": piece,
+          "position": position,
+          "pieceTo": pieceTo,
+          "postitionTo": positionTo
+        });
+
         destination.removeClass(checkPos[checkPos.length - 2].substring(0, checkPos[checkPos.length - 2].length));
         //            toastr.success('Wow! Nice move!')
+      } else {
+        prevMoves.push({
+          "piece": piece,
+          "position": position,
+          "postitionTo": positionTo
+        });
       }
-
+      console.log(JSON.stringify(prevMoves[0]));
       //Add class to overtaken position
       destination.addClass(initial[0].className.split(' ')[3]);
 
@@ -118,6 +141,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       } else {
         logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
           moveObj.from + ' to ' + moveObj.to;
+        rememberMoves = remainingMoves;
         remainingMoves--;
       }
       console.log(logs);
@@ -145,6 +169,88 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       }
       count++;
     }
+  }
+
+  $scope.undo = () => {
+    let headers = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+
+
+    $http.post("/api/undo", headers).then((response) => {});
+
+    var lastMove = prevMoves[prevMoves.length - 1];
+    var size = Object.keys(lastMove).length;
+    console.log(remainingMoves);
+    console.log(rememberMoves);
+    if (size == 3) {
+      var oldPos = document.getElementsByClassName(lastMove["position"]);
+      console.log(oldPos);
+      oldPos[0].classList.add(lastMove["piece"]);
+      var newPost = document.getElementsByClassName(lastMove["postitionTo"]);
+      console.log(newPost);
+      newPost[0].classList.remove(lastMove["piece"]);
+      logs[count] = 'Undo ' + '| ' + ' moves ' +
+        lastMove["position"] + ' to ' + lastMove["postitionTo"];
+      if (lastMove["piece"] == "GFS") {
+        playersTurn = "S";
+        $scope.object = { turn: "S" };
+        $scope.object.count = turnCount;
+        $scope.object.logs = logs;
+        console.log($scope.object.logs);
+        remainingMoves = 2;
+      } else if (playersTurn == "G") {
+        if (rememberMoves == 1) {
+          playersTurn = "S";
+          $scope.object = { turn: "S" };
+        }
+        $scope.object.count = turnCount;
+        $scope.object.logs = logs;
+        console.log($scope.object.logs);
+        remainingMoves = rememberMoves;
+      } else {
+        if (rememberMoves == 1) {
+          playersTurn = "G";
+          $scope.object = { turn: "G" };
+        }
+        $scope.object.count = turnCount;
+        $scope.object.logs = logs;
+        console.log($scope.object.logs);
+        remainingMoves = rememberMoves;
+      }
+    } else {
+      var oldPos = document.getElementsByClassName(lastMove["position"]);
+      console.log(oldPos);
+      oldPos[0].classList.add(lastMove["piece"]);
+      var newPost = document.getElementsByClassName(lastMove["postitionTo"]);
+      console.log(newPost);
+      newPost[0].classList.remove(lastMove["piece"]);
+      newPost[0].classList.add(lastMove["pieceTo"]);
+      logs[count] = 'Undo ' + '| ' + ' moves ' +
+        lastMove["position"] + ' to ' + lastMove["postitionTo"] + " Capture";
+      if (playersTurn == "G") {
+        playersTurn = "S";
+        $scope.object = { turn: "S" };
+        $scope.object.count = turnCount;
+        $scope.object.logs = logs;
+        console.log($scope.object.logs);
+        remainingMoves = 2;
+      } else {
+        playersTurn = "G";
+        $scope.object = { turn: "G" };
+        $scope.object.count = turnCount;
+        $scope.object.logs = logs;
+        console.log($scope.object.logs);
+        remainingMoves = 2;
+      }
+    };
+    if (prevMoves.length != 0) {
+      prevMoves.pop();
+    }
+    count++;
+    console.log(remainingMoves);
   }
 
   $scope.init = function () {
@@ -208,147 +314,6 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     $scope.object.count = 1;
     turnCount = 1;
     playersTurn = "G";
-
-    // while (remainingMoves >= 0) {
-    //   console.log("IK KOM IN DE WHILE LOOP");
-    //   var genMove = new Object();
-    //   genMove.remainingMoves = remainingMoves;
-    //   genMove.player = playersTurn;
-
-    //   let headers = {
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   };
-
-
-    //   $http.post("/api/alphaBeta", genMove, headers).then((response) => {
-
-    //     console.log(response);
-    //     var fromVar = response.data.From;
-    //     var toVar = response.data.To;
-    //     var initial = document.getElementsByClassName(fromVar);
-    //     var destination = document.getElementsByClassName(toVar);
-    //     //      var destination = [].slice.call(document.getElementsByClassName('testing'));
-
-    //     var moveObj = new Object();
-    //     moveObj.from = initial[0].className.split(' ')[2];
-    //     moveObj.to = destination[0].className.split(' ')[2];
-    //     moveObj.player = initial[0].className.split(' ')[3].toString().charAt(0);
-    //     moveObj.remainingMoves = remainingMoves;
-
-
-    //     let headers = {
-    //       headers: {
-    //         "Content-Type": "application/json"
-    //       }
-    //     };
-
-
-    //     $http.post("/api/move", moveObj, headers).then((response) => {
-    //       //        console.log("response: " + JSON.stringify(response));
-    //       //        console.log("response message " + response.data.result);
-    //       if (response.data.result == ("GAME WON by " + moveObj.player)) {
-    //         remainingMoves = -100;
-    //         toastr.success("GAME WON by " + moveObj.player, { timeOut: 1000000 })
-    //       }
-    //       if (response.data.result == ("ILLEGAL MOVE")) {
-    //         remainingMoves = -100;
-    //         toastr.error("ILLEGAL MOVE BY: " + moveObj.player, { timeOut: 1000000 });
-    //       }
-    //     });
-    //     var piece = initial[0].className.split(' ')[3];
-    //     var test8 = destination[0];
-    //     var checkPos = destination[0].className.split(' ');
-    //     //      console.log('ceck' + checkPos);
-    //     if (checkPos.length == 4) {
-    //       var blkWht = checkPos[3].substring(0, 1);
-    //       //check if position is white or black piece already
-    //       if (blkWht === 'S' || blkWht === 'G') {
-    //         console.log("Hierk om ik");
-    //         //remove the overtaken piece class
-    //         destination[0].classList.remove(checkPos[checkPos.length - 1].substring(0, 2))
-    //         destination = document.getElementsByClassName(toVar);
-    //         //            toastr.success('Wow! Nice move!')
-    //       }
-    //     }
-
-    //     destination[0].classList.add(initial[0].className.split(' ')[3]);
-    //     initial[0].classList.remove(piece);
-    //     var from = {};
-    //     var to = {};
-    //     from["row"] = parseInt(fromVar.substring(1));
-    //     from["col"] = letterToNumber(fromVar.substring(0, 1));
-    //     to["row"] = parseInt(toVar.substring(1));
-    //     to["col"] = letterToNumber(toVar.substring(0, 1));
-    //     console.log("from" + JSON.stringify(from));
-    //     console.log("to" + JSON.stringify(to));
-    //     if ((from["row"] == to["row"] - 1) && (from["col"] == to["col"] - 1)) {
-    //       console.log("capture");
-    //       remainingMoves = remainingMoves - 2;
-    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-    //         moveObj.from + ' to ' + moveObj.to + '       Capture';
-
-    //     } else if ((from["row"] == to["row"] - 1) && (from["col"] == to["col"] + 1)) {
-    //       console.log("capture");
-    //       remainingMoves = remainingMoves - 2;
-    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-    //         moveObj.from + ' to ' + moveObj.to + '       Capture';
-    //     } else if ((from["row"] == to["row"] + 1) && (from["col"] == to["col"] - 1)) {
-    //       console.log("capture");
-    //       remainingMoves = remainingMoves - 2;
-    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-    //         moveObj.from + ' to ' + moveObj.to + '       Capture';
-    //     } else if ((from["row"] == to["row"] + 1) && (from["col"] == to["col"] + 1)) {
-    //       console.log("capture");
-    //       remainingMoves = remainingMoves - 2;
-    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-    //         moveObj.from + ' to ' + moveObj.to + '       Capture';
-    //     } else if (piece == "GFS" && playersTurn == "G") {
-    //       remainingMoves = remainingMoves - 2;
-    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-    //         moveObj.from + ' to ' + moveObj.to + '       Flagship';
-    //       //        console.log(remainingMoves);
-
-    //     } else {
-    //       logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
-    //         moveObj.from + ' to ' + moveObj.to;
-
-    //       //        console.log("remaining " + remainingMoves);
-    //       remainingMoves--;
-    //     }
-    //     console.log('hoi' + remainingMoves);
-    //     setTimeout(() => {
-
-    //       //                remainingMoves--;
-    //       if (remainingMoves == 0) {
-    //         turnCount++;
-    //         //          console.log("Swap players");
-    //         if (playersTurn == "G") {
-    //           //            console.log("Silver turn");
-    //           playersTurn = "S";
-    //           $scope.$apply(() => {
-    //             $scope.object = { turn: "S" };
-    //             $scope.object.count = turnCount;
-    //             $scope.object.logs = logs;
-    //           });
-    //           remainingMoves = 2;
-    //         } else {
-    //           //            console.log("Gold turn");
-    //           playersTurn = "G";
-    //           $scope.$apply(() => {
-    //             $scope.object = { turn: "G" };
-    //             $scope.object.count = turnCount;
-    //             $scope.object.logs = logs;
-    //           });
-    //           remainingMoves = 2;
-    //         }
-    //       }
-    //     }, 10);
-
-    //     count++;
-    //   });
-    // };
   }
 
 
@@ -423,17 +388,35 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       var piece = initial[0].className.split(' ')[3];
       var test8 = destination[0];
       var checkPos = destination[0].className.split(' ');
+      var position = initial[0].className.split(' ')[2];
+      console.log("postion " + position);
+      var positionTo = destination[0].className.split(' ')[2];
       //      console.log('ceck' + checkPos);
+      if (prevMoves.length == 2) {
+        prevMoves.shift();
+      }
       if (checkPos.length == 4) {
         var blkWht = checkPos[3].substring(0, 1);
         //check if position is white or black piece already
         if (blkWht === 'S' || blkWht === 'G') {
           console.log("Hierk om ik");
           //remove the overtaken piece class
+          prevMoves.push({
+            "piece": piece,
+            "position": position,
+            "pieceTo": pieceTo,
+            "postitionTo": positionTo
+          });
           destination[0].classList.remove(checkPos[checkPos.length - 1].substring(0, checkPos[checkPos.length - 1].length))
           destination = document.getElementsByClassName(toVar);
           //            toastr.success('Wow! Nice move!')
         }
+      } else {
+        prevMoves.push({
+          "piece": piece,
+          "position": position,
+          "postitionTo": positionTo
+        });
       }
 
       destination[0].classList.add(initial[0].className.split(' ')[3]);
@@ -474,6 +457,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         //        console.log(remainingMoves);
 
       } else {
+        rememberMoves = remainingMoves;
         logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' moves ' +
           moveObj.from + ' to ' + moveObj.to;
 

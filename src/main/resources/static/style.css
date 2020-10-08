@@ -179,6 +179,10 @@ $accent2: rgba(24,157,134, .6);
     color: #71606E;
 }
 
+.black {
+    color: black;
+}
+
 .A1 {
     background-color: #fff;
 }
@@ -673,6 +677,24 @@ $accent2: rgba(24,157,134, .6);
    ----------------------------- */
 .cst-btn {
     width: 15%;
+    padding: 1em;
+    text-align: center;
+    text-decoration: none;
+    border: transparent;
+    border-radius: .2rem;
+    color: white;
+    background: #1E2E37;
+    display: table-cell;
+    vertical-align: middle;
+    @include mshadow(3);
+    @include prefix(transition, 0.3s ease);
+    &:hover {
+        @include mshadow(2);
+    }
+}
+
+.cst-btn2 {
+    width: 100px;
     padding: 1em;
     text-align: center;
     text-decoration: none;

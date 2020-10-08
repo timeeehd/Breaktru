@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/")
 class MainController {
 
-    val board = Board()
+    var board = Board()
+
+    var prevMove = Board()
+    var twoMovesAgo = Board()
 
     @GetMapping("init", produces = [APPLICATION_JSON_VALUE])
     fun init(): Array<String> {
@@ -31,8 +34,20 @@ class MainController {
     fun move(@RequestBody payload: Move): Map<String, Array<String>> {
 //        println("from: ${payload.from}")
 //        println(payload.to)
+        twoMovesAgo = boardCopy(prevMove)
+        prevMove = boardCopy(board)
         val result = arrayOf(board.moveFrontEnd(payload.from, payload.to, payload.player, payload.remainingMoves))
         return mapOf("board" to board.boardString(), "result" to result)
+    }
+
+    @PostMapping("undo", consumes = [APPLICATION_JSON_VALUE], produces = [APPLICATION_JSON_VALUE])
+    fun undo(): Map<String, Array<String>> {
+//        println("from: ${payload.from}")
+//        println(payload.to)
+        board = boardCopy(prevMove)
+        prevMove = boardCopy(twoMovesAgo)
+        twoMovesAgo = Board()
+        return mapOf("board" to board.boardString())
     }
 
     @PostMapping("generatedMove", produces = [APPLICATION_JSON_VALUE])
@@ -64,7 +79,7 @@ class MainController {
         var start = System.currentTimeMillis()
         var depth = 1
         var timeSpent = 0L
-        while (timeSpent + 8500 < 10000) {
+        while (timeSpent + 8000 < 10000) {
             var returnedValue = alphaBeta3(board, depth, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
             abResult = returnedValue.first
             bestBoard = returnedValue.second

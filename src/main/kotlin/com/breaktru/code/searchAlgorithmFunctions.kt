@@ -604,8 +604,8 @@ fun evaluate(board: Board, playersTurn: String): Int {
 //    if(board.board[3][3].color == "S" && board.board[3][7].color == "S"){
 //        println("HOI")
 //    }
-    if (playersTurn == "G") sendBack = (11 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS)
-    if (playersTurn == "S") sendBack = (21 * pieces + 2 * (silverPos - goldPos) + 2 * posGFS)
+    if (playersTurn == "G") sendBack = (21 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS)
+    if (playersTurn == "S") sendBack = (21 * pieces + 2 * (silverPos - goldPos) + 1 * posGFS)
 //    if (sendBack < 0) return rand(sendBack/20, -sendBack/20)
     return sendBack
 }
@@ -851,8 +851,8 @@ fun rand(start: Int, end: Int): Int {
 //    val board = Board();
 //    board.initialize()
 //    board.print();
-////    board.moveFrontEnd("E8", "E9", "G", 2)
-////    board.moveFrontEnd("G8", "G9", "G", 1)
+//    board.moveFrontEnd("E8", "E9", "G", 2)
+//    board.moveFrontEnd("G8", "G9", "G", 1)
 //
 ////    var abResult = alphaBeta2(board, 3, -10000, 10000, "G", 2).first
 ////    println(abResult)
@@ -865,7 +865,7 @@ fun rand(start: Int, end: Int): Int {
 ////    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
 ////    board.moveFrontEnd(from, to, "G", 1)
 ////    board.print()
-//    var abResult = alphaBeta2(board, 3, -10000, 10000, "S", 2).first
+//    var abResult = alphaBeta3(board, 3, -10000, 10000, "S", 2).first
 //    println(abResult)
 //    var from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
 //    var to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
