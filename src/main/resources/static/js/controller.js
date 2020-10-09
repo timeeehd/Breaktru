@@ -17,6 +17,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
   let logs = {};
   $scope.object = { logs: {} };
   let rememberMoves = null;
+  let remainingTime = 600000;
 
   let prevMoves = [];
 
@@ -158,6 +159,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
           $scope.object.logs = logs;
           console.log($scope.object.logs);
           remainingMoves = 2;
+          $scope.object.remainingTime = Math.floor(remainingTime/1000);
         } else {
           playersTurn = "G";
           $scope.object = { turn: "G" };
@@ -165,6 +167,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
           $scope.object.logs = logs;
           console.log($scope.object.logs);
           remainingMoves = 2;
+          $scope.object.remainingTime = Math.floor(remainingTime/1000);
         }
       }
       count++;
@@ -291,6 +294,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     $scope.object = { turn: "G" };
     $scope.object.count = 1;
     turnCount = 1;
+    $scope.object.remainingTime = remainingTime/1000;
   }
 
   $scope.silver = function () {
@@ -302,6 +306,8 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     $scope.object = { turn: "G" };
     $scope.object.count = 1;
     turnCount = 1;
+
+    $scope.object.remainingTime = remainingTime/1000;
   }
 
   $scope.twoAI = function () {
@@ -371,11 +377,12 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
           "Content-Type": "application/json"
         }
       };
-
+      console.log(JSON.stringify(response));
+      remainingTime = remainingTime - response.data.time;
 
       $http.post("/api/move", moveObj, headers).then((response) => {
         //        console.log("response: " + JSON.stringify(response));
-        //        console.log("response message " + response.data.result);
+        //        console.log("response message " + response.data.result);]
         if (response.data.result == ("GAME WON by " + moveObj.player)) {
           remainingMoves = -100;
           toastr.success("GAME WON by " + moveObj.player, { timeOut: 1000000 })
@@ -400,6 +407,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         //check if position is white or black piece already
         if (blkWht === 'S' || blkWht === 'G') {
           console.log("Hierk om ik");
+          var pieceTo = checkPos[checkPos.length - 2].substring(0, checkPos[checkPos.length - 2].length);
           //remove the overtaken piece class
           prevMoves.push({
             "piece": piece,
@@ -464,7 +472,6 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         //        console.log("remaining " + remainingMoves);
         remainingMoves--;
       }
-      console.log('hoi' + remainingMoves);
       setTimeout(() => {
 
         //                remainingMoves--;
@@ -478,6 +485,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
               $scope.object = { turn: "S" };
               $scope.object.count = turnCount;
               $scope.object.logs = logs;
+              $scope.object.remainingTime = Math.floor(remainingTime/1000);
             });
             remainingMoves = 2;
           } else {
@@ -487,12 +495,14 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
               $scope.object = { turn: "G" };
               $scope.object.count = turnCount;
               $scope.object.logs = logs;
+              $scope.object.remainingTime = Math.floor(remainingTime/1000);
             });
             remainingMoves = 2;
           }
         }
       }, 10);
-
+      console.log(remainingTime);
+      $scope.object.remainingTime = Math.floor(remainingTime/1000);
       count++;
     });
   }

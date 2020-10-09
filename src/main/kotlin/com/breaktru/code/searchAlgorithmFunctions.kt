@@ -842,29 +842,46 @@ fun rand(start: Int, end: Int): Int {
     return Random(System.nanoTime()).nextInt(end - start + 1) + start
 }
 
-//fun main() {
-////    for (i in 1..10) {
-////        println(rand(-10,10))
-////    }
-//
-//
-//    val board = Board();
-//    board.initialize()
+fun main() {
+//    for (i in 1..10) {
+//        println(rand(-10,10))
+//    }
+
+
+    val board = Board();
+    board.initialize()
+    val (escortTable, fSTable) = buildZobristTable()
+    val board2 = Board()
+    board2.initialize()
+    println(getZobristHash(board, escortTable, fSTable ))
+    println(getZobristHash(board2, escortTable, fSTable ))
+    println((getZobristHash(board, escortTable, fSTable ) xor escortTable[1][3][4] xor escortTable[1][2][4]))
+    board.moveFrontEnd("E8", "E9", "G", 2)
+    println(getZobristHash(board, escortTable, fSTable ))
+    println(getZobristHash(board, escortTable, fSTable ) ushr 44)
+    println((getZobristHash(board, escortTable, fSTable ) xor escortTable[1][2][4] xor escortTable[1][3][4]))
+    board.moveFrontEnd("E9", "E8", "G", 1)
+    println(getZobristHash(board, escortTable, fSTable ))
+
+    println(getZobristHash(board, escortTable, fSTable ) ushr 44)
+
+//    board.moveFrontEnd("E8", "E9", "G", 2)
+
 //    board.print();
 //    board.moveFrontEnd("E8", "E9", "G", 2)
 //    board.moveFrontEnd("G8", "G9", "G", 1)
 //
-////    var abResult = alphaBeta2(board, 3, -10000, 10000, "G", 2).first
-////    println(abResult)
-////    var from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-////    var to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-////    board.moveFrontEnd(from, to, "G", 2)
-////    abResult = alphaBeta2(board, 3, -10000, 10000, "G", 1).first
-////    println(abResult)
-////    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-////    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-////    board.moveFrontEnd(from, to, "G", 1)
-////    board.print()
+//    var abResult = alphaBeta2(board, 3, -10000, 10000, "G", 2).first
+//    println(abResult)
+//    var from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
+//    var to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
+//    board.moveFrontEnd(from, to, "G", 2)
+//    abResult = alphaBeta2(board, 3, -10000, 10000, "G", 1).first
+//    println(abResult)
+//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
+//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
+//    board.moveFrontEnd(from, to, "G", 1)
+//    board.print()
 //    var abResult = alphaBeta3(board, 3, -10000, 10000, "S", 2).first
 //    println(abResult)
 //    var from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
@@ -920,8 +937,8 @@ fun rand(start: Int, end: Int): Int {
 ////    board.print()
 //    abResult = alphaBeta2(board, 2, -10000, 10000, "S", 1).first
 //    println(abResult)
-//
-//
-//
-//}
+
+
+
+}
 

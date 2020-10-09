@@ -71,7 +71,7 @@ class MainController {
     }
 
     @PostMapping("alphaBeta", produces = [APPLICATION_JSON_VALUE])
-    fun alphaBetaCall(@RequestBody payload: MoveGen): Map<String, String> {
+    fun alphaBetaCall(@RequestBody payload: MoveGen): Map<String, Any> {
         println("HOI")
         var abResult = mutableMapOf("hi" to mutableListOf(1, 1))
         var bestBoard = Board()
@@ -110,6 +110,6 @@ class MainController {
 //        println(entry.value[random2][1])
 //        println("to: $to   from: $from" )
 //        val returnString = numberToLetter(generatedMoves[random][0]).toString() + generatedMoves[random][1].toString()
-        return mapOf("From" to from, "To" to to)
+        return mapOf("From" to from, "To" to to, "time" to timeSpent)
     }
 }
