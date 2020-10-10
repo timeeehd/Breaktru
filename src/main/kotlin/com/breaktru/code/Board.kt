@@ -2,12 +2,17 @@ package com.breaktru.code
 
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class Board {
 
     var board = Array(11) { Array<Ship>(11) { Ship() } }
     var lastMove: UUID? = null
     lateinit var lastPlayer: String
+    lateinit var escortTable: Array<Array<Array<Long>>>
+    lateinit var fsTable: Array<Array<Long>>
+
+    var transpositionTable = mutableMapOf<Long, Map<String, Any>>()
 
     fun initialize() {
         // To initialize board as empty, so if you want to restart
@@ -50,6 +55,10 @@ class Board {
         board[9][5] = Escort("S")
         board[9][6] = Escort("S")
         board[9][7] = Escort("S")
+
+        val zobristTable = buildZobristTable()
+        escortTable = zobristTable.first
+        fsTable = zobristTable.second
     }
 
     fun boardString(): Array<String> {
@@ -197,6 +206,40 @@ class Board {
         }
     }
 }
+
+fun calcRemainingMoves(boardInput: Board, from: MutableList<Int>, to: MutableList<Int>, remainingMoves: Int): Int {
+    val fromRow = from[0]
+    val fromCol = from[1]
+    val toRow = to[0]
+    val toCol = to[1]
+
+    if (boardInput.board[fromRow][fromCol].name == "FS") {
+        return 0
+    }
+    if (((fromRow == toRow - 1) && (fromCol == toCol - 1)) ||
+            ((fromRow == toRow - 1) && (fromCol == toCol + 1)) ||
+            ((fromRow == toRow + 1) && (fromCol == toCol - 1)) ||
+            ((fromRow == toRow + 1) && (fromCol == toCol + 1))) {
+        return 0
+    } else {
+        return remainingMoves - 1
+    }
+
+}
+
+fun boardCopy(board: Board): Board {
+    val boardCopy = Board()
+    boardCopy.escortTable = board.escortTable
+    boardCopy.fsTable = board.fsTable
+    for (row in 0..10) {
+        for (col in 0..10) {
+            boardCopy.board[row][col] = board.board[row][col]
+        }
+    }
+    boardCopy.lastMove = board.lastMove
+    return boardCopy
+}
+
 
 //fun main() {
 //    val board = Board();

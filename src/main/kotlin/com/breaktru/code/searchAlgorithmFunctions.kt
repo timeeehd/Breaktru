@@ -3,6 +3,8 @@ package com.breaktru.code
 import java.io.Serializable
 import kotlin.random.Random
 
+val transpositionTable = mutableMapOf<Long, Map<String, Any>>()
+
 val GFSPos: Array<IntArray> = arrayOf(intArrayOf(1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000),
         intArrayOf(1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1000),
         intArrayOf(1000, 100, 50, 50, 50, 50, 50, 50, 50, 100, 1000),
@@ -27,315 +29,7 @@ val SEPos: Array<IntArray> = arrayOf(intArrayOf(-10, -10, -10, -10, -10, -10, -1
         intArrayOf(-10, 1, 1, 1, 1, 1, 1, 1, 1, 1, -10),
         intArrayOf(-10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10))
 
-fun moveGenerator(board: Board, color: String, remainingMoves: Int): MutableMap<MutableList<MutableList<Int>>, MutableList<MutableList<Int>>> {
-//        println("remaining moves ${remainingMoves}")
-    var possibleMoves: MutableList<MutableList<Int>> = ArrayList()
-    val testMap = mutableMapOf<MutableList<MutableList<Int>>, MutableList<MutableList<Int>>>()
-    for (row in 0..10) {
-        col@ for (col in 0..10) {
-            possibleMoves = ArrayList()
-            var currentPostion: MutableList<MutableList<Int>> = ArrayList()
-            if (board.board[row][col].color == color) {
-                if (board.board[row][col].id != board.lastMove) {
-                    if (remainingMoves == 1 && board.board[row][col].name == "FS") {
-//                        println("Hier mag ik niet komen")
-                        continue@col
-                    }
-                    if (remainingMoves != 1) {
-                        if (row == 0 && col == 0) {
 
-                            if (board.board[row + 1][col + 1].color != color && board.board[row + 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row + 1, col + 1))
-                            }
-                        } else if (row == 0 && col == 10) {
-                            if (board.board[row + 1][col - 1].color != color && board.board[row + 1][col - 1].color != " ") {
-//                                println("Capture Move")
-
-                                possibleMoves.add(mutableListOf(row + 1, col - 1))
-                            }
-                        } else if (row == 0) {
-                            if (board.board[row + 1][col - 1].color != color && board.board[row + 1][col - 1].color != " ") {
-//                                println("Capture Move")
-
-                                possibleMoves.add(mutableListOf(row + 1, col - 1))
-                            }
-                            if (board.board[row + 1][col + 1].color != color && board.board[row + 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row + 1, col + 1))
-                            }
-
-                        } else if (row == 10 && col == 0) {
-
-                            if (board.board[row - 1][col + 1].color != color && board.board[row - 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row - 1, col + 1))
-                            }
-                        } else if (row == 10 && col == 10) {
-                            if (board.board[row - 1][col - 1].color != color && board.board[row - 1][col - 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row - 1, col - 1))
-                            }
-                        } else if (row == 10) {
-                            if (board.board[row - 1][col - 1].color != color && board.board[row - 1][col - 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row - 1, col - 1))
-                            }
-                            if (board.board[row - 1][col + 1].color != color && board.board[row - 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row - 1, col + 1))
-                            }
-
-                        } else if (col == 0) {
-
-                            if (board.board[row + 1][col + 1].color != color && board.board[row + 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row + 1, col + 1))
-                            }
-                            if (board.board[row - 1][col + 1].color != color && board.board[row - 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row - 1, col + 1))
-                            }
-
-                        } else if (col == 10) {
-
-                            if (board.board[row + 1][col - 1].color != color && board.board[row + 1][col - 1].color != " ") {
-//                                println("Capture Move")
-
-                                possibleMoves.add(mutableListOf(row + 1, col - 1))
-                            }
-                            if (board.board[row - 1][col - 1].color != color && board.board[row - 1][col - 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row - 1, col - 1))
-                            }
-
-                        } else {
-                            if (board.board[row - 1][col - 1].color != color && board.board[row - 1][col - 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row - 1, col - 1))
-                            }
-                            if (board.board[row - 1][col + 1].color != color && board.board[row - 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row - 1, col + 1))
-                            }
-                            if (board.board[row + 1][col - 1].color != color && board.board[row + 1][col - 1].color != " ") {
-//                                println("Capture Move")
-
-                                possibleMoves.add(mutableListOf(row + 1, col - 1))
-                            }
-                            if (board.board[row + 1][col + 1].color != color && board.board[row + 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                possibleMoves.add(mutableListOf(row + 1, col + 1))
-                            }
-                        }
-                    }
-
-                    for (up in row - 1 downTo 0) {
-                        if (board.board[up][col].color != " ") {
-                            break
-                        } else {
-                            possibleMoves.add(mutableListOf(up, col))
-                        }
-                    }
-                    for (down in (row + 1)..10) {
-                        if (board.board[down][col].color != " ") {
-                            break
-                        } else {
-                            possibleMoves.add(mutableListOf(down, col))
-                        }
-                    }
-                    for (left in col - 1 downTo 0) {
-                        if (board.board[row][left].color != " ") {
-                            break
-                        } else {
-                            possibleMoves.add(mutableListOf(row, left))
-                        }
-                    }
-                    for (right in (col + 1)..10) {
-                        if (board.board[row][right].color != " ") {
-                            break
-                        } else {
-                            possibleMoves.add(mutableListOf(row, right))
-                        }
-                    }
-                }
-            }
-            if (possibleMoves.isNotEmpty()) {
-                currentPostion.add(mutableListOf(row, col))
-                testMap[currentPostion] = possibleMoves
-            }
-
-        }
-
-    }
-    if(color == "G" && remainingMoves == 1) println("$color + $remainingMoves gives us $testMap")
-//    println(testMap)
-    return testMap
-}
-
-fun moveGenerator2(board: Board, color: String, remainingMoves: Int): Map<String, MutableMap<MutableList<MutableList<Int>>, MutableList<MutableList<Int>>>> {
-//        println("remaining moves ${remainingMoves}")
-    var possibleMovesOnePosition: MutableList<MutableList<Int>> = ArrayList()
-    var captureMoveOnePosition: MutableList<MutableList<Int>> = ArrayList()
-    val flagShipMoves = mutableMapOf<MutableList<MutableList<Int>>, MutableList<MutableList<Int>>>()
-
-    val possibleMoves = mutableMapOf<MutableList<MutableList<Int>>, MutableList<MutableList<Int>>>()
-    val captureMoves = mutableMapOf<MutableList<MutableList<Int>>, MutableList<MutableList<Int>>>()
-    for (row in 0..10) {
-        col@ for (col in 0..10) {
-            possibleMovesOnePosition = ArrayList()
-            captureMoveOnePosition = ArrayList()
-            var currentPostion: MutableList<MutableList<Int>> = ArrayList()
-            if (board.board[row][col].color == color) {
-                if (board.board[row][col].id != board.lastMove) {
-                    if (remainingMoves == 1 && board.board[row][col].name == "FS") {
-//                        println("Hier mag ik niet komen")
-                        continue@col
-                    }
-                    if (remainingMoves != 1) {
-                        if (row == 0 && col == 0) {
-
-                            if (board.board[row + 1][col + 1].color != color && board.board[row + 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row + 1, col + 1))
-                            }
-                        } else if (row == 0 && col == 10) {
-                            if (board.board[row + 1][col - 1].color != color && board.board[row + 1][col - 1].color != " ") {
-//                                println("Capture Move")
-
-                                captureMoveOnePosition.add(mutableListOf(row + 1, col - 1))
-                            }
-                        } else if (row == 0) {
-                            if (board.board[row + 1][col - 1].color != color && board.board[row + 1][col - 1].color != " ") {
-//                                println("Capture Move")
-
-                                captureMoveOnePosition.add(mutableListOf(row + 1, col - 1))
-                            }
-                            if (board.board[row + 1][col + 1].color != color && board.board[row + 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row + 1, col + 1))
-                            }
-
-                        } else if (row == 10 && col == 0) {
-
-                            if (board.board[row - 1][col + 1].color != color && board.board[row - 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row - 1, col + 1))
-                            }
-                        } else if (row == 10 && col == 10) {
-                            if (board.board[row - 1][col - 1].color != color && board.board[row - 1][col - 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row - 1, col - 1))
-                            }
-                        } else if (row == 10) {
-                            if (board.board[row - 1][col - 1].color != color && board.board[row - 1][col - 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row - 1, col - 1))
-                            }
-                            if (board.board[row - 1][col + 1].color != color && board.board[row - 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row - 1, col + 1))
-                            }
-
-                        } else if (col == 0) {
-
-                            if (board.board[row + 1][col + 1].color != color && board.board[row + 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row + 1, col + 1))
-                            }
-                            if (board.board[row - 1][col + 1].color != color && board.board[row - 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row - 1, col + 1))
-                            }
-
-                        } else if (col == 10) {
-
-                            if (board.board[row + 1][col - 1].color != color && board.board[row + 1][col - 1].color != " ") {
-//                                println("Capture Move")
-
-                                captureMoveOnePosition.add(mutableListOf(row + 1, col - 1))
-                            }
-                            if (board.board[row - 1][col - 1].color != color && board.board[row - 1][col - 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row - 1, col - 1))
-                            }
-
-                        } else {
-                            if (board.board[row - 1][col - 1].color != color && board.board[row - 1][col - 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row - 1, col - 1))
-                            }
-                            if (board.board[row - 1][col + 1].color != color && board.board[row - 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row - 1, col + 1))
-                            }
-                            if (board.board[row + 1][col - 1].color != color && board.board[row + 1][col - 1].color != " ") {
-//                                println("Capture Move")
-
-                                captureMoveOnePosition.add(mutableListOf(row + 1, col - 1))
-                            }
-                            if (board.board[row + 1][col + 1].color != color && board.board[row + 1][col + 1].color != " ") {
-//                                println("Capture Move")
-                                captureMoveOnePosition.add(mutableListOf(row + 1, col + 1))
-                            }
-                        }
-                    }
-
-                    for (up in row - 1 downTo 0) {
-                        if (board.board[up][col].color != " ") {
-                            break
-                        } else {
-                            possibleMovesOnePosition.add(mutableListOf(up, col))
-                        }
-                    }
-                    for (down in (row + 1)..10) {
-                        if (board.board[down][col].color != " ") {
-                            break
-                        } else {
-                            possibleMovesOnePosition.add(mutableListOf(down, col))
-                        }
-                    }
-                    for (left in col - 1 downTo 0) {
-                        if (board.board[row][left].color != " ") {
-                            break
-                        } else {
-                            possibleMovesOnePosition.add(mutableListOf(row, left))
-                        }
-                    }
-                    for (right in (col + 1)..10) {
-                        if (board.board[row][right].color != " ") {
-                            break
-                        } else {
-                            possibleMovesOnePosition.add(mutableListOf(row, right))
-                        }
-                    }
-                }
-            }
-
-            currentPostion.add(mutableListOf(row, col))
-            if (possibleMovesOnePosition.isNotEmpty()) {
-                if(board.board[row][col].name == "FS"){
-                    flagShipMoves[currentPostion] = possibleMovesOnePosition
-                } else {
-                    possibleMoves[currentPostion] = possibleMovesOnePosition
-                }
-            }
-            if (captureMoveOnePosition.isNotEmpty()) {
-                captureMoves[currentPostion] = captureMoveOnePosition
-            }
-
-        }
-
-    }
-
-
-    val allMoves = mapOf("capture" to captureMoves, "flagship" to flagShipMoves, "moves" to possibleMoves)
-
-
-    if(color == "G" && remainingMoves == 1 && flagShipMoves.isNotEmpty()) println("DIT MAG NIET!!!")
-//    println(testMap)
-    return allMoves
-}
 
 fun alphaBeta(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int): MutableMap<String, MutableList<Int>> {
 
@@ -540,405 +234,253 @@ fun alphaBeta3(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     return Pair(mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo), bestBoard)
 }
 
-fun boardCopy(board: Board): Board {
-    val boardCopy = Board()
-    for (row in 0..10) {
-        for (col in 0..10) {
-            boardCopy.board[row][col] = board.board[row][col]
+fun alphaBeta4(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int): Pair<MutableMap<String, MutableList<Int>>, Pair<Board, MutableMap<Long, Map<String, Any>>>> {
+
+    var ttTable = table
+    var boardCopy = boardCopy(boardInput)
+    val (silverWin, goldWin) = terminalNode(boardCopy)
+
+    if (silverWin || goldWin || depth == 0) {
+//        println("TEST")
+        return Pair(mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn))), Pair(boardCopy, ttTable))
+    }
+    var flag = ""
+
+    var score = Int.MIN_VALUE
+    var upperbound = beta
+    var lowerbound = alpha
+    var moveFrom = mutableListOf(0, 0)
+    var moveTo = mutableListOf(0, 0)
+
+    var remainingMovesAB = 0
+    var bestBoard = boardCopy(boardInput)
+
+    val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
+
+    val olda = alpha
+//    val ttRetrieval = retrieve(boardInput, ttTable)
+//    if (ttRetrieval["depth"] as Int != -1) {
+//                println("FUCK")
+//            }
+//    if (ttRetrieval["depth"] as Int >= depth) {
+//        val retrievedFrom = ttRetrieval["from"] as MutableList<Int>
+//        val retrievedTo = ttRetrieval["to"] as MutableList<Int>
+//        val retrievedScore = ttRetrieval["score"] as Int
+//        val retrievedPlayer = ttRetrieval["playersTurn"] as String
+//        val calcScore = if(retrievedPlayer == playersTurn) retrievedScore else -retrievedScore
+//        if (ttRetrieval["flag"] as String == "Exact") {
+//            return Pair(mutableMapOf("score" to mutableListOf(calcScore),
+//                    "from" to retrievedFrom, "to" to retrievedTo), Pair(boardCopy, ttTable))
+//        } else if (ttRetrieval["flag"] as String == "Lowerbound") {
+//            lowerbound = if (alpha >= calcScore) alpha else calcScore
+//        } else if (ttRetrieval["flag"] as String == "Upperbound") {
+//            upperbound = if (beta <= calcScore) beta else calcScore
+//        }
+//        if (lowerbound > upperbound) {
+//            return Pair(mutableMapOf("score" to mutableListOf(calcScore),
+//                    "from" to retrievedFrom, "to" to retrievedTo), Pair(boardCopy, ttTable))
+//        }
+//    }
+
+    for (option in possibleMoves) {
+//            println(option.key[0])
+//            println(possibleMoves[position.key])
+        for (position in possibleMoves[option.key]!!) {
+            for (move in possibleMoves[option.key]!![position.key]!!) {
+                var result = Int.MIN_VALUE
+                var returnedBoard = Board()
+                remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
+                boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
+//            boardCopy.print()
+                if (remainingMovesAB == 1) {
+//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
+                    var test = alphaBeta4(boardCopy, ttTable, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)
+                    var bestMove = test.first
+                    returnedBoard = test.second.first
+//                    ttTable = test.second.second
+                    result = bestMove["score"]!![0]
+//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
+                } else if (remainingMovesAB == 0) {
+                    if (playersTurn == "G") {
+                        var test = alphaBeta4(boardCopy, ttTable, depth - 1, -upperbound, -lowerbound, "S", 2)
+                        var bestMove = test.first
+                        returnedBoard = test.second.first
+//                        ttTable = test.second.second
+                        result = -bestMove["score"]!![0]
+//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
+                    } else if (playersTurn == "S") {
+                        var test = alphaBeta4(boardCopy, table, depth - 1, -upperbound, -lowerbound, "G", 2)
+                        var bestMove = test.first
+                        returnedBoard = test.second.first
+//                        ttTable = test.second.second
+                        result = -bestMove["score"]!![0]
+//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
+                    }
+                }
+
+                if (result > score) {
+                    score = result
+                    moveFrom = position.key[0]
+                    moveTo = move
+                    bestBoard = boardCopy(returnedBoard)
+                    if (score > lowerbound) lowerbound = score
+                    if (score >= upperbound) {
+                        break
+                    }
+                }
+//                boardInput.transpositionTable = boardCopy.transpositionTable
+                boardCopy = boardCopy(boardInput)
+            }
+//            println(moveFrom)
         }
     }
-    boardCopy.lastMove = board.lastMove
-    return boardCopy
+//    var start = System.currentTimeMillis()
+//    if (score <= olda) flag = "Upperbound"
+//    else if (score >= beta) flag = "Lowerbound"
+//    else flag = "Exact"
+//    ttTable = store(boardInput, ttTable, moveFrom, moveTo, score, flag, depth, playersTurn)
+//    var timeSpent = System.currentTimeMillis() - start
+//    println("Timespent storing: $timeSpent")
+    return Pair(mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo), Pair(bestBoard, ttTable))
 }
 
-fun terminalNode(board: Board): Pair<Boolean, Boolean> {
-    var silverWin = true
-    var goldWin = false
-    for (row in 0..10) {
-        for (col in 0..10) {
-            if (board.board[row][col].name == "FS") {
-                silverWin = false
-                if (row == 0 || row == 10 || col == 0 || col == 10) {
-                    goldWin = true
-                    return Pair(silverWin, goldWin)
+fun alphaBeta5(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int): MutableMap<String, Any> {
+
+    var ttTable = table
+    var boardCopy = boardCopy(boardInput)
+    val (silverWin, goldWin) = terminalNode(boardCopy)
+    if (silverWin || goldWin || depth == 0) {
+//        println("TEST")
+        return mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn)), "board" to boardCopy, "tt" to ttTable)
+    }
+
+    var score = Int.MIN_VALUE
+    var upperbound = beta
+    var lowerbound = alpha
+    var moveFrom = mutableListOf(0, 0)
+    var moveTo = mutableListOf(0, 0)
+
+    var remainingMovesAB = 0
+    var bestBoard = boardCopy(boardInput)
+    var flag = ""
+
+
+    val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
+
+    val olda = alpha
+    val ttRetrieval = retrieve(boardInput, ttTable)
+    if (ttRetrieval["depth"] as Int != -1) {
+                println("FUCK")
+            }
+    if (ttRetrieval["depth"] as Int >= depth) {
+        val retrievedFrom = ttRetrieval["from"] as MutableList<Int>
+        val retrievedTo = ttRetrieval["to"] as MutableList<Int>
+        val retrievedScore = ttRetrieval["score"] as Int
+        val retrievedPlayer = ttRetrieval["playersTurn"] as String
+        val calcScore = if(retrievedPlayer == playersTurn) retrievedScore else -retrievedScore
+        if (ttRetrieval["flag"] as String == "Exact") {
+//            return Pair(mutableMapOf("score" to mutableListOf(calcScore),
+//                    "from" to retrievedFrom, "to" to retrievedTo), Pair(boardCopy, ttTable))
+        } else if (ttRetrieval["flag"] as String == "Lowerbound") {
+            lowerbound = if (alpha >= calcScore) alpha else calcScore
+        } else if (ttRetrieval["flag"] as String == "Upperbound") {
+            upperbound = if (beta <= calcScore) beta else calcScore
+        }
+        if (lowerbound > upperbound) {
+//            return Pair(mutableMapOf("score" to mutableListOf(calcScore),
+//                    "from" to retrievedFrom, "to" to retrievedTo), Pair(boardCopy, ttTable))
+        }
+    }
+
+    for (option in possibleMoves) {
+//            println(option.key[0])
+//            println(possibleMoves[position.key])
+        for (position in possibleMoves[option.key]!!) {
+            for (move in possibleMoves[option.key]!![position.key]!!) {
+                var result = Int.MIN_VALUE
+                var returnedBoard = Board()
+                remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
+                boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
+//            boardCopy.print()
+                if (remainingMovesAB == 1) {
+//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
+                    var test = alphaBeta5(boardCopy, table,depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)
+                    var bestMove = test["score"] as MutableList<Int>
+                    returnedBoard = test["board"] as Board
+                    result = bestMove[0]
+//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
+                } else if (remainingMovesAB == 0) {
+                    if (playersTurn == "G") {
+                        var test = alphaBeta5(boardCopy, table,depth - 1, -upperbound, -lowerbound, "S", 2)
+                        var bestMove = test["score"] as MutableList<Int>
+                        returnedBoard = test["board"] as Board
+                        result = -bestMove[0]
+//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
+                    } else if (playersTurn == "S") {
+                        var test = alphaBeta5(boardCopy, table,depth - 1, -upperbound, -lowerbound, "G", 2)
+                        var bestMove = test["score"] as MutableList<Int>
+                        returnedBoard = test["board"] as Board
+                        result = -bestMove[0]
+//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
+                    }
+                }
+
+                if (result > score) {
+                    score = result
+                    moveFrom = position.key[0]
+                    moveTo = move
+                    bestBoard = boardCopy(returnedBoard)
+//                bestBoard.print()
+//                println("MoveFrom = $moveFrom")
+//                println("moveTo = $moveTo")
+                }
+                if (score > lowerbound) lowerbound = score
+//            boardInput.print()
+                boardCopy = boardCopy(boardInput)
+//            boardInput.print()
+                if (score >= upperbound) {
+                    break
                 }
             }
         }
     }
-    return Pair(silverWin, goldWin)
+        var start = System.currentTimeMillis()
+    if (score <= olda) flag = "Upperbound"
+    else if (score >= beta) flag = "Lowerbound"
+    else flag = "Exact"
+    ttTable = store(boardInput, ttTable, moveFrom, moveTo, score, flag, depth, playersTurn)
+    var timeSpent = System.currentTimeMillis() - start
+    println("Timespent storing: $timeSpent")
+    return mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo, "board" to bestBoard, "tt" to ttTable)
 }
 
-fun evaluatePiecesRandom(board: Board, playersTurn: String) : Int{
-    val pieces = evaluatePieces(board,playersTurn)
-    return pieces + rand(-10,10)
-}
-
-fun evaluate(board: Board, playersTurn: String): Int {
-//    println("TEST")
-    val (silverWin, goldWin) = terminalNode(board)
-    if (silverWin && playersTurn == "S") {
-//        println("Silver Win")
-        return 100000
-    }
-    if (silverWin && playersTurn == "G") {
-//        println("Silver Win")
-        return -100000
-    }
-    if (goldWin && playersTurn == "G") {
-//        println("Gold Win")
-        return 100000
-    }
-    if (goldWin && playersTurn == "S") {
-//        println("Gold Win")
-        return -100000
-    }
-
-//    if(goldWin && playersTurn == "S") return -10000
-//    if(silverWin && playersTurn == "G") return -10000
-    val pieces = evaluatePieces(board, playersTurn)
-    val (silverPos, goldPos) = evaluatePositionBoard(board, playersTurn)
-    val posGFS = evaluatePositionToGFS(board, playersTurn)
-//    board.print()
-    var sendBack = 0
-//    board.print()
-//    if(board.board[3][3].color == "S" && board.board[3][7].color == "S"){
-//        println("HOI")
-//    }
-    if (playersTurn == "G") sendBack = (21 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS)
-    if (playersTurn == "S") sendBack = (21 * pieces + 2 * (silverPos - goldPos) + 1 * posGFS)
-//    if (sendBack < 0) return rand(sendBack/20, -sendBack/20)
-    return sendBack
-}
-
-fun evaluatePieces(board: Board, playersTurn: String): Int {
-    var value = 0
-    if (playersTurn == "G") {
-        for (row in 0..10) {
-            for (col in 0..10) {
-                if (board.board[row][col].color == "S") {
-                    value -= 10
-                } else if (board.board[row][col].color == "G" && board.board[row][col].name == "FS") {
-                    value += 80
-                } else if (board.board[row][col].color == "G") {
-                    value += 10
-                }
-            }
-        }
-    } else if (playersTurn == "S") {
-        for (row in 0..10) {
-            for (col in 0..10) {
-                if (board.board[row][col].color == "S") {
-                    value += 10
-                } else if (board.board[row][col].color == "G" && board.board[row][col].name == "FS") {
-                    value -= 80
-                } else if (board.board[row][col].color == "G") {
-                    value -= 10
-                }
-            }
-        }
-    }
-
-    val (silverWin, goldWin) = terminalNode(board)
-    if (silverWin) {
-        value += 100000
-    } else if (goldWin) {
-        value -= -100000
-    }
-//    if (playersTurn == "G") {
-//        value = -value
-//    }
-//    if (value == 40) {
-//        println("HOI")
-//    }
-
-//    val random = rand(-10,10)
-
-//    println(random)
-
-    return value
-}
-
-fun evaluatePositionBoard(board: Board, playersTurn: String): Pair<Int, Int> {
-    var silverEval = 0
-    var GFSEval = 0
-    for (row in 0..10) {
-        for (col in 0..10) {
-            if (board.board[row][col].color == "S") {
-                silverEval += SEPos[row][col]
-            }
-            if (board.board[row][col].name == "FS") {
-                GFSEval = GFSPos[row][col]
-            }
-        }
-    }
-    return Pair(silverEval, GFSEval)
-}
-
-fun evaluatePositionToGFS(board: Board, playersTurn: String): Int {
-    var silverEval = 0
-    var goldEval = 0
-    for (row in 0..10) {
-        for (col in 0..10) {
-            if (board.board[row][col].name == "FS") {
-                if (row == 0 && col == 0) {
-                    if (board.board[row + 1][col].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row][col + 1].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row + 1][col + 1].color == "S") {
-                        silverEval += 50
-                    }
-                    if (board.board[row + 1][col].color == "G") {
-                        goldEval += 50
-                    }
-                    if (board.board[row][col + 1].color == "G") {
-                        goldEval += 50
-                    }
-//                    if (board.board[row + 1][col + 1].color == "G") {
-//                        goldEval += 100
-//                    }
-                } else if (row == 0 && col == 10) {
-                    if (board.board[row + 1][col].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row][col - 1].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row + 1][col - 1].color == "S") {
-                        silverEval += 50
-                    }
-                    if (board.board[row + 1][col].color == "G") {
-                        goldEval += 50
-                    }
-                    if (board.board[row][col - 1].color == "G") {
-                        goldEval += 50
-                    }
-//                    if (board.board[row + 1][col - 1].color == "G") {
-//                        goldEval += 100
-//                    }
-                } else if (row == 10 && col == 0) {
-                    if (board.board[row - 1][col].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row][col + 1].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row - 1][col + 1].color == "S") {
-                        silverEval += 50
-                    }
-                    if (board.board[row - 1][col].color == "G") {
-                        goldEval += 50
-                    }
-                    if (board.board[row][col + 1].color == "G") {
-                        goldEval += 50
-                    }
-//                    if (board.board[row - 1][col + 1].color == "G") {
-//                        goldEval += 100
-//                    }
-                } else if (row == 10 && col == 10) {
-                    if (board.board[row - 1][col].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row][col - 1].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row - 1][col - 1].color == "S") {
-                        silverEval += 50
-                    }
-                    if (board.board[row - 1][col].color == "G") {
-                        goldEval += 50
-                    }
-                    if (board.board[row][col - 1].color == "G") {
-                        goldEval += 50
-                    }
-//                    if (board.board[row - 1][col - 1].color == "G") {
-//                        goldEval += 100
-//                    }
-                } else {
-//                    board.print()
-//                    println(row)
-//                    println(col)
-                    if (board.board[row - 1][col].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row + 1][col].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row][col - 1].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row][col + 1].color == "S") {
-                        silverEval += 10
-                    }
-                    if (board.board[row - 1][col - 1].color == "S") {
-                        silverEval += 50
-                    }
-                    if (board.board[row + 1][col + 1].color == "S") {
-                        silverEval += 50
-                    }
-                    if (board.board[row - 1][col + 1].color == "S") {
-                        silverEval += 50
-                    }
-                    if (board.board[row + 1][col - 1].color == "S") {
-                        silverEval += 50
-                    }
-                    if (board.board[row - 1][col].color == "G") {
-                        goldEval += -10
-                    }
-                    if (board.board[row + 1][col].color == "G") {
-                        goldEval += -10
-                    }
-                    if (board.board[row][col - 1].color == "G") {
-                        goldEval += -10
-                    }
-                    if (board.board[row][col + 1].color == "G") {
-                        goldEval += -10
-                    }
-                    if (board.board[row - 1][col - 1].color == "G") {
-                        goldEval += 20
-                    }
-                    if (board.board[row + 1][col + 1].color == "G") {
-                        goldEval += 20
-                    }
-                    if (board.board[row - 1][col + 1].color == "G") {
-                        goldEval += 20
-                    }
-                    if (board.board[row + 1][col - 1].color == "G") {
-                        goldEval += 20
-                    }
-                }
-            }
-        }
-    }
-    if (playersTurn == "S") return silverEval - goldEval
-    if (playersTurn == "G") return goldEval - silverEval
-    return 0
-}
-
-fun calcRemainingMoves(boardInput: Board, from: MutableList<Int>, to: MutableList<Int>, remainingMoves: Int): Int {
-    val fromRow = from[0]
-    val fromCol = from[1]
-    val toRow = to[0]
-    val toCol = to[1]
-
-    if (boardInput.board[fromRow][fromCol].name == "FS") {
-        return 0
-    }
-    if (((fromRow == toRow - 1) && (fromCol == toCol - 1)) ||
-            ((fromRow == toRow - 1) && (fromCol == toCol + 1)) ||
-            ((fromRow == toRow + 1) && (fromCol == toCol - 1)) ||
-            ((fromRow == toRow + 1) && (fromCol == toCol + 1))) {
-        return 0
-    } else {
-        return remainingMoves - 1
-    }
-
-}
-
-fun rand(start: Int, end: Int): Int {
-    require(!(start > end || end - start + 1 > Int.MAX_VALUE)) { "Illegal Argument" }
-    return Random(System.nanoTime()).nextInt(end - start + 1) + start
-}
-
-fun main() {
-//    for (i in 1..10) {
-//        println(rand(-10,10))
-//    }
-
-
-    val board = Board();
-    board.initialize()
-    val (escortTable, fSTable) = buildZobristTable()
-    val board2 = Board()
-    board2.initialize()
-    println(getZobristHash(board, escortTable, fSTable ))
-    println(getZobristHash(board2, escortTable, fSTable ))
-    println((getZobristHash(board, escortTable, fSTable ) xor escortTable[1][3][4] xor escortTable[1][2][4]))
-    board.moveFrontEnd("E8", "E9", "G", 2)
-    println(getZobristHash(board, escortTable, fSTable ))
-    println(getZobristHash(board, escortTable, fSTable ) ushr 44)
-    println((getZobristHash(board, escortTable, fSTable ) xor escortTable[1][2][4] xor escortTable[1][3][4]))
-    board.moveFrontEnd("E9", "E8", "G", 1)
-    println(getZobristHash(board, escortTable, fSTable ))
-
-    println(getZobristHash(board, escortTable, fSTable ) ushr 44)
-
-//    board.moveFrontEnd("E8", "E9", "G", 2)
-
-//    board.print();
-//    board.moveFrontEnd("E8", "E9", "G", 2)
-//    board.moveFrontEnd("G8", "G9", "G", 1)
+//fun main() {
 //
-//    var abResult = alphaBeta2(board, 3, -10000, 10000, "G", 2).first
-//    println(abResult)
-//    var from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    var to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "G", 2)
-//    abResult = alphaBeta2(board, 3, -10000, 10000, "G", 1).first
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "G", 1)
-//    board.print()
-//    var abResult = alphaBeta3(board, 3, -10000, 10000, "S", 2).first
-//    println(abResult)
-//    var from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    var to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 2)
-//    board.print()
-//    board.moveFrontEnd("F8", "E9", "G", 2)
-//    board.print()
-//    abResult = alphaBeta2(board, 3, -10000, 10000, "S", 2).first
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 2)
-//    board.print()
-//    board.moveFrontEnd("F6", "F9", "G", 2)
-//    board.print()
-//    abResult = alphaBeta2(board, 3, -10000, 10000, "S", 2).first
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "G", 2)
-//    board.print()
-//    abResult = alphaBeta2(board, 3, -10000, 10000, "G", 1).first
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 2)
-//    abResult = alphaBeta2(board, 3, -10000, 10000, "S", 2).first
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 1)
-////    board.print()
-//    abResult = alphaBeta2(board, 2, -10000, 10000, "S", 1).first
-//    println(abResult)
-//    board.print()
-//    abResult = alphaBeta2(board, 3, -10000, 10000, "G", 2).first
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "G", 2)
-//    board.print()
-//    abResult = alphaBeta2(board, 3, -10000, 10000, "G", 1).first
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 2)
-//    abResult = alphaBeta2(board, 3, -10000, 10000, "S", 2).first
-//    println(abResult)
-//    from = numberToLetter(abResult["from"]!![1]).toString() + (10 - abResult["from"]!![0] + 1).toString()
-//    to = numberToLetter(abResult["to"]!![1]).toString() + (10 - abResult["to"]!![0] + 1).toString()
-//    board.moveFrontEnd(from, to, "S", 1)
-////    board.print()
-//    abResult = alphaBeta2(board, 2, -10000, 10000, "S", 1).first
-//    println(abResult)
-
-
-
-}
+//    var abResult = mutableMapOf("hi" to mutableListOf(1, 1))
+//    var bestBoard = Board()
+//
+//    val board = Board();
+//    board.initialize()
+//    val board2 = Board()
+//    board2.initialize()
+////    var abResult = alphaBeta3(board, 3, -10000, 10000, "G", 2).first
+////    println(abResult)
+//    var start = System.currentTimeMillis()
+//    var depth = 1
+//    var timeSpent = 0L
+//    while (depth  < 4) {
+////            var returnedValue = alphaBeta3(board,depth, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
+//        var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, "G", 2)
+//        abResult = returnedValue.first
+//        bestBoard = returnedValue.second.first
+////            bestBoard = returnedValue.second
+//        bestBoard.print()
+//        board.transpositionTable = returnedValue.second.second
+//        timeSpent = System.currentTimeMillis() - start
+//        println("Depth: $depth")
+//        println("Timespent: $timeSpent")
+//        depth++
+//    }
+//
+//}
 
