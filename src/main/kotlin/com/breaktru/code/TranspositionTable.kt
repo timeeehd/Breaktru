@@ -44,6 +44,7 @@ fun getZobristHash(board: Board): Long {
 fun retrieve(board: Board, table: MutableMap<Long, Map<String, Any>>) : Map<String, Any> {
     val zobristHash = getZobristHash(board)
     val test = table[zobristHash ushr 44] ?: return mapOf("depth" to -1)
+    if (test["key"] != zobristHash) return mapOf("depth" to -1)
 //    println(test)
     return test
 }

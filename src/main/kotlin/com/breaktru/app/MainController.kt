@@ -1,7 +1,6 @@
 package com.breaktru.app
 
 import com.breaktru.code.Board
-import com.breaktru.code.alphaBeta
 import com.breaktru.code.*
 import com.breaktru.code.moveGenerator
 import com.breaktru.code.numberToLetter
@@ -74,7 +73,7 @@ class MainController {
 
     @PostMapping("alphaBeta", produces = [APPLICATION_JSON_VALUE])
     fun alphaBetaCall(@RequestBody payload: MoveGen): Map<String, Any> {
-        println("HOI")
+        println("Normal alphabeta")
         var abResult = mutableMapOf("hi" to mutableListOf(1, 1))
 //        var abResult = mutableListOf(1)
         var bestBoard = Board()
@@ -94,6 +93,7 @@ class MainController {
             timeSpent = System.currentTimeMillis() - start
             println("Depth: $depth")
             println("Timespent: $timeSpent")
+            if(abResult["score"]!![0] > 10000) break
             depth++
         }
 //        println(depth)
@@ -122,7 +122,7 @@ class MainController {
 
     @PostMapping("alphaBeta2", produces = [APPLICATION_JSON_VALUE])
     fun alphaBetaCall2(@RequestBody payload: MoveGen): Map<String, Any> {
-        println("HOI")
+        println("Transposition Table")
 //        var abResult = mutableMapOf("hi" to mutableListOf(1, 1))
         var abResult = mutableListOf(1)
         var retrievedFrom = mutableListOf(1)
@@ -134,7 +134,7 @@ class MainController {
         var depth = 1
         var timeSpent = 0L
         while (timeSpent + 8000 < 10000) {
-            var returnedValue = alphaBeta5(board,board.transpositionTable, depth,-10000, 10000, payload.player, payload.remainingMoves)
+            var returnedValue = alphaBeta4(board,board.transpositionTable, depth,-10000, 10000, payload.player, payload.remainingMoves)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
             abResult = returnedValue["score"] as MutableList<Int>
 
