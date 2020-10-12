@@ -61,6 +61,46 @@ fun evaluate(board: Board, playersTurn: String): Int {
     return sendBack
 }
 
+fun evaluate2(board: Board, playersTurn: String): Int {
+//    println("TEST")
+    val (silverWin, goldWin) = terminalNode(board)
+    if (silverWin && playersTurn == "S") {
+//        println("Silver Win")
+        return 100000
+    }
+    if (silverWin && playersTurn == "G") {
+//        println("Silver Win")
+        return -100000
+    }
+    if (goldWin && playersTurn == "G") {
+//        println("Gold Win")
+        return 100000
+    }
+    if (goldWin && playersTurn == "S") {
+//        println("Gold Win")
+        return -100000
+    }
+
+//    if(goldWin && playersTurn == "S") return -10000
+//    if(silverWin && playersTurn == "G") return -10000
+    val pieces = evaluatePieces(board, playersTurn)
+    val (silverPos, goldPos) = evaluatePositionBoard(board, playersTurn)
+    val posGFS = evaluatePositionToGFS(board, playersTurn)
+//    board.print()
+    var sendBack = 0
+//    board.print()
+//    if(board.board[3][3].color == "S" && board.board[3][7].color == "S"){
+//        println("HOI")
+//    }
+    var rand = 0
+    if (playersTurn == "G") sendBack = (21 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS)
+    if (playersTurn == "S") sendBack = (21 * pieces + 2 * (silverPos - goldPos) + 1 * posGFS)
+    if (sendBack < 0) rand = rand(sendBack/20, -sendBack/20)
+    else rand = rand(-sendBack/20, sendBack/20)
+    sendBack += rand
+    return sendBack
+}
+
 fun evaluatePieces(board: Board, playersTurn: String): Int {
     var value = 0
     if (playersTurn == "G") {

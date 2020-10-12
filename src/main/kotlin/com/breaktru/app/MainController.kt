@@ -7,6 +7,8 @@ import com.breaktru.code.numberToLetter
 import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.web.bind.annotation.*
 
+var remainingTime = 0L
+
 @RestController
 @RequestMapping("/api/")
 class MainController {
@@ -19,6 +21,7 @@ class MainController {
     @GetMapping("init", produces = [APPLICATION_JSON_VALUE])
     fun init(): Array<String> {
         board.initialize()
+        remainingTime = 600000;
         return board.boardString()
     }
 
@@ -82,8 +85,10 @@ class MainController {
         var start = System.currentTimeMillis()
         var depth = 1
         var timeSpent = 0L
-        while (timeSpent + 8000 < 10000) {
-            var returnedValue = alphaBeta3(board, depth,-10000, 10000, payload.player, payload.remainingMoves)
+        var iterativeDeepeningTime = if(remainingTime < 30000) 9000 else 8000
+        println(iterativeDeepeningTime)
+        while (timeSpent + iterativeDeepeningTime < 10000) {
+            var returnedValue = alphaBeta3(board, depth, -10000, 10000, payload.player, payload.remainingMoves)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
             abResult = returnedValue.first
 //            bestBoard = returnedValue.second.first
@@ -93,9 +98,10 @@ class MainController {
             timeSpent = System.currentTimeMillis() - start
             println("Depth: $depth")
             println("Timespent: $timeSpent")
-            if(abResult["score"]!![0] > 10000) break
+            if (abResult["score"]!![0] > 10000) break
             depth++
         }
+        remainingTime -= timeSpent
 //        println(depth)
 //        } else if(payload.player == "S") {
 //            abResult = alphaBeta2(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
@@ -133,8 +139,9 @@ class MainController {
         var start = System.currentTimeMillis()
         var depth = 1
         var timeSpent = 0L
-        while (timeSpent + 8000 < 10000) {
-            var returnedValue = alphaBeta4(board,board.transpositionTable, depth,-10000, 10000, payload.player, payload.remainingMoves)
+        while (timeSpent + 9000 < 10000) {
+//        while (depth < 4) {
+            var returnedValue = alphaBeta7(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
             abResult = returnedValue["score"] as MutableList<Int>
 
@@ -144,12 +151,13 @@ class MainController {
             board.transpositionTable = returnedValue["tt"] as MutableMap<Long, Map<String, Any>>
             retrievedFrom = returnedValue["from"] as MutableList<Int>
             retrievedTo = returnedValue["to"] as MutableList<Int>
-            if(abResult[0] > 10000) break
+//            if(abResult[0] > 10000) break
             timeSpent = System.currentTimeMillis() - start
             println("Depth: $depth")
             println("Timespent: $timeSpent")
             depth++
         }
+
 //        println(depth)
 //        } else if(payload.player == "S") {
 //            abResult = alphaBeta2(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
