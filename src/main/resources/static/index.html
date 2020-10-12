@@ -30,8 +30,12 @@
                 <button class="cst-btn center" ng-click="gold()">Play as Gold</button>
                 <button class="cst-btn center" ng-click="silver()">Play as Silver</button>
                 <button class="cst-btn center" ng-click="twoAI()">Both Sides AI</button>
-                <button class="cst-btn center" ng-click="startAgain()">AI Move Calc</button>
-                <button class="cst-btn center" ng-click="pass()">Pass</button>
+                <button ng-if="goldPlayer.includes('AI') && object.turn.includes('G')" class="cst-btn center" ng-click="startAgain()">AI Move Calc</button>
+                <button ng-if="silverPlayer.includes('AI') && object.turn.includes('S')" class="cst-btn center" ng-click="startAgain()">AI Move Calc</button>
+<!--                <button ng-disabled="goldPlayer.includes('AI') && object.turn.includes('G')" class="cst-btn center" ng-click="startAgain()" >AI Move Calc</button>-->
+<!--                <button ng-disabled="(silverPlayer.includes('AI') && object.turn.includes('G')) || (silverPlayer.includes('')) || (goldPlayer.includes('AI') && object.turn.includes('S'))" class="cst-btn center" ng-click="startAgain()" >AI Move Calc</button>-->
+<!--                <button ng-disabled="silverPlayer.includes('')" class="cst-btn center" ng-click="startAgain()" >AI Move Calc</button>-->
+                <button ng-disabled="object.turn.includes('1')" class="cst-btn center" ng-click="pass()">Pass</button>
             </div>
         </div>
         <div class="row center">
