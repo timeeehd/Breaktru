@@ -8,6 +8,7 @@ import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.web.bind.annotation.*
 
 var remainingTime = 0L
+var notEnoughtTime = false
 
 @RestController
 @RequestMapping("/api/")
@@ -41,10 +42,10 @@ class MainController {
 
         twoMovesAgo = boardCopy(prevMove)
         prevMove = boardCopy(board)
-        println("prevmove board")
-        prevMove.print()
-        println("two boards ago move")
-        twoMovesAgo.print()
+//        println("prevmove board")
+//        prevMove.print()
+//        println("two boards ago move")
+//        twoMovesAgo.print()
 
         val result = arrayOf(board.moveFrontEnd(payload.from, payload.to, payload.player, payload.remainingMoves))
         return mapOf("board" to board.boardString(), "result" to result)
@@ -57,10 +58,10 @@ class MainController {
         board = boardCopy(prevMove)
         prevMove = boardCopy(twoMovesAgo)
         twoMovesAgo = Board()
-        println("prevmove board")
-        prevMove.print()
-        println("two boards ago move")
-        twoMovesAgo.print()
+//        println("prevmove board")
+//        prevMove.print()
+//        println("two boards ago move")
+//        twoMovesAgo.print()
         return mapOf("board" to board.boardString())
     }
 
@@ -95,8 +96,8 @@ class MainController {
         var start = System.currentTimeMillis()
         var depth = 1
         var timeSpent = 0L
-//        var iterativeDeepeningTime = if(remainingTime < 30000) 9000 else 8000
-        var iterativeDeepeningTime = 8500
+        var iterativeDeepeningTime = if (remainingTime < 30000) 9000 else 7000
+//        var iterativeDeepeningTime = 8500
 //        println(iterativeDeepeningTime)
         while (timeSpent + iterativeDeepeningTime < 10000) {
             var returnedValue = alphaBeta3(board, depth, -10000, 10000, payload.player, payload.remainingMoves)
@@ -150,25 +151,48 @@ class MainController {
         var start = System.currentTimeMillis()
         var depth = 1
         var timeSpent = 0L
-        while (timeSpent + 9000 < 10000) {
-//        while (depth < 4) {
-            var returnedValue = alphaBeta7(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true)
+        var iterativeDeepeningTime = if (remainingTime < 300000) 9000 else 7500
+        println(iterativeDeepeningTime)
+        notEnoughtTime = remainingTime < 60000
+        if (notEnoughtTime) {
+            while (depth < 3) {
+                var returnedValue = alphaBeta7(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
-            abResult = returnedValue["score"] as MutableList<Int>
+                abResult = returnedValue["score"] as MutableList<Int>
 
 //            bestBoard = returnedValue.second.first
-            bestBoard = returnedValue["board"] as Board
-            bestBoard.print()
-            board.transpositionTable = returnedValue["tt"] as MutableMap<Long, Map<String, Any>>
-            retrievedFrom = returnedValue["from"] as MutableList<Int>
-            retrievedTo = returnedValue["to"] as MutableList<Int>
+                bestBoard = returnedValue["board"] as Board
+                bestBoard.print()
+                board.transpositionTable = returnedValue["tt"] as MutableMap<Long, Map<String, Any>>
+                retrievedFrom = returnedValue["from"] as MutableList<Int>
+                retrievedTo = returnedValue["to"] as MutableList<Int>
 //            if(abResult[0] > 10000) break
-            timeSpent = System.currentTimeMillis() - start
-            println("Depth: $depth")
-            println("Timespent: $timeSpent")
-            depth++
-        }
+                timeSpent = System.currentTimeMillis() - start
+                println("Depth: $depth")
+                println("Timespent: $timeSpent")
+                depth++
+            }
+        } else {
+            while (timeSpent + iterativeDeepeningTime < 10000) {
+//        while (depth < 4) {
+                var returnedValue = alphaBeta7(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true)
+//            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
+                abResult = returnedValue["score"] as MutableList<Int>
 
+//            bestBoard = returnedValue.second.first
+                bestBoard = returnedValue["board"] as Board
+                bestBoard.print()
+                board.transpositionTable = returnedValue["tt"] as MutableMap<Long, Map<String, Any>>
+                retrievedFrom = returnedValue["from"] as MutableList<Int>
+                retrievedTo = returnedValue["to"] as MutableList<Int>
+//            if(abResult[0] > 10000) break
+                timeSpent = System.currentTimeMillis() - start
+                println("Depth: $depth")
+                println("Timespent: $timeSpent")
+                depth++
+            }
+        }
+        remainingTime -= timeSpent
 //        println(depth)
 //        } else if(payload.player == "S") {
 //            abResult = alphaBeta2(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
