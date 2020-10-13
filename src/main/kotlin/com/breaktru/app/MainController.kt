@@ -21,6 +21,8 @@ class MainController {
     @GetMapping("init", produces = [APPLICATION_JSON_VALUE])
     fun init(): Array<String> {
         board.initialize()
+        prevMove.initialize()
+        twoMovesAgo.initialize()
         remainingTime = 600000;
         return board.boardString()
     }
@@ -36,10 +38,14 @@ class MainController {
     fun move(@RequestBody payload: Move): Map<String, Array<String>> {
 //        println("from: ${payload.from}")
 //        println(payload.to)
-        prevMove.initialize()
-        twoMovesAgo.initialize()
+
         twoMovesAgo = boardCopy(prevMove)
         prevMove = boardCopy(board)
+        println("prevmove board")
+        prevMove.print()
+        println("two boards ago move")
+        twoMovesAgo.print()
+
         val result = arrayOf(board.moveFrontEnd(payload.from, payload.to, payload.player, payload.remainingMoves))
         return mapOf("board" to board.boardString(), "result" to result)
     }
@@ -51,6 +57,10 @@ class MainController {
         board = boardCopy(prevMove)
         prevMove = boardCopy(twoMovesAgo)
         twoMovesAgo = Board()
+        println("prevmove board")
+        prevMove.print()
+        println("two boards ago move")
+        twoMovesAgo.print()
         return mapOf("board" to board.boardString())
     }
 
@@ -85,8 +95,9 @@ class MainController {
         var start = System.currentTimeMillis()
         var depth = 1
         var timeSpent = 0L
-        var iterativeDeepeningTime = if(remainingTime < 30000) 9000 else 8000
-        println(iterativeDeepeningTime)
+//        var iterativeDeepeningTime = if(remainingTime < 30000) 9000 else 8000
+        var iterativeDeepeningTime = 8500
+//        println(iterativeDeepeningTime)
         while (timeSpent + iterativeDeepeningTime < 10000) {
             var returnedValue = alphaBeta3(board, depth, -10000, 10000, payload.player, payload.remainingMoves)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)

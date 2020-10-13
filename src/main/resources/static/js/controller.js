@@ -91,6 +91,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       if (blkWht === 'S' || blkWht === 'G') {
         //remove the overtaken piece class
         var pieceTo = checkPos[checkPos.length - 2].substring(0, checkPos[checkPos.length - 2].length);
+        console.log("pieceTo" + pieceTo)
         prevMoves.push({
           "piece": piece,
           "position": position,
@@ -224,13 +225,17 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         remainingMoves = rememberMoves;
       }
     } else {
+        console.log("Hier kom ik in vanwege capture");
       var oldPos = document.getElementsByClassName(lastMove["position"]);
       console.log(oldPos);
       oldPos[0].classList.add(lastMove["piece"]);
       var newPost = document.getElementsByClassName(lastMove["postitionTo"]);
       console.log(newPost);
       newPost[0].classList.remove(lastMove["piece"]);
+      console.log(newPost);
+      console.log(lastMove["pieceTo"]);
       newPost[0].classList.add(lastMove["pieceTo"]);
+      console.log(newPost);
       logs[count] = 'Undo ' + '| ' + ' moves ' +
         lastMove["position"] + ' to ' + lastMove["postitionTo"] + " Capture";
       if (playersTurn == "G") {
@@ -407,7 +412,9 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         //check if position is white or black piece already
         if (blkWht === 'S' || blkWht === 'G') {
           console.log("Hierk om ik");
-          var pieceTo = checkPos[checkPos.length - 2].substring(0, checkPos[checkPos.length - 2].length);
+          console.log(checkPos);
+          var pieceTo = checkPos[checkPos.length - 1].substring(0, checkPos[checkPos.length - 1].length);
+          console.log("pieceTo" + pieceTo);
           //remove the overtaken piece class
           prevMoves.push({
             "piece": piece,
