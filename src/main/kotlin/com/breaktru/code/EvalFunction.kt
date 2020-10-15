@@ -20,8 +20,8 @@ fun terminalNode(board: Board): Pair<Boolean, Boolean> {
 }
 
 fun evaluatePiecesRandom(board: Board, playersTurn: String): Int {
-    val pieces = evaluatePieces(board, playersTurn)
-    return pieces + rand(-10, 10)
+//    val pieces = evaluatePieces(board, playersTurn)
+    return rand(-10, 10)
 }
 
 fun evaluate(board: Board, playersTurn: String): Int {

@@ -31,8 +31,9 @@ val SEPos: Array<IntArray> = arrayOf(intArrayOf(-10, -10, -10, -10, -10, -10, -1
 
 
 fun alphaBeta(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int): MutableMap<String, MutableList<Int>> {
-
+    var start = System.currentTimeMillis()
     var boardCopy = boardCopy(boardInput)
+//    println(System.currentTimeMillis() - start)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
 //        println("FA")
@@ -48,14 +49,16 @@ fun alphaBeta(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn:
     var remainingMovesAB = 0
 
     val possibleMoves = moveGenerator(boardCopy, playersTurn, remainingMoves)
-
-    for (position in possibleMoves) {
+//    println(System.currentTimeMillis() - start)
+    outloop@for (position in possibleMoves) {
 //            println(position.key[0])
 //            println(possibleMoves[position.key])
         for (move in possibleMoves[position.key]!!) {
             var result = Int.MIN_VALUE
+
             remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
             boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
+//            println(System.currentTimeMillis() - start)
 //            boardCopy.print()
             if (remainingMovesAB == 1) {
 //                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
@@ -72,12 +75,15 @@ fun alphaBeta(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn:
                 score = result
                 moveFrom = position.key[0]
                 moveTo = move
+
+                if (score > lowerbound) lowerbound = score
+//            boardInput.print()
+                boardCopy = boardCopy(boardInput)
+//            boardInput.print()
+                if (score >= upperbound) {
+                    break@outloop
+                }
             }
-            if (score > lowerbound) lowerbound = score
-//            boardInput.print()
-            boardCopy = boardCopy(boardInput)
-//            boardInput.print()
-            if (score >= upperbound) break
         }
     }
     return mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo)
@@ -260,7 +266,7 @@ fun alphaBeta4(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
 
     val olda = alpha
-    val ttRetrieval = retrieve(boardInput, ttTable)
+    val ttRetrieval = retrieve(boardInput, ttTable, playersTurn)
     if (ttRetrieval["depth"] as Int >= depth) {
         val retrievedFrom = ttRetrieval["from"] as MutableList<Int>
         val retrievedTo = ttRetrieval["to"] as MutableList<Int>
@@ -605,7 +611,7 @@ fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
 
     val olda = alpha
-    val ttRetrieval = retrieve(boardInput, ttTable)
+    val ttRetrieval = retrieve(boardInput, ttTable, playersTurn)
     if (ttRetrieval["depth"] as Int >= depth) {
         val retrievedFrom = ttRetrieval["from"] as MutableList<Int>
         val retrievedTo = ttRetrieval["to"] as MutableList<Int>
@@ -647,7 +653,7 @@ fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     }
     score = Int.MIN_VALUE
 
-    for (option in possibleMoves) {
+    outerloop@for (option in possibleMoves) {
 //            println(option.key[0])
 //            println(possibleMoves[position.key])
         for (position in possibleMoves[option.key]!!) {
@@ -695,7 +701,7 @@ fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
 //            boardInput.print()
                 if (score >= upperbound) {
 //                    count2++
-                    break
+                    break@outerloop
                 }
             }
         }
@@ -736,7 +742,7 @@ fun alphaBeta8(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
 
     val olda = alpha
-    val ttRetrieval = retrieve(boardInput, ttTable)
+    val ttRetrieval = retrieve(boardInput, ttTable, playersTurn)
     if (ttRetrieval["depth"] as Int >= depth) {
         val retrievedFrom = ttRetrieval["from"] as MutableList<Int>
         val retrievedTo = ttRetrieval["to"] as MutableList<Int>
@@ -937,12 +943,162 @@ fun alphaBeta9(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     return Pair(mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo), bestBoard)
 }
 
+fun alphaBeta10(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean, startTime: Long): MutableMap<String, Any> {
+
+    var ttTable = table
+    var finished : Boolean = true
+    if(System.currentTimeMillis() - startTime > 20000){
+        return mutableMapOf("score" to mutableListOf(-100000), "board" to boardInput, "tt" to ttTable, "finished" to false)
+    }
+
+    count2++
+    var boardCopy = boardCopy(boardInput)
+    val (silverWin, goldWin) = terminalNode(boardCopy)
+    if (silverWin || goldWin || depth == 0) {
+//        println("TEST")
+        return mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn)), "board" to boardCopy, "tt" to ttTable, "finished" to true)
+    }
+
+    var score = Int.MIN_VALUE
+    var upperbound = beta
+    var lowerbound = alpha
+    var moveFrom = mutableListOf(0, 0)
+    var moveTo = mutableListOf(0, 0)
+
+    var remainingMovesAB = 0
+    var bestBoard = boardCopy(boardInput)
+    var flag = ""
+    var returnedBoard = Board()
+    var result = Int.MIN_VALUE
+
+    val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
+
+    val olda = alpha
+    val ttRetrieval = retrieve(boardInput, ttTable, playersTurn)
+    if (ttRetrieval["depth"] as Int >= depth) {
+        val retrievedFrom = ttRetrieval["from"] as MutableList<Int>
+        val retrievedTo = ttRetrieval["to"] as MutableList<Int>
+        val retrievedScore = ttRetrieval["score"] as Int
+        val retrievedPlayer = ttRetrieval["playersTurn"] as String
+        val calcScore = if (retrievedPlayer == playersTurn) retrievedScore else -retrievedScore
+        if (ttRetrieval["flag"] as String == "Exact") {
+//            count2++
+            return mutableMapOf("score" to mutableListOf(calcScore),
+                    "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable, "finished" to true)
+        } else if (ttRetrieval["flag"] as String == "Lowerbound") {
+            lowerbound = if (alpha >= calcScore) alpha else calcScore
+        } else if (ttRetrieval["flag"] as String == "Upperbound") {
+            upperbound = if (beta <= calcScore) beta else calcScore
+        }
+        if (lowerbound > upperbound) {
+//            count2++
+            return mutableMapOf("score" to mutableListOf(calcScore),
+                    "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable, "finished" to true)
+        }
+    }
+
+    if (depth >= 2 && !rootNode) {
+        count3++
+        if (playersTurn == "G") {
+            var test = alphaBeta10(boardCopy, table, depth - 2, -upperbound, -lowerbound, "S", 2, false, startTime)
+            var bestMove = test["score"] as MutableList<Int>
+            returnedBoard = test["board"] as Board
+            result = -bestMove[0]
+            finished = test["finished"] as Boolean
+        } else if (playersTurn == "S") {
+            var test = alphaBeta10(boardCopy, table, depth - 2, -upperbound, -lowerbound, "G", 2, false, startTime)
+            var bestMove = test["score"] as MutableList<Int>
+            returnedBoard = test["board"] as Board
+            result = -bestMove[0]
+            finished = test["finished"] as Boolean
+        }
+        if (result >= upperbound) {
+            return mutableMapOf("score" to mutableListOf(upperbound), "board" to boardCopy, "tt" to ttTable, "finished" to true)
+        }
+    }
+    score = Int.MIN_VALUE
+
+    outerloop@for (option in possibleMoves) {   //Capture //FlagShip //Move
+//            println(option.key[0])
+//            println(possibleMoves[position.key])
+        for (position in possibleMoves[option.key]!!) {
+            for (move in possibleMoves[option.key]!![position.key]!!) {
+                var result = Int.MIN_VALUE
+                var returnedBoard = Board()
+                remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
+                boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
+//            boardCopy.print()
+                if (remainingMovesAB == 1) {
+//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
+                    var test = alphaBeta10(boardCopy, table, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false, startTime)
+                    var bestMove = test["score"] as MutableList<Int>
+                    returnedBoard = test["board"] as Board
+                    result = bestMove[0]
+                    finished = test["finished"] as Boolean
+//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
+                } else if (remainingMovesAB == 0) {
+                    if (playersTurn == "G") {
+                        var test = alphaBeta10(boardCopy, table, depth - 1, -upperbound, -lowerbound, "S", 2, false, startTime)
+                        var bestMove = test["score"] as MutableList<Int>
+                        returnedBoard = test["board"] as Board
+                        result = -bestMove[0]
+                        finished = test["finished"] as Boolean
+//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
+                    } else if (playersTurn == "S") {
+                        var test = alphaBeta10(boardCopy, table, depth - 1, -upperbound, -lowerbound, "G", 2, false, startTime)
+                        var bestMove = test["score"] as MutableList<Int>
+                        returnedBoard = test["board"] as Board
+                        result = -bestMove[0]
+                        finished = test["finished"] as Boolean
+//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
+                    }
+                }
+
+                if (result > score) {
+                    score = result
+                    moveFrom = position.key[0]
+                    moveTo = move
+                    bestBoard = boardCopy(returnedBoard)
+//                bestBoard.print()
+//                println("MoveFrom = $moveFrom")
+//                println("moveTo = $moveTo")
+                    if (score > lowerbound) lowerbound = score
+//            boardInput.print()
+                    boardCopy = boardCopy(boardInput)
+//            boardInput.print()
+                    if (score >= upperbound) {
+//                    count2++
+                        break@outerloop
+                    }
+                }
+
+            }
+        }
+    }
+//    var start = System.currentTimeMillis()
+    if (score <= olda) flag = "Upperbound"
+    else if (score >= beta) flag = "Lowerbound"
+    else flag = "Exact"
+    ttTable = store(boardInput, ttTable, moveFrom, moveTo, score, flag, depth, playersTurn)
+//    var timeSpent = System.currentTimeMillis() - start
+//    println("Timespent storing: $timeSpent")
+    return mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo, "board" to bestBoard, "tt" to ttTable, "finished" to finished)
+}
+
 
 //fun main() {
-//
-//    var abResult = mutableMapOf("hi" to mutableListOf(1, 1))
-//    var bestBoard = Board()
-//
+////    val start = System.currentTimeMillis()
+////    val board3 = Board()
+////    board3.initialize()
+////    var board4 = Board()
+////    println("Init ${System.currentTimeMillis() - start}")
+////    board4 = boardCopy(board3)
+////    println(System.currentTimeMillis() - start)
+////      alphaBeta(board3, 3, -10000, 10000, "S", 2)
+////    println(System.currentTimeMillis() - start)
+////    var abResult = mutableMapOf("hi" to mutableListOf(1, 1))
+////    var bestBoard = Board()
+////
 //    val board = Board();
 //    board.initialize()
 //    val board2 = Board()
@@ -955,101 +1111,101 @@ fun alphaBeta9(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
 //    board5.initialize()
 //    val board6 = Board()
 //    board6.initialize()
-//
-////    alphaBeta5(board, 2, -10000, 10000, "G", 2)
-////    println(abResult)
-//    var start = System.currentTimeMillis()
-//    var depth = 1
-//    var timeSpent = 0L
-//    count2 = 0
-//    start = System.currentTimeMillis()
-////    alphaBeta5(board, 1, -10000, 10000, "G", 2)
-//    depth = 1
 ////
-//////    alphaBeta5(board, board.transpositionTable, 3, -10000, 10000, "G", 2)
-////    println("count2 $count2")
-//
+//////    alphaBeta5(board, 2, -10000, 10000, "G", 2)
+//////    println(abResult)
+////    var start = System.currentTimeMillis()
+////    var depth = 1
+////    var timeSpent = 0L
 ////    count2 = 0
+////    start = System.currentTimeMillis()
+//////    alphaBeta5(board, 1, -10000, 10000, "G", 2)
+////    depth = 1
+//////
+////////    alphaBeta5(board, board.transpositionTable, 3, -10000, 10000, "G", 2)
+//////    println("count2 $count2")
+////
+//////    count2 = 0
+//////    println("count2 $count2")
+////    start = System.currentTimeMillis()
+////    timeSpent = 0L
+////    depth = 1
+////    println("Normal Alpha Beta")
+////    while (depth < 5) {
+////        count2 = 0
+////        count3 = 0
+////        alphaBeta3(board3, depth, -10000, 10000, "S", 2)
+////        timeSpent = System.currentTimeMillis() - start
+////        println("depth $depth")
+////        depth++
+////        println("count2 $count2")
+////        println("count3 $count3")
+////    }
 ////    println("count2 $count2")
-//    start = System.currentTimeMillis()
-//    timeSpent = 0L
-//    depth = 1
-//    println("Normal Alpha Beta")
-//    while (depth < 5) {
-//        count2 = 0
-//        count3 = 0
-//        alphaBeta3(board3, depth, -10000, 10000, "S", 2)
-//        timeSpent = System.currentTimeMillis() - start
-//        println("depth $depth")
-//        depth++
-//        println("count2 $count2")
-//        println("count3 $count3")
-//    }
-//    println("count2 $count2")
-//    println("Timespent: $timeSpent")
-//    println()
-//    println("Alpha beta with Null")
-//    count2 = 0
-//    depth = 1
-//    start = System.currentTimeMillis()
-//    timeSpent = 0L
-//    while (depth < 5) {
-//        count2 = 0
-//        count3 = 0
-//        alphaBeta6(board4, depth, -10000, 10000, "S", 2, true)
-//        timeSpent = System.currentTimeMillis() - start
-//        println("depth Null $depth")
-//        depth++
-//        println("count2 $count2")
-//        println("count3 $count3")
-//    }
-//    println("count2 $count2")
-//    println("count3 $count3")
-//    println("Timespent: $timeSpent")
-//    println()
-//    println("Alpha beta with Null Random eval")
-//    count2 = 0
-//    depth = 1
-//    start = System.currentTimeMillis()
-//    timeSpent = 0L
-//    while (depth < 5) {
-//        count2 = 0
-//        count3 = 0
-//        alphaBeta9(board5, depth, -10000, 10000, "S", 2, true)
-//        timeSpent = System.currentTimeMillis() - start
-//        println("depth Null $depth")
-//        depth++
-//        println("count2 $count2")
-//        println("count3 $count3")
-//    }
-//    println("count2 $count2")
-//    println("count3 $count3")
-//    println("Timespent: $timeSpent")
-//    println()
-//    println("Transposition Table")
-//    count2 = 0
-//    depth = 1
-//    start = System.currentTimeMillis()
-//    timeSpent = 0L
-//    while (depth < 5) {
-//        count3 = 0
-//        count2 = 0
-//        val result = alphaBeta4(board, board.transpositionTable, depth, -10000, 10000, "S", 2)
-//        board.transpositionTable = result["tt"] as MutableMap<Long, Map<String, Any>>
-//        println("depth TT $depth")
-//        depth++
-//        timeSpent = System.currentTimeMillis() - start
-//        println("count2 $count2")
-//        println("count3 $count3")
-//    }
-//    println("Timespent: $timeSpent")
-//    println()
-//    println()
+////    println("Timespent: $timeSpent")
+////    println()
+////    println("Alpha beta with Null")
+////    count2 = 0
+////    depth = 1
+////    start = System.currentTimeMillis()
+////    timeSpent = 0L
+////    while (depth < 5) {
+////        count2 = 0
+////        count3 = 0
+////        alphaBeta6(board4, depth, -10000, 10000, "S", 2, true)
+////        timeSpent = System.currentTimeMillis() - start
+////        println("depth Null $depth")
+////        depth++
+////        println("count2 $count2")
+////        println("count3 $count3")
+////    }
+////    println("count2 $count2")
+////    println("count3 $count3")
+////    println("Timespent: $timeSpent")
+////    println()
+////    println("Alpha beta with Null Random eval")
+////    count2 = 0
+////    depth = 1
+////    start = System.currentTimeMillis()
+////    timeSpent = 0L
+////    while (depth < 5) {
+////        count2 = 0
+////        count3 = 0
+////        alphaBeta9(board5, depth, -10000, 10000, "S", 2, true)
+////        timeSpent = System.currentTimeMillis() - start
+////        println("depth Null $depth")
+////        depth++
+////        println("count2 $count2")
+////        println("count3 $count3")
+////    }
+////    println("count2 $count2")
+////    println("count3 $count3")
+////    println("Timespent: $timeSpent")
+////    println()
+////    println("Transposition Table")
+////    count2 = 0
+////    depth = 1
+////    start = System.currentTimeMillis()
+////    timeSpent = 0L
+////    while (depth < 5) {
+////        count3 = 0
+////        count2 = 0
+////        val result = alphaBeta4(board, board.transpositionTable, depth, -10000, 10000, "S", 2)
+////        board.transpositionTable = result["tt"] as MutableMap<Long, Map<String, Any>>
+////        println("depth TT $depth")
+////        depth++
+////        timeSpent = System.currentTimeMillis() - start
+////        println("count2 $count2")
+////        println("count3 $count3")
+////    }
+////    println("Timespent: $timeSpent")
+////    println()
+////    println()
 //    println("Transposition Table with Null")
-//    start = System.currentTimeMillis()
-//    timeSpent = 0L
-//    depth = 1
-//    while (depth < 5) {
+//    var start = System.currentTimeMillis()
+//    var timeSpent = 0L
+//    var depth = 1
+//    while (depth < 6) {
 //        count3 = 0
 //        count2 = 0
 //        val result = alphaBeta7(board2, board2.transpositionTable, depth, -10000, 10000, "S", 2, true)
@@ -1061,24 +1217,24 @@ fun alphaBeta9(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
 //        println("count3 $count3")
 //    }
 //    println("Timespent: $timeSpent")
-//    println()
-//    println()
-//    println("Transposition Table with Null with Random")
-//    start = System.currentTimeMillis()
-//    timeSpent = 0L
-//    depth = 1
-//    while (depth < 5) {
-//        count3 = 0
-//        count2 = 0
-//        val result = alphaBeta8(board6, board6.transpositionTable, depth, -10000, 10000, "S", 2, true)
-//        board6.transpositionTable = result["tt"] as MutableMap<Long, Map<String, Any>>
-//        println("depth TT Null $depth")
-//        depth++
-//        timeSpent = System.currentTimeMillis() - start
-//        println("count2 $count2")
-//        println("count3 $count3")
-//    }
-//    println("Timespent: $timeSpent")
-//    println()
+////    println()
+////    println()
+////    println("Transposition Table with Null with Random")
+////    start = System.currentTimeMillis()
+////    timeSpent = 0L
+////    depth = 1
+////    while (depth < 5) {
+////        count3 = 0
+////        count2 = 0
+////        val result = alphaBeta8(board6, board6.transpositionTable, depth, -10000, 10000, "S", 2, true)
+////        board6.transpositionTable = result["tt"] as MutableMap<Long, Map<String, Any>>
+////        println("depth TT Null $depth")
+////        depth++
+////        timeSpent = System.currentTimeMillis() - start
+////        println("count2 $count2")
+////        println("count3 $count3")
+////    }
+////    println("Timespent: $timeSpent")
+////    println()
 //}
 

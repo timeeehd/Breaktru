@@ -151,7 +151,7 @@ class MainController {
         var start = System.currentTimeMillis()
         var depth = 1
         var timeSpent = 0L
-        var iterativeDeepeningTime = if (remainingTime < 300000) 9000 else 7500
+        var iterativeDeepeningTime = if (remainingTime < 300000) 9000 else 8000
         println(iterativeDeepeningTime)
         notEnoughtTime = remainingTime < 60000
         if (notEnoughtTime) {
@@ -173,8 +173,8 @@ class MainController {
                 depth++
             }
         } else {
-            while (timeSpent + iterativeDeepeningTime < 10000) {
-//        while (depth < 4) {
+//            while (timeSpent + iterativeDeepeningTime < 10000) {
+        while (depth < 4) {
                 var returnedValue = alphaBeta7(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
                 abResult = returnedValue["score"] as MutableList<Int>
@@ -199,6 +199,94 @@ class MainController {
 //        }
 //        val generatedMoves = moveGenerator(board, payload.player, payload.remainingMoves)
         println(abResult)
+//        println(abResult["from"]!![0])
+//        println(generatedMoves.size)
+
+//        val random = (Math.random() * generatedMoves.size).toInt()
+//        val entry = generatedMoves.entries.elementAt(random)
+////        println(entry)
+//        val entryKey = entry.key
+////        println(entryKey)
+
+        val from = numberToLetter(retrievedFrom[1]).toString() + (10 - retrievedFrom[0] + 1).toString()
+//        val random2 = (Math.random() * (generatedMoves[entryKey]!!.size)).toInt()
+        val to = numberToLetter(retrievedTo[1]).toString() + (10 - retrievedTo!![0] + 1).toString()
+//        println(entry.value[random2][1])
+//        println("to: $to   from: $from" )
+//        val returnString = numberToLetter(generatedMoves[random][0]).toString() + generatedMoves[random][1].toString()
+        return mapOf("From" to from, "To" to to, "time" to timeSpent)
+    }
+
+    @PostMapping("alphaBeta3", produces = [APPLICATION_JSON_VALUE])
+    fun alphaBetaCall3(@RequestBody payload: MoveGen): Map<String, Any> {
+        println("Transposition Table")
+//        var abResult = mutableMapOf("hi" to mutableListOf(1, 1))
+        var abResult = mutableListOf(1)
+        var retrievedFrom = mutableListOf(1)
+        var retrievedTo = mutableListOf(1)
+        var bestBoard = Board()
+//        println(board.escortTable)
+//        if(payload.player == "G") {
+        var start = System.currentTimeMillis()
+        var depth = 1
+        var timeSpent = 0L
+        var iterativeDeepeningTime = if (remainingTime < 300000) 9000 else 8000
+        println(iterativeDeepeningTime)
+        notEnoughtTime = remainingTime < 60000
+        if (notEnoughtTime) {
+            while (depth < 4) {
+                var returnedValue = alphaBeta10(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true, start)
+//            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
+                abResult = returnedValue["score"] as MutableList<Int>
+
+//            bestBoard = returnedValue.second.first
+                bestBoard = returnedValue["board"] as Board
+                bestBoard.print()
+                board.transpositionTable = returnedValue["tt"] as MutableMap<Long, Map<String, Any>>
+                retrievedFrom = returnedValue["from"] as MutableList<Int>
+                retrievedTo = returnedValue["to"] as MutableList<Int>
+//            if(abResult[0] > 10000) break
+                timeSpent = System.currentTimeMillis() - start
+                println("Depth: $depth")
+                println("Timespent: $timeSpent")
+                depth++
+            }
+        } else {
+//            while (timeSpent + iterativeDeepeningTime < 10000)  {
+
+        while (depth < 4) {
+                var returnedValue = alphaBeta10(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true, start)
+//            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
+//                var scoreCheck = returnedValue["score"] as MutableList<Int>
+//                if (scoreCheck[0)
+                timeSpent = System.currentTimeMillis() - start
+                val finished = returnedValue["finished"]
+                println("finished $finished")
+                if (finished == false){
+                    break
+                }
+                abResult = returnedValue["score"] as MutableList<Int>
+
+//            bestBoard = returnedValue.second.first
+                bestBoard = returnedValue["board"] as Board
+                bestBoard.print()
+                board.transpositionTable = returnedValue["tt"] as MutableMap<Long, Map<String, Any>>
+                retrievedFrom = returnedValue["from"] as MutableList<Int>
+                retrievedTo = returnedValue["to"] as MutableList<Int>
+//            if(abResult[0] > 10000) break
+                println("Depth: $depth")
+                println("Timespent: $timeSpent")
+                depth++
+            }
+        }
+        remainingTime -= timeSpent
+//        println(depth)
+//        } else if(payload.player == "S") {
+//            abResult = alphaBeta2(board, 3, Int.MIN_VALUE + 10, Int.MAX_VALUE - 10, payload.player, payload.remainingMoves)
+//        }
+//        val generatedMoves = moveGenerator(board, payload.player, payload.remainingMoves)
+        println(abResult)
+        println(timeSpent)
 //        println(abResult["from"]!![0])
 //        println(generatedMoves.size)
 
