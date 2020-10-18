@@ -101,6 +101,48 @@ fun evaluate2(board: Board, playersTurn: String): Int {
     return sendBack
 }
 
+fun evaluate3(board: Board, playersTurn: String): Int {
+//    println("TEST")
+    val (silverWin, goldWin) = terminalNode(board)
+    if (silverWin && playersTurn == "S") {
+//        println("Silver Win")
+        return 100000
+    }
+    if (silverWin && playersTurn == "G") {
+//        println("Silver Win")
+        return -100000
+    }
+    if (goldWin && playersTurn == "G") {
+//        println("Gold Win")
+        return 100000
+    }
+    if (goldWin && playersTurn == "S") {
+//        println("Gold Win")
+        return -100000
+    }
+
+//    if(goldWin && playersTurn == "S") return -10000
+//    if(silverWin && playersTurn == "G") return -10000
+    val pieces = evaluatePieces(board, playersTurn)
+    val (silverPos, goldPos) = evaluatePositionBoard(board, playersTurn)
+    val posGFS = evaluatePositionToGFS(board, playersTurn)
+    val freePass = evaluateFreePassFS(board)
+//    board.print()
+    var sendBack = 0
+//    board.print()
+//    if(board.board[3][3].color == "S" && board.board[3][7].color == "S"){
+//        println("HOI")
+//    }
+    var rand = 0
+    if (playersTurn == "G") sendBack = (21 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS + freePass)
+    if (playersTurn == "S") sendBack = (21 * pieces + 2 * (silverPos - goldPos) + 1 * posGFS - freePass)
+//    if (sendBack < 0) rand = rand(sendBack/20, -sendBack/20)
+//    else rand = rand(-sendBack/20, sendBack/20)
+//    sendBack += rand
+    return sendBack
+}
+
+
 fun evaluatePieces(board: Board, playersTurn: String): Int {
     var value = 0
     if (playersTurn == "G") {
@@ -306,6 +348,45 @@ fun evaluatePositionToGFS(board: Board, playersTurn: String): Int {
     if (playersTurn == "S") return silverEval - goldEval
     if (playersTurn == "G") return goldEval - silverEval
     return 0
+}
+
+fun evaluateFreePassFS(board: Board) : Int{
+    var scoreDown = 1000
+    var scoreUp = 1000
+    var scoreLeft = 1000
+    var scoreRight = 1000
+    for (row in 0..10) {
+        for (col in 0..10) {
+            if (board.board[row][col].name == "FS") {
+                for (down in row downTo 0) {
+                    if (board.board[down][col].name != "  ") {
+                        scoreDown = 0
+                        break
+                    }
+                }
+                for (up in row .. 10) {
+                    if (board.board[up][col].name != "  ") {
+                        scoreUp = 0
+                        break
+                    }
+                }
+                for (left in col downTo 0) {
+                    if (board.board[row][left].name != "  ") {
+                        scoreLeft = 0
+                        break
+                    }
+                }
+                for (right in col .. 10) {
+                    if (board.board[row][right].name != "  ") {
+                        scoreRight = 0
+                        break
+                    }
+                }
+
+            }
+        }
+    }
+    return scoreDown + scoreLeft + scoreUp + scoreRight
 }
 
 fun rand(start: Int, end: Int): Int {

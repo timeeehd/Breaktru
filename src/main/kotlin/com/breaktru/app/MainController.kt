@@ -155,7 +155,7 @@ class MainController {
         println(iterativeDeepeningTime)
         notEnoughtTime = remainingTime < 60000
         if (notEnoughtTime) {
-            while (depth < 3) {
+            while (depth < 4) {
                 var returnedValue = alphaBeta7(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
                 abResult = returnedValue["score"] as MutableList<Int>
@@ -174,7 +174,7 @@ class MainController {
             }
         } else {
 //            while (timeSpent + iterativeDeepeningTime < 10000) {
-        while (depth < 4) {
+            while (depth < 4) {
                 var returnedValue = alphaBeta7(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
                 abResult = returnedValue["score"] as MutableList<Int>
@@ -185,11 +185,13 @@ class MainController {
                 board.transpositionTable = returnedValue["tt"] as MutableMap<Long, Map<String, Any>>
                 retrievedFrom = returnedValue["from"] as MutableList<Int>
                 retrievedTo = returnedValue["to"] as MutableList<Int>
-//            if(abResult[0] > 10000) break
+
+
                 timeSpent = System.currentTimeMillis() - start
                 println("Depth: $depth")
                 println("Timespent: $timeSpent")
                 depth++
+                if (abResult[0] > 10000) break
             }
         }
         remainingTime -= timeSpent
@@ -235,7 +237,7 @@ class MainController {
         notEnoughtTime = remainingTime < 60000
         if (notEnoughtTime) {
             while (depth < 4) {
-                var returnedValue = alphaBeta10(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true, start)
+                var returnedValue = alphaBeta10(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
                 abResult = returnedValue["score"] as MutableList<Int>
 
@@ -254,15 +256,15 @@ class MainController {
         } else {
 //            while (timeSpent + iterativeDeepeningTime < 10000)  {
 
-        while (depth < 4) {
-                var returnedValue = alphaBeta10(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true, start)
+            while (depth < 4) {
+                var returnedValue = alphaBeta10(board, board.transpositionTable, depth, -10000, 10000, payload.player, payload.remainingMoves, true)
 //            var returnedValue = alphaBeta4(board, board.transpositionTable,depth, -10000, 10000, payload.player, payload.remainingMoves)
 //                var scoreCheck = returnedValue["score"] as MutableList<Int>
 //                if (scoreCheck[0)
                 timeSpent = System.currentTimeMillis() - start
                 val finished = returnedValue["finished"]
                 println("finished $finished")
-                if (finished == false){
+                if (finished == false) {
                     break
                 }
                 abResult = returnedValue["score"] as MutableList<Int>

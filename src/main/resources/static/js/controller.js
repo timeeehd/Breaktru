@@ -160,7 +160,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
           $scope.object.logs = logs;
           console.log($scope.object.logs);
           remainingMoves = 2;
-          $scope.object.remainingTime = Math.floor(remainingTime/1000);
+          $scope.object.remainingTime = Math.floor(remainingTime / 1000);
         } else {
           playersTurn = "G";
           $scope.object = { turn: "G" };
@@ -168,7 +168,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
           $scope.object.logs = logs;
           console.log($scope.object.logs);
           remainingMoves = 2;
-          $scope.object.remainingTime = Math.floor(remainingTime/1000);
+          $scope.object.remainingTime = Math.floor(remainingTime / 1000);
         }
       }
       count++;
@@ -183,7 +183,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     };
 
 
-    $http.post("/api/undo", headers).then((response) => {});
+    $http.post("/api/undo", headers).then((response) => { });
 
     var lastMove = prevMoves[prevMoves.length - 1];
     var size = Object.keys(lastMove).length;
@@ -225,7 +225,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
         remainingMoves = rememberMoves;
       }
     } else {
-        console.log("Hier kom ik in vanwege capture");
+      console.log("Hier kom ik in vanwege capture");
       var oldPos = document.getElementsByClassName(lastMove["position"]);
       console.log(oldPos);
       oldPos[0].classList.add(lastMove["piece"]);
@@ -299,7 +299,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     $scope.object = { turn: "G" };
     $scope.object.count = 1;
     turnCount = 1;
-    $scope.object.remainingTime = remainingTime/1000;
+    $scope.object.remainingTime = remainingTime / 1000;
   }
 
   $scope.silver = function () {
@@ -312,7 +312,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     $scope.object.count = 1;
     turnCount = 1;
 
-    $scope.object.remainingTime = remainingTime/1000;
+    $scope.object.remainingTime = remainingTime / 1000;
   }
 
   $scope.twoAI = function () {
@@ -361,7 +361,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     };
 
 
-    $http.post("/api/alphaBeta2", genMove, headers).then((response) => {
+    $http.post("/api/alphaBeta3", genMove, headers).then((response) => {
 
       console.log(response);
       var fromVar = response.data.From;
@@ -492,7 +492,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
               $scope.object = { turn: "S" };
               $scope.object.count = turnCount;
               $scope.object.logs = logs;
-              $scope.object.remainingTime = Math.floor(remainingTime/1000);
+              $scope.object.remainingTime = Math.floor(remainingTime / 1000);
             });
             remainingMoves = 2;
           } else {
@@ -502,14 +502,14 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
               $scope.object = { turn: "G" };
               $scope.object.count = turnCount;
               $scope.object.logs = logs;
-              $scope.object.remainingTime = Math.floor(remainingTime/1000);
+              $scope.object.remainingTime = Math.floor(remainingTime / 1000);
             });
             remainingMoves = 2;
           }
         }
       }, 10);
       console.log(remainingTime);
-      $scope.object.remainingTime = Math.floor(remainingTime/1000);
+      $scope.object.remainingTime = Math.floor(remainingTime / 1000);
       count++;
     });
   }
@@ -523,12 +523,19 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
     remainingMoves = 2;
     logs[count] = 'Turn ' + turnCount + '| ' + playersTurn + ' move: PASS ';
     turnCount = turnCount + 1;
-    //          $scope.$apply(() => {
-    $scope.object = { turn: "S" };
     $scope.object.count = turnCount;
     $scope.object.logs = logs;
-    //                      });
-    playersTurn = "S";
+    if (playersTurn == "G") {
+      //          $scope.$apply(() => {
+      $scope.object = { turn: "S" };
+      //                      });
+      playersTurn = "S";
+    } else if (playersTurn == "S") {
+      $scope.object = { turn: "G" };
+      //                      });
+      playersTurn = "G";
+    }
+
     count++;
   }
 
