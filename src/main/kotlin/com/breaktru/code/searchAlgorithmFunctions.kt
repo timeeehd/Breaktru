@@ -33,10 +33,8 @@ val SEPos: Array<IntArray> = arrayOf(intArrayOf(-10, -10, -10, -10, -10, -10, -1
 fun alphaBeta(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int): MutableMap<String, MutableList<Int>> {
     var start = System.currentTimeMillis()
     var boardCopy = boardCopy(boardInput)
-//    println(System.currentTimeMillis() - start)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
-//        println("FA")
         return mutableMapOf("score" to mutableListOf(evaluatePiecesRandom(boardCopy, playersTurn)))
     }
 
@@ -49,19 +47,13 @@ fun alphaBeta(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn:
     var remainingMovesAB = 0
 
     val possibleMoves = moveGenerator(boardCopy, playersTurn, remainingMoves)
-//    println(System.currentTimeMillis() - start)
     outloop@for (position in possibleMoves) {
-//            println(position.key[0])
-//            println(possibleMoves[position.key])
         for (move in possibleMoves[position.key]!!) {
             var result = Int.MIN_VALUE
 
             remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
             boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-//            println(System.currentTimeMillis() - start)
-//            boardCopy.print()
             if (remainingMovesAB == 1) {
-//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
                 result = alphaBeta(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"]!![0]
             } else if (remainingMovesAB == 0) {
                 if (playersTurn == "G") {
@@ -75,11 +67,8 @@ fun alphaBeta(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn:
                 score = result
                 moveFrom = position.key[0]
                 moveTo = move
-
                 if (score > lowerbound) lowerbound = score
-//            boardInput.print()
                 boardCopy = boardCopy(boardInput)
-//            boardInput.print()
                 if (score >= upperbound) {
                     break@outloop
                 }
@@ -94,7 +83,6 @@ fun alphaBeta2(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     var boardCopy = boardCopy(boardInput)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
-//        println("TEST")
         return Pair(mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn))), boardCopy)
     }
 
@@ -103,43 +91,33 @@ fun alphaBeta2(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     var lowerbound = alpha
     var moveFrom = mutableListOf(0, 0)
     var moveTo = mutableListOf(0, 0)
-//    var bestMove: MutableMap<String, MutableList<Int>>
-//    var returnedBoard : Board
-
     var remainingMovesAB = 0
     var bestBoard = boardCopy(boardInput)
 
     val possibleMoves = moveGenerator(boardCopy, playersTurn, remainingMoves)
 
     for (position in possibleMoves) {
-//            println(position.key[0])
-//            println(possibleMoves[position.key])
         for (move in possibleMoves[position.key]!!) {
             var result = Int.MIN_VALUE
             var returnedBoard = Board()
             remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
             boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-//            boardCopy.print()
             if (remainingMovesAB == 1) {
-//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
                 var test = alphaBeta2(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)
                 var bestMove = test.first
                 returnedBoard = test.second
                 result = bestMove["score"]!![0]
-//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
             } else if (remainingMovesAB == 0) {
                 if (playersTurn == "G") {
                     var test = alphaBeta2(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2)
                     var bestMove = test.first
                     returnedBoard = test.second
                     result = -bestMove["score"]!![0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 } else if (playersTurn == "S") {
                     var test = alphaBeta2(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2)
                     var bestMove = test.first
                     returnedBoard = test.second
                     result = -bestMove["score"]!![0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 }
             }
 
@@ -148,14 +126,9 @@ fun alphaBeta2(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
                 moveFrom = position.key[0]
                 moveTo = move
                 bestBoard = boardCopy(returnedBoard)
-//                bestBoard.print()
-//                println("MoveFrom = $moveFrom")
-//                println("moveTo = $moveTo")
             }
             if (score > lowerbound) lowerbound = score
-//            boardInput.print()
             boardCopy = boardCopy(boardInput)
-//            boardInput.print()
             if (score >= upperbound) {
                 break
             }
@@ -170,7 +143,6 @@ fun alphaBeta3(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     var boardCopy = boardCopy(boardInput)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
-//        println("TEST")
         return Pair(mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn))), boardCopy)
     }
 
@@ -186,35 +158,28 @@ fun alphaBeta3(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
 
     for (option in possibleMoves) {
-//            println(option.key[0])
-//            println(possibleMoves[position.key])
         for (position in possibleMoves[option.key]!!) {
             for (move in possibleMoves[option.key]!![position.key]!!) {
                 var result = Int.MIN_VALUE
                 var returnedBoard = Board()
                 remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
                 boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-//            boardCopy.print()
                 if (remainingMovesAB == 1) {
-//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
                     var test = alphaBeta3(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)
                     var bestMove = test.first
                     returnedBoard = test.second
                     result = bestMove["score"]!![0]
-//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 } else if (remainingMovesAB == 0) {
                     if (playersTurn == "G") {
                         var test = alphaBeta3(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2)
                         var bestMove = test.first
                         returnedBoard = test.second
                         result = -bestMove["score"]!![0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     } else if (playersTurn == "S") {
                         var test = alphaBeta3(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2)
                         var bestMove = test.first
                         returnedBoard = test.second
                         result = -bestMove["score"]!![0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     }
                 }
 
@@ -223,16 +188,10 @@ fun alphaBeta3(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
                     moveFrom = position.key[0]
                     moveTo = move
                     bestBoard = boardCopy(returnedBoard)
-//                bestBoard.print()
-//                println("MoveFrom = $moveFrom")
-//                println("moveTo = $moveTo")
                 }
                 if (score > lowerbound) lowerbound = score
-//            boardInput.print()
                 boardCopy = boardCopy(boardInput)
-//            boardInput.print()
                 if (score >= upperbound) {
-//                    count2++
                     break
                 }
             }
@@ -248,7 +207,6 @@ fun alphaBeta4(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     var boardCopy = boardCopy(boardInput)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
-//        println("TEST")
         return mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn)), "board" to boardCopy, "tt" to ttTable)
     }
 
@@ -261,8 +219,6 @@ fun alphaBeta4(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     var remainingMovesAB = 0
     var bestBoard = boardCopy(boardInput)
     var flag = ""
-
-
     val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
 
     val olda = alpha
@@ -274,7 +230,6 @@ fun alphaBeta4(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
         val retrievedPlayer = ttRetrieval["playersTurn"] as String
         val calcScore = if (retrievedPlayer == playersTurn) retrievedScore else -retrievedScore
         if (ttRetrieval["flag"] as String == "Exact") {
-//            count2++
             return mutableMapOf("score" to mutableListOf(calcScore),
                     "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable)
         } else if (ttRetrieval["flag"] as String == "Lowerbound") {
@@ -283,42 +238,34 @@ fun alphaBeta4(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
             upperbound = if (beta <= calcScore) beta else calcScore
         }
         if (lowerbound > upperbound) {
-//            count2++
             return mutableMapOf("score" to mutableListOf(calcScore),
                     "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable)
         }
     }
 
     for (option in possibleMoves) {
-//            println(option.key[0])
-//            println(possibleMoves[position.key])
         for (position in possibleMoves[option.key]!!) {
             for (move in possibleMoves[option.key]!![position.key]!!) {
                 var result = Int.MIN_VALUE
                 var returnedBoard = Board()
                 remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
                 boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-//            boardCopy.print()
                 if (remainingMovesAB == 1) {
-//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
                     var test = alphaBeta4(boardCopy, table, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)
                     var bestMove = test["score"] as MutableList<Int>
                     returnedBoard = test["board"] as Board
                     result = bestMove[0]
-//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 } else if (remainingMovesAB == 0) {
                     if (playersTurn == "G") {
                         var test = alphaBeta4(boardCopy, table, depth - 1, -upperbound, -lowerbound, "S", 2)
                         var bestMove = test["score"] as MutableList<Int>
                         returnedBoard = test["board"] as Board
                         result = -bestMove[0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     } else if (playersTurn == "S") {
                         var test = alphaBeta4(boardCopy, table, depth - 1, -upperbound, -lowerbound, "G", 2)
                         var bestMove = test["score"] as MutableList<Int>
                         returnedBoard = test["board"] as Board
                         result = -bestMove[0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     }
                 }
 
@@ -327,14 +274,9 @@ fun alphaBeta4(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
                     moveFrom = position.key[0]
                     moveTo = move
                     bestBoard = boardCopy(returnedBoard)
-//                bestBoard.print()
-//                println("MoveFrom = $moveFrom")
-//                println("moveTo = $moveTo")
                 }
                 if (score > lowerbound) lowerbound = score
-//            boardInput.print()
                 boardCopy = boardCopy(boardInput)
-//            boardInput.print()
                 if (score >= upperbound) {
 //                    count2++
                     break
@@ -342,160 +284,19 @@ fun alphaBeta4(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
             }
         }
     }
-//    var start = System.currentTimeMillis()
     if (score <= olda) flag = "Upperbound"
     else if (score >= beta) flag = "Lowerbound"
     else flag = "Exact"
     ttTable = store(boardInput, ttTable, moveFrom, moveTo, score, flag, depth, playersTurn)
-//    var timeSpent = System.currentTimeMillis() - start
-//    println("Timespent storing: $timeSpent")
     return mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo, "board" to bestBoard, "tt" to ttTable)
 }
 
-//fun alphaBeta5(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int): Pair<MutableMap<String, MutableList<Int>>, Board> {
-//    count2++
-//    var boardCopy = boardCopy(boardInput)
-//    val (silverWin, goldWin) = terminalNode(boardCopy)
-//    if (silverWin || goldWin || depth == 0) {
-////        println("TEST")
-//        return Pair(mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn))), boardCopy)
-//    }
-//
-//    var score = Int.MIN_VALUE
-//    var upperbound = beta
-//    var lowerbound = alpha
-//    var moveFrom = mutableListOf(0, 0)
-//    var moveTo = mutableListOf(0, 0)
-//    var moveFrom2 = mutableListOf(0, 0)
-//    var moveTo2 = mutableListOf(0, 0)
-//    var remainingMovesAB = 0
-//    var bestBoard = boardCopy(boardInput)
-//
-//    val possibleMoves = moveGenerator2(boardCopy, playersTurn, remainingMoves)
-//
-//    for (option in possibleMoves) {
-////            println(option.key[0])
-////            println(possibleMoves[position.key])
-//        if (option.key == "capture" || option.key == "flagship" || remainingMoves == 1) {
-//            for (position in possibleMoves[option.key]!!) {
-//                for (move in possibleMoves[option.key]!![position.key]!!) {
-//                    var result = Int.MIN_VALUE
-//                    var returnedBoard = Board()
-//                    remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
-//                    boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-////            boardCopy.print()
-////                    if (remainingMovesAB == 1) {
-//////                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
-////                        var test = alphaBeta3(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)
-////                        var bestMove = test.first
-////                        returnedBoard = test.second
-////                        result = bestMove["score"]!![0]
-//////                println("from ${bestMove["from"]} to ${bestMove["to"]}")
-////                    } else if (remainingMovesAB == 0) {
-//                    if (playersTurn == "G") {
-//                        var start = System.currentTimeMillis()
-//                        var test = alphaBeta5(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2)
-////                        println("timespent = ${System.currentTimeMillis() - start}")
-//                        var bestMove = test.first
-//                        returnedBoard = test.second
-//                        result = -bestMove["score"]!![0]
-////                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
-//                    } else if (playersTurn == "S") {
-//                        var test = alphaBeta5(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2)
-//                        var bestMove = test.first
-//                        returnedBoard = test.second
-//                        result = -bestMove["score"]!![0]
-////                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
-////                        }
-//                    }
-//                    if (result > score) {
-//                        score = result
-//                        moveFrom = position.key[0]
-//                        moveTo = move
-//                        bestBoard = boardCopy(returnedBoard)
-////                bestBoard.print()
-////                println("MoveFrom = $moveFrom")
-////                println("moveTo = $moveTo")
-//                    }
-//                    if (score > lowerbound) lowerbound = score
-////            boardInput.print()
-//                    boardCopy = boardCopy(boardInput)
-////            boardInput.print()
-//                    if (score >= upperbound) {
-////                        count2++
-//                        break
-//                    }
-//                }
-//            }
-//        } else {
-//            val keys = possibleMoves[option.key]!!.keys
-////            println(keys)
-////            println(keys.elementAt(0))
-//            var start = System.currentTimeMillis()
-//            for (i in 0 until keys.size) {
-//                for (move in 0 until possibleMoves[option.key]!![keys.elementAt(i)]!!.size) {
-//                    for (j in i + 1 until keys.size) {
-//                        for (move2 in 0 until possibleMoves[option.key]!![keys.elementAt(j)]!!.size) {
-//                            var result = Int.MIN_VALUE
-//                            var returnedBoard = Board()
-////                            remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
-//                            boardCopy.moveBackEnd(keys.elementAt(i)[0], possibleMoves[option.key]!![keys.elementAt(i)]!![move]!!, remainingMoves)
-//                            boardCopy.moveBackEnd(keys.elementAt(j)[0], possibleMoves[option.key]!![keys.elementAt(j)]!![move2]!!, remainingMoves - 1)
-//                            if (playersTurn == "G") {
-//                                var test = alphaBeta5(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2)
-//                                var bestMove = test.first
-//                                returnedBoard = test.second
-//                                result = -bestMove["score"]!![0]
-////                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
-//                            } else if (playersTurn == "S") {
-//                                var test = alphaBeta5(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2)
-//                                var bestMove = test.first
-//                                returnedBoard = test.second
-//                                result = -bestMove["score"]!![0]
-////                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
-////                        }
-//                            }
-//                            if (result > score) {
-//                                score = result
-//                                moveFrom = keys.elementAt(i)[0]
-//                                moveFrom2 = keys.elementAt(j)[0]
-//                                moveTo = possibleMoves[option.key]!![keys.elementAt(i)]!![move]!!
-//                                moveTo2 = possibleMoves[option.key]!![keys.elementAt(j)]!![move2]!!
-//                                bestBoard = boardCopy(returnedBoard)
-////                bestBoard.print()
-////                println("MoveFrom = $moveFrom")
-////                println("moveTo = $moveTo")
-//                                if (score > lowerbound) lowerbound = score
-////            boardInput.print()
-//                                boardCopy = boardCopy(boardInput)
-////            boardInput.print()
-//                                if (score >= upperbound) {
-////                                count2++
-//                                    break
-//                                }
-//                            }
-//
-//                        }
-//                    }
-//                }
-//            }
-////            println("timespent ${System.currentTimeMillis() - start}")
-////            println("test")
-//        }
-//
-//
-//    }
-//    return Pair(mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo), bestBoard)
-//
-//}
-
-fun alphaBeta6(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): Pair<MutableMap<String, MutableList<Int>>, Board> {
+fun alphaBeta5(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): Pair<MutableMap<String, MutableList<Int>>, Board> {
 
     count2++
     var boardCopy = boardCopy(boardInput)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
-//        println("TEST")
         return Pair(mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn))), boardCopy)
     }
 
@@ -514,12 +315,12 @@ fun alphaBeta6(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     if (depth >= 2 && !rootNode) {
         count3++
         if (playersTurn == "G") {
-            var test = alphaBeta6(boardCopy, depth - 2, -upperbound, -lowerbound, "S", 2, false)
+            var test = alphaBeta5(boardCopy, depth - 2, -upperbound, -lowerbound, "S", 2, false)
             var bestMove = test.first
             returnedBoard = test.second
             result = -bestMove["score"]!![0]
         } else if (playersTurn == "S") {
-            var test = alphaBeta6(boardCopy, depth - 2, -upperbound, -lowerbound, "G", 2, false)
+            var test = alphaBeta5(boardCopy, depth - 2, -upperbound, -lowerbound, "G", 2, false)
             var bestMove = test.first
             returnedBoard = test.second
             result = -bestMove["score"]!![0]
@@ -530,35 +331,28 @@ fun alphaBeta6(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     }
     score = Int.MIN_VALUE
     for (option in possibleMoves) {
-//            println(option.key[0])
-//            println(possibleMoves[position.key])
         for (position in possibleMoves[option.key]!!) {
             for (move in possibleMoves[option.key]!![position.key]!!) {
                 result = Int.MIN_VALUE
                 returnedBoard = Board()
                 remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
                 boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-//            boardCopy.print()
                 if (remainingMovesAB == 1) {
-//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
-                    var test = alphaBeta6(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
+                    var test = alphaBeta5(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
                     var bestMove = test.first
                     returnedBoard = test.second
                     result = bestMove["score"]!![0]
-//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 } else if (remainingMovesAB == 0) {
                     if (playersTurn == "G") {
-                        var test = alphaBeta6(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2, false)
+                        var test = alphaBeta5(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2, false)
                         var bestMove = test.first
                         returnedBoard = test.second
                         result = -bestMove["score"]!![0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     } else if (playersTurn == "S") {
-                        var test = alphaBeta6(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2, false)
+                        var test = alphaBeta5(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2, false)
                         var bestMove = test.first
                         returnedBoard = test.second
                         result = -bestMove["score"]!![0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     }
                 }
 
@@ -567,16 +361,10 @@ fun alphaBeta6(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
                     moveFrom = position.key[0]
                     moveTo = move
                     bestBoard = boardCopy(returnedBoard)
-//                bestBoard.print()
-//                println("MoveFrom = $moveFrom")
-//                println("moveTo = $moveTo")
                 }
                 if (score > lowerbound) lowerbound = score
-//            boardInput.print()
                 boardCopy = boardCopy(boardInput)
-//            boardInput.print()
                 if (score >= upperbound) {
-//                    count2++
                     break
                 }
             }
@@ -585,17 +373,15 @@ fun alphaBeta6(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     return Pair(mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo), bestBoard)
 }
 
-fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): MutableMap<String, Any> {
+fun alphaBeta6(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): MutableMap<String, Any> {
 
     count2++
     var ttTable = table
     var boardCopy = boardCopy(boardInput)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
-//        println("TEST")
         return mutableMapOf("score" to mutableListOf(evaluate(boardCopy, playersTurn)), "board" to boardCopy, "tt" to ttTable)
     }
-
     var score = Int.MIN_VALUE
     var upperbound = beta
     var lowerbound = alpha
@@ -619,7 +405,6 @@ fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
         val retrievedPlayer = ttRetrieval["playersTurn"] as String
         val calcScore = if (retrievedPlayer == playersTurn) retrievedScore else -retrievedScore
         if (ttRetrieval["flag"] as String == "Exact") {
-//            count2++
             return mutableMapOf("score" to mutableListOf(calcScore),
                     "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable)
         } else if (ttRetrieval["flag"] as String == "Lowerbound") {
@@ -628,7 +413,6 @@ fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
             upperbound = if (beta <= calcScore) beta else calcScore
         }
         if (lowerbound > upperbound) {
-//            count2++
             return mutableMapOf("score" to mutableListOf(calcScore),
                     "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable)
         }
@@ -637,12 +421,12 @@ fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     if (depth >= 2 && !rootNode) {
         count3++
         if (playersTurn == "G") {
-            var test = alphaBeta7(boardCopy, table, depth - 2, -upperbound, -lowerbound, "S", 2, false)
+            var test = alphaBeta6(boardCopy, table, depth - 2, -upperbound, -lowerbound, "S", 2, false)
             var bestMove = test["score"] as MutableList<Int>
             returnedBoard = test["board"] as Board
             result = -bestMove[0]
         } else if (playersTurn == "S") {
-            var test = alphaBeta7(boardCopy, table, depth - 2, -upperbound, -lowerbound, "G", 2, false)
+            var test = alphaBeta6(boardCopy, table, depth - 2, -upperbound, -lowerbound, "G", 2, false)
             var bestMove = test["score"] as MutableList<Int>
             returnedBoard = test["board"] as Board
             result = -bestMove[0]
@@ -654,35 +438,28 @@ fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     score = Int.MIN_VALUE
 
     outerloop@for (option in possibleMoves) {
-//            println(option.key[0])
-//            println(possibleMoves[position.key])
         for (position in possibleMoves[option.key]!!) {
             for (move in possibleMoves[option.key]!![position.key]!!) {
                 var result = Int.MIN_VALUE
                 var returnedBoard = Board()
                 remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
                 boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-//            boardCopy.print()
                 if (remainingMovesAB == 1) {
-//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
-                    var test = alphaBeta7(boardCopy, table, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
+                    var test = alphaBeta6(boardCopy, table, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
                     var bestMove = test["score"] as MutableList<Int>
                     returnedBoard = test["board"] as Board
                     result = bestMove[0]
-//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 } else if (remainingMovesAB == 0) {
                     if (playersTurn == "G") {
-                        var test = alphaBeta7(boardCopy, table, depth - 1, -upperbound, -lowerbound, "S", 2, false)
+                        var test = alphaBeta6(boardCopy, table, depth - 1, -upperbound, -lowerbound, "S", 2, false)
                         var bestMove = test["score"] as MutableList<Int>
                         returnedBoard = test["board"] as Board
                         result = -bestMove[0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     } else if (playersTurn == "S") {
-                        var test = alphaBeta7(boardCopy, table, depth - 1, -upperbound, -lowerbound, "G", 2, false)
+                        var test = alphaBeta6(boardCopy, table, depth - 1, -upperbound, -lowerbound, "G", 2, false)
                         var bestMove = test["score"] as MutableList<Int>
                         returnedBoard = test["board"] as Board
                         result = -bestMove[0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     }
                 }
 
@@ -691,41 +468,29 @@ fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
                     moveFrom = position.key[0]
                     moveTo = move
                     bestBoard = boardCopy(returnedBoard)
-//                bestBoard.print()
-//                println("MoveFrom = $moveFrom")
-//                println("moveTo = $moveTo")
                     if (score > lowerbound) lowerbound = score
                     if (score >= upperbound) {
-//                    count2++
                         break@outerloop
                     }
                 }
-
-//            boardInput.print()
                 boardCopy = boardCopy(boardInput)
-//            boardInput.print()
-
             }
         }
     }
-//    var start = System.currentTimeMillis()
     if (score <= olda) flag = "Upperbound"
     else if (score >= beta) flag = "Lowerbound"
     else flag = "Exact"
     ttTable = store(boardInput, ttTable, moveFrom, moveTo, score, flag, depth, playersTurn)
-//    var timeSpent = System.currentTimeMillis() - start
-//    println("Timespent storing: $timeSpent")
     return mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo, "board" to bestBoard, "tt" to ttTable)
 }
 
-fun alphaBeta8(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): MutableMap<String, Any> {
+fun alphaBeta7(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): MutableMap<String, Any> {
 
     count2++
     var ttTable = table
     var boardCopy = boardCopy(boardInput)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
-//        println("TEST")
         return mutableMapOf("score" to mutableListOf(evaluate2(boardCopy, playersTurn)), "board" to boardCopy, "tt" to ttTable)
     }
 
@@ -752,7 +517,6 @@ fun alphaBeta8(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
         val retrievedPlayer = ttRetrieval["playersTurn"] as String
         val calcScore = if (retrievedPlayer == playersTurn) retrievedScore else -retrievedScore
         if (ttRetrieval["flag"] as String == "Exact") {
-//            count2++
             return mutableMapOf("score" to mutableListOf(calcScore),
                     "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable)
         } else if (ttRetrieval["flag"] as String == "Lowerbound") {
@@ -761,7 +525,6 @@ fun alphaBeta8(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
             upperbound = if (beta <= calcScore) beta else calcScore
         }
         if (lowerbound > upperbound) {
-//            count2++
             return mutableMapOf("score" to mutableListOf(calcScore),
                     "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable)
         }
@@ -770,12 +533,12 @@ fun alphaBeta8(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     if (depth >= 2 && !rootNode) {
         count3++
         if (playersTurn == "G") {
-            var test = alphaBeta8(boardCopy, table, depth - 2, -upperbound, -lowerbound, "S", 2, false)
+            var test = alphaBeta7(boardCopy, table, depth - 2, -upperbound, -lowerbound, "S", 2, false)
             var bestMove = test["score"] as MutableList<Int>
             returnedBoard = test["board"] as Board
             result = -bestMove[0]
         } else if (playersTurn == "S") {
-            var test = alphaBeta8(boardCopy, table, depth - 2, -upperbound, -lowerbound, "G", 2, false)
+            var test = alphaBeta7(boardCopy, table, depth - 2, -upperbound, -lowerbound, "G", 2, false)
             var bestMove = test["score"] as MutableList<Int>
             returnedBoard = test["board"] as Board
             result = -bestMove[0]
@@ -787,35 +550,28 @@ fun alphaBeta8(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
     score = Int.MIN_VALUE
 
     for (option in possibleMoves) {
-//            println(option.key[0])
-//            println(possibleMoves[position.key])
         for (position in possibleMoves[option.key]!!) {
             for (move in possibleMoves[option.key]!![position.key]!!) {
                 var result = Int.MIN_VALUE
                 var returnedBoard = Board()
                 remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
                 boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-//            boardCopy.print()
                 if (remainingMovesAB == 1) {
-//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
-                    var test = alphaBeta8(boardCopy, table, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
+                    var test = alphaBeta7(boardCopy, table, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
                     var bestMove = test["score"] as MutableList<Int>
                     returnedBoard = test["board"] as Board
                     result = bestMove[0]
-//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 } else if (remainingMovesAB == 0) {
                     if (playersTurn == "G") {
-                        var test = alphaBeta8(boardCopy, table, depth - 1, -upperbound, -lowerbound, "S", 2, false)
+                        var test = alphaBeta7(boardCopy, table, depth - 1, -upperbound, -lowerbound, "S", 2, false)
                         var bestMove = test["score"] as MutableList<Int>
                         returnedBoard = test["board"] as Board
                         result = -bestMove[0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     } else if (playersTurn == "S") {
-                        var test = alphaBeta8(boardCopy, table, depth - 1, -upperbound, -lowerbound, "G", 2, false)
+                        var test = alphaBeta7(boardCopy, table, depth - 1, -upperbound, -lowerbound, "G", 2, false)
                         var bestMove = test["score"] as MutableList<Int>
                         returnedBoard = test["board"] as Board
                         result = -bestMove[0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     }
                 }
 
@@ -824,38 +580,28 @@ fun alphaBeta8(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, dep
                     moveFrom = position.key[0]
                     moveTo = move
                     bestBoard = boardCopy(returnedBoard)
-//                bestBoard.print()
-//                println("MoveFrom = $moveFrom")
-//                println("moveTo = $moveTo")
                 }
                 if (score > lowerbound) lowerbound = score
-//            boardInput.print()
                 boardCopy = boardCopy(boardInput)
-//            boardInput.print()
                 if (score >= upperbound) {
-//                    count2++
                     break
                 }
             }
         }
     }
-//    var start = System.currentTimeMillis()
     if (score <= olda) flag = "Upperbound"
     else if (score >= beta) flag = "Lowerbound"
     else flag = "Exact"
     ttTable = store(boardInput, ttTable, moveFrom, moveTo, score, flag, depth, playersTurn)
-//    var timeSpent = System.currentTimeMillis() - start
-//    println("Timespent storing: $timeSpent")
     return mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo, "board" to bestBoard, "tt" to ttTable)
 }
 
-fun alphaBeta9(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): Pair<MutableMap<String, MutableList<Int>>, Board> {
+fun alphaBeta8(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): Pair<MutableMap<String, MutableList<Int>>, Board> {
 
     count2++
     var boardCopy = boardCopy(boardInput)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
-//        println("TEST")
         return Pair(mutableMapOf("score" to mutableListOf(evaluate2(boardCopy, playersTurn))), boardCopy)
     }
 
@@ -874,12 +620,12 @@ fun alphaBeta9(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     if (depth >= 2 && !rootNode) {
         count3++
         if (playersTurn == "G") {
-            var test = alphaBeta9(boardCopy, depth - 2, -upperbound, -lowerbound, "S", 2, false)
+            var test = alphaBeta8(boardCopy, depth - 2, -upperbound, -lowerbound, "S", 2, false)
             var bestMove = test.first
             returnedBoard = test.second
             result = -bestMove["score"]!![0]
         } else if (playersTurn == "S") {
-            var test = alphaBeta9(boardCopy, depth - 2, -upperbound, -lowerbound, "G", 2, false)
+            var test = alphaBeta8(boardCopy, depth - 2, -upperbound, -lowerbound, "G", 2, false)
             var bestMove = test.first
             returnedBoard = test.second
             result = -bestMove["score"]!![0]
@@ -890,35 +636,28 @@ fun alphaBeta9(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     }
     score = Int.MIN_VALUE
     for (option in possibleMoves) {
-//            println(option.key[0])
-//            println(possibleMoves[position.key])
         for (position in possibleMoves[option.key]!!) {
             for (move in possibleMoves[option.key]!![position.key]!!) {
                 result = Int.MIN_VALUE
                 returnedBoard = Board()
                 remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
                 boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-//            boardCopy.print()
                 if (remainingMovesAB == 1) {
-//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
-                    var test = alphaBeta9(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
+                    var test = alphaBeta8(boardCopy, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
                     var bestMove = test.first
                     returnedBoard = test.second
                     result = bestMove["score"]!![0]
-//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 } else if (remainingMovesAB == 0) {
                     if (playersTurn == "G") {
-                        var test = alphaBeta9(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2, false)
+                        var test = alphaBeta8(boardCopy, depth - 1, -upperbound, -lowerbound, "S", 2, false)
                         var bestMove = test.first
                         returnedBoard = test.second
                         result = -bestMove["score"]!![0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     } else if (playersTurn == "S") {
-                        var test = alphaBeta9(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2, false)
+                        var test = alphaBeta8(boardCopy, depth - 1, -upperbound, -lowerbound, "G", 2, false)
                         var bestMove = test.first
                         returnedBoard = test.second
                         result = -bestMove["score"]!![0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     }
                 }
 
@@ -927,16 +666,10 @@ fun alphaBeta9(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
                     moveFrom = position.key[0]
                     moveTo = move
                     bestBoard = boardCopy(returnedBoard)
-//                bestBoard.print()
-//                println("MoveFrom = $moveFrom")
-//                println("moveTo = $moveTo")
                 }
                 if (score > lowerbound) lowerbound = score
-//            boardInput.print()
                 boardCopy = boardCopy(boardInput)
-//            boardInput.print()
                 if (score >= upperbound) {
-//                    count2++
                     break
                 }
             }
@@ -945,14 +678,13 @@ fun alphaBeta9(boardInput: Board, depth: Int, alpha: Int, beta: Int, playersTurn
     return Pair(mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo), bestBoard)
 }
 
-fun alphaBeta10(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): MutableMap<String, Any> {
+fun alphaBeta9(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, depth: Int, alpha: Int, beta: Int, playersTurn: String, remainingMoves: Int, rootNode: Boolean): MutableMap<String, Any> {
 
     count2++
     var ttTable = table
     var boardCopy = boardCopy(boardInput)
     val (silverWin, goldWin) = terminalNode(boardCopy)
     if (silverWin || goldWin || depth == 0) {
-//        println("TEST")
         return mutableMapOf("score" to mutableListOf(evaluate3(boardCopy, playersTurn)), "board" to boardCopy, "tt" to ttTable)
     }
 
@@ -980,7 +712,6 @@ fun alphaBeta10(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, de
         val retrievedPlayer = ttRetrieval["playersTurn"] as String
         val calcScore = if (retrievedPlayer == playersTurn) retrievedScore else -retrievedScore
         if (ttRetrieval["flag"] as String == "Exact") {
-//            count2++
             return mutableMapOf("score" to mutableListOf(calcScore),
                     "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable)
         } else if (ttRetrieval["flag"] as String == "Lowerbound") {
@@ -989,7 +720,6 @@ fun alphaBeta10(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, de
             upperbound = if (beta <= calcScore) beta else calcScore
         }
         if (lowerbound > upperbound) {
-//            count2++
             return mutableMapOf("score" to mutableListOf(calcScore),
                     "from" to retrievedFrom, "to" to retrievedTo, "board" to boardCopy, "tt" to ttTable)
         }
@@ -998,12 +728,12 @@ fun alphaBeta10(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, de
     if (depth >= 2 && !rootNode) {
         count3++
         if (playersTurn == "G") {
-            var test = alphaBeta10(boardCopy, table, depth - 2, -upperbound, -lowerbound, "S", 2, false)
+            var test = alphaBeta9(boardCopy, table, depth - 2, -upperbound, -lowerbound, "S", 2, false)
             var bestMove = test["score"] as MutableList<Int>
             returnedBoard = test["board"] as Board
             result = -bestMove[0]
         } else if (playersTurn == "S") {
-            var test = alphaBeta10(boardCopy, table, depth - 2, -upperbound, -lowerbound, "G", 2, false)
+            var test = alphaBeta9(boardCopy, table, depth - 2, -upperbound, -lowerbound, "G", 2, false)
             var bestMove = test["score"] as MutableList<Int>
             returnedBoard = test["board"] as Board
             result = -bestMove[0]
@@ -1013,42 +743,32 @@ fun alphaBeta10(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, de
         }
     }
     score = Int.MIN_VALUE
-
-
-
     val possibleMoves = moveGenerator3(boardCopy, playersTurn, remainingMoves, retrievedFrom, retrievedTo)
 
 
     outerloop@for (option in possibleMoves) {
-//            println(option.key[0])
-//            println(possibleMoves[position.key])
         for (position in possibleMoves[option.key]!!) {
             for (move in possibleMoves[option.key]!![position.key]!!) {
                 var result = Int.MIN_VALUE
                 var returnedBoard = Board()
                 remainingMovesAB = calcRemainingMoves(boardCopy, position.key[0], move, remainingMoves)
                 boardCopy.moveBackEnd(position.key[0], move, remainingMoves)
-//            boardCopy.print()
                 if (remainingMovesAB == 1) {
-//                    println(alphaBeta(depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB)["score"])
-                    var test = alphaBeta10(boardCopy, table, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
+                    var test = alphaBeta9(boardCopy, table, depth - 1, lowerbound, upperbound, playersTurn, remainingMovesAB, false)
                     var bestMove = test["score"] as MutableList<Int>
                     returnedBoard = test["board"] as Board
                     result = bestMove[0]
-//                println("from ${bestMove["from"]} to ${bestMove["to"]}")
                 } else if (remainingMovesAB == 0) {
                     if (playersTurn == "G") {
-                        var test = alphaBeta10(boardCopy, table, depth - 1, -upperbound, -lowerbound, "S", 2, false)
+                        var test = alphaBeta9(boardCopy, table, depth - 1, -upperbound, -lowerbound, "S", 2, false)
                         var bestMove = test["score"] as MutableList<Int>
                         returnedBoard = test["board"] as Board
                         result = -bestMove[0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     } else if (playersTurn == "S") {
-                        var test = alphaBeta10(boardCopy, table, depth - 1, -upperbound, -lowerbound, "G", 2, false)
+                        var test = alphaBeta9(boardCopy, table, depth - 1, -upperbound, -lowerbound, "G", 2, false)
                         var bestMove = test["score"] as MutableList<Int>
                         returnedBoard = test["board"] as Board
                         result = -bestMove[0]
-//                    println("from ${bestMove["from"]} to ${bestMove["to"]}")
                     }
                 }
 
@@ -1057,30 +777,19 @@ fun alphaBeta10(boardInput: Board, table: MutableMap<Long, Map<String, Any>>, de
                     moveFrom = position.key[0]
                     moveTo = move
                     bestBoard = boardCopy(returnedBoard)
-//                bestBoard.print()
-//                println("MoveFrom = $moveFrom")
-//                println("moveTo = $moveTo")
                     if (score > lowerbound) lowerbound = score
                     if (score >= upperbound) {
-//                    count2++
                         break@outerloop
                     }
                 }
-
-//            boardInput.print()
                 boardCopy = boardCopy(boardInput)
-//            boardInput.print()
-
             }
         }
     }
-//    var start = System.currentTimeMillis()
     if (score <= olda) flag = "Upperbound"
     else if (score >= beta) flag = "Lowerbound"
     else flag = "Exact"
     ttTable = store(boardInput, ttTable, moveFrom, moveTo, score, flag, depth, playersTurn)
-//    var timeSpent = System.currentTimeMillis() - start
-//    println("Timespent storing: $timeSpent")
     return mutableMapOf("score" to mutableListOf(score), "from" to moveFrom, "to" to moveTo, "board" to bestBoard, "tt" to ttTable)
 }
 

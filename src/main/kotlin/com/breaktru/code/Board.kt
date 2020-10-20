@@ -1,8 +1,6 @@
 package com.breaktru.code
 
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class Board {
 
@@ -134,9 +132,7 @@ class Board {
         val letterFrom = from.first().toUpperCase()
         val letterTo = to.first().toUpperCase()
         val rowFrom = 10 - (from.drop(1).toInt() - 1)
-//        println(rowFrom)
         val rowTo = 10 - (to.drop(1).toInt() - 1)
-//        println(rowTo)
         val colFrom = letterToNumber(letterFrom)
         val colTo = letterToNumber(letterTo)
         val shipFrom = board[rowFrom][colFrom]
@@ -151,9 +147,6 @@ class Board {
                 (shipFrom.type == "FlagShip" && remainingMoves != 2)) {
             return "ILLEGAL MOVE"
         }
-//        if ((shipFrom.type == "FlagShip" && remainingMoves != 2)) {
-//            return "ILLEGAL MOVE"
-//        }
         var stringReturn = ""
         if (shipFrom.color != playerMove) {
             return "YOU ARE NOT ALLOWED TO MOVE THIS PIECE"
@@ -161,7 +154,6 @@ class Board {
         val shipFromType = shipFrom.type
         if (shipFromType == "FlagShip") {
             if (letterTo == 'A' || letterTo == 'K' || rowTo == 0 || rowTo == 10) {
-//                board[rowTo][colTo] = shipFrom
                 stringReturn = "GAME WON by $playerMove"
             }
         }
@@ -239,14 +231,3 @@ fun boardCopy(board: Board): Board {
     boardCopy.lastMove = board.lastMove
     return boardCopy
 }
-
-
-//fun main() {
-//    val board = Board();
-//    board.initialize()
-//    board.print();
-//    board.moveGenerator("G",1)
-////    board.move("E8", "E9", "G")
-////    board.move("F8", "F9", "G")
-////    board.moveGenerator("S",2)
-//}

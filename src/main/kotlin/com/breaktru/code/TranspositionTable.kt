@@ -3,9 +3,6 @@ package com.breaktru.code
 import kotlin.math.pow
 import kotlin.random.Random
 
-//val transpositionTable = mutableMapOf<Long, Map<String, Any>>()
-var count = 0
-
 fun buildZobristTable(): Pair<Array<Array<Array<Long>>>, Array<Array<Long>>> {
     val escortZobrist = Array(2) { Array(11) { Array(11) { 0L } } }
     val fSZobrist = Array(11) { Array(11) { 0L } }
@@ -50,27 +47,13 @@ fun retrieve(board: Board, table: MutableMap<Long, Map<String, Any>>, playersTur
 //        test["score"] = test["score"] as Int * -1
 //        println(test["score"])
 //    }
-//    println(test)
     return test
 }
 
 fun store(board: Board, table: MutableMap<Long, Map<String, Any>>,from: MutableList<Int>, to: MutableList<Int>, score: Int,flag: String, depth: Int, playersTurn: String ): MutableMap<Long, Map<String, Any>> {
-//    board.print()
     val zobristHash = getZobristHash(board)
     table[zobristHash ushr 44] = mapOf("key" to zobristHash,
             "from" to from, "to" to to, "score" to score,
             "flag" to flag, "depth" to depth, "playersTurn" to playersTurn)
-//    count++
-//    println(count)
     return table
 }
-
-//fun main() {
-//    val (escortTable, fSTable) = buildZobristTable()
-//
-//    val board = Board()
-//    board.initialize()
-//    val zobristHash = getZobristHash(board)
-//    val test = retrieve(board)
-//    println(test)
-//}
