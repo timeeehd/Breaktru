@@ -54,6 +54,7 @@ class Board {
         board[9][6] = Escort("S")
         board[9][7] = Escort("S")
 
+        // get the zobristHash tables ready for the transposition table
         val zobristTable = buildZobristTable()
         escortTable = zobristTable.first
         fsTable = zobristTable.second

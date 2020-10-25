@@ -1,5 +1,9 @@
 const app = angular.module('myApp', ['toastr']);
 
+// I used this functionality to help me to start with frontend https://codepen.io/andalex/pen/ONELQa
+
+// CODE NOT CLEANED, SORRY IF YOU WANT TO CHECK THIS
+
 app.controller('BreaktruController', (toastr, $scope, $http) => {
   $scope.rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
   $scope.columns = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -73,7 +77,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       if (prevMoves.length == 2) {
         prevMoves.shift();
       }
-      //check if position is white or black piece already
+      //check if position is gold or silver piece already
       if (blkWht === 'S' || blkWht === 'G') {
         //remove the overtaken piece class
         var pieceTo = checkPos[checkPos.length - 2].substring(0, checkPos[checkPos.length - 2].length);

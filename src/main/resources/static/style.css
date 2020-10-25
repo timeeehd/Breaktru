@@ -1,4 +1,4 @@
-/* Chess
+/* I used this functionality to help me to start with frontend https://codepen.io/andalex/pen/ONELQa
    ----------------------------- */
 
 @mixin prefix($name, $argument) {
@@ -92,7 +92,7 @@ h1 {
 p {
   font-size: .75em;
 }
-/* Chess Board
+/* Board
    ----------------------------- */
 .board {
   @include mshadow(3);
@@ -590,75 +590,6 @@ $accent2: rgba(24,157,134, .6);
     background-color: #fff;
 }
 
-//TODO refactor this:
-//wrapped in an each loop with a $columns
-//list as reference
-  @for $i from 1 through 11 {
-      .A#{$i} {
-          background-color: #fff;
-      }
-    @if $i % 2 == 0 {
-      .A#{$i} {
-        background-color: #ddd;
-      }
-    }
-     .B#{$i} {
-       background-color: #ddd;
-      }
-    @if $i % 2 == 0 {
-      .B#{$i} {
-        background-color: #fff;
-      }
-    }
-     .C{$i} {
-          background-color: #fff;
-      }
-    @if $i % 2 == 0 {
-      .C{$i} {
-        background-color: #ddd;
-      }
-    }
-     .D#{$i} {
-        background-color: #ddd;
-      }
-    @if $i % 2 == 0 {
-      .D#{$i} {
-        background-color: #fff;
-      }
-    }
-     .E#{$i} {
-        background-color: #fff;
-      }
-    @if $i % 2 == 0 {
-      .E#{$i} {
-        background-color: #ddd;
-      }
-    }
-     .F#{$i} {
-        background-color: #ddd;
-      }
-    @if $i % 2 == 0 {
-      .F#{$i} {
-        background-color: #fff;
-      }
-    }
-     .G#{$i} {
-          background-color: #fff;
-      }
-    @if $i % 2 == 0 {
-      .G#{$i} {
-        background-color: #ddd;
-      }
-    }
-    .H#{$i} {
-          background-color: #ddd;
-      }
-    @if $i % 2 == 0 {
-      .H#{$i} {
-        background-color: #fff;
-      }
-    }
-  }
 /* Inputs
    ----------------------------- */
 .movement {
@@ -711,7 +642,7 @@ $accent2: rgba(24,157,134, .6);
     }
 }
 
-/* Chess pieces B / W
+/* pieces g/s
    ----------------------------- */
 .GE {
         background-image: url(gold-piece.png);

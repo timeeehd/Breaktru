@@ -2,6 +2,59 @@ package com.breaktru.code
 
 import kotlin.random.Random
 
+// the functions with help in front are actually the features I'm evaluating
+
+val GFSPos: Array<IntArray> = arrayOf(intArrayOf(1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000),
+        intArrayOf(1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1000),
+        intArrayOf(1000, 100, 50, 50, 50, 50, 50, 50, 50, 100, 1000),
+        intArrayOf(1000, 100, 50, 25, 25, 25, 25, 25, 50, 100, 1000),
+        intArrayOf(1000, 100, 50, 25, 20, 20, 20, 25, 50, 100, 1000),
+        intArrayOf(1000, 100, 50, 25, 20, 0, 20, 25, 50, 100, 1000),
+        intArrayOf(1000, 100, 50, 25, 20, 20, 20, 25, 50, 100, 1000),
+        intArrayOf(1000, 100, 50, 25, 25, 25, 25, 25, 50, 100, 1000),
+        intArrayOf(1000, 100, 50, 50, 50, 50, 50, 50, 50, 100, 1000),
+        intArrayOf(1000, 100, 100, 100, 100, 100, 100, 100, 100, 100, 1000),
+        intArrayOf(1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000))
+
+val SEPos: Array<IntArray> = arrayOf(intArrayOf(-10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10),
+        intArrayOf(-10, 1, 1, 1, 1, 1, 1, 1, 1, 1, -10),
+        intArrayOf(-10, 1, 5, 5, 5, 5, 5, 5, 5, 1, -10),
+        intArrayOf(-10, 1, 5, 25, 25, 25, 25, 25, 5, 1, -10),
+        intArrayOf(-10, 1, 5, 25, 50, 50, 50, 25, 5, 1, -10),
+        intArrayOf(-10, 1, 5, 25, 50, 100, 50, 25, 5, 1, -10),
+        intArrayOf(-10, 1, 5, 25, 50, 50, 50, 25, 5, 1, -10),
+        intArrayOf(-10, 1, 5, 25, 25, 25, 25, 25, 5, 1, -10),
+        intArrayOf(-10, 1, 5, 5, 5, 5, 5, 5, 5, 1, -10),
+        intArrayOf(-10, 1, 1, 1, 1, 1, 1, 1, 1, 1, -10),
+        intArrayOf(-10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10))
+
+// The function I used in my final version
+fun finalEvaluation(board: Board, playersTurn: String): Int {
+    val (silverWin, goldWin) = terminalNode(board)
+    if (silverWin && playersTurn == "S") {
+        return 100000
+    }
+    if (silverWin && playersTurn == "G") {
+        return -100000
+    }
+    if (goldWin && playersTurn == "G") {
+        return 100000
+    }
+    if (goldWin && playersTurn == "S") {
+        return -100000
+    }
+
+    val pieces = helpEvaluatePieces(board, playersTurn)
+    val (silverPos, goldPos) = helpEvaluatePositionBoard(board, playersTurn)
+    val posGFS = helpEvaluatePositionToGFS(board, playersTurn)
+    val freePass = helpEvaluateFreePassFS(board)
+    var sendBack = 0
+    if (playersTurn == "G") sendBack = (21 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS + freePass)
+    if (playersTurn == "S") sendBack = (21 * pieces + 2 * (silverPos - goldPos) + 1 * posGFS - freePass)
+
+    return sendBack
+}
+
 fun terminalNode(board: Board): Pair<Boolean, Boolean> {
     var silverWin = true
     var goldWin = false
@@ -20,7 +73,7 @@ fun terminalNode(board: Board): Pair<Boolean, Boolean> {
 }
 
 fun evaluatePiecesRandom(board: Board, playersTurn: String): Int {
-    val pieces = evaluatePieces(board, playersTurn)
+    val pieces = helpEvaluatePieces(board, playersTurn)
     return pieces + rand(-10, 10)
 }
 
@@ -39,16 +92,16 @@ fun evaluate(board: Board, playersTurn: String): Int {
         return -100000
     }
 
-    val pieces = evaluatePieces(board, playersTurn)
-    val (silverPos, goldPos) = evaluatePositionBoard(board, playersTurn)
-    val posGFS = evaluatePositionToGFS(board, playersTurn)
+    val pieces = helpEvaluatePieces(board, playersTurn)
+    val (silverPos, goldPos) = helpEvaluatePositionBoard(board, playersTurn)
+    val posGFS = helpEvaluatePositionToGFS(board, playersTurn)
     var sendBack = 0
     if (playersTurn == "G") sendBack = (21 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS)
     if (playersTurn == "S") sendBack = (21 * pieces + 2 * (silverPos - goldPos) + 1 * posGFS)
     return sendBack
 }
 
-fun evaluate2(board: Board, playersTurn: String): Int {
+fun evaluateWithRandom(board: Board, playersTurn: String): Int {
     val (silverWin, goldWin) = terminalNode(board)
     if (silverWin && playersTurn == "S") {
         return 100000
@@ -63,9 +116,9 @@ fun evaluate2(board: Board, playersTurn: String): Int {
         return -100000
     }
 
-    val pieces = evaluatePieces(board, playersTurn)
-    val (silverPos, goldPos) = evaluatePositionBoard(board, playersTurn)
-    val posGFS = evaluatePositionToGFS(board, playersTurn)
+    val pieces = helpEvaluatePieces(board, playersTurn)
+    val (silverPos, goldPos) = helpEvaluatePositionBoard(board, playersTurn)
+    val posGFS = helpEvaluatePositionToGFS(board, playersTurn)
     var sendBack = 0
     var rand = 0
     if (playersTurn == "G") sendBack = (21 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS)
@@ -76,33 +129,7 @@ fun evaluate2(board: Board, playersTurn: String): Int {
     return sendBack
 }
 
-fun evaluate3(board: Board, playersTurn: String): Int {
-    val (silverWin, goldWin) = terminalNode(board)
-    if (silverWin && playersTurn == "S") {
-        return 100000
-    }
-    if (silverWin && playersTurn == "G") {
-        return -100000
-    }
-    if (goldWin && playersTurn == "G") {
-        return 100000
-    }
-    if (goldWin && playersTurn == "S") {
-        return -100000
-    }
-
-    val pieces = evaluatePieces(board, playersTurn)
-    val (silverPos, goldPos) = evaluatePositionBoard(board, playersTurn)
-    val posGFS = evaluatePositionToGFS(board, playersTurn)
-    val freePass = evaluateFreePassFS(board)
-    var sendBack = 0
-    if (playersTurn == "G") sendBack = (21 * pieces + 2 * (goldPos - silverPos) + 1 * posGFS + freePass)
-    if (playersTurn == "S") sendBack = (21 * pieces + 2 * (silverPos - goldPos) + 1 * posGFS - freePass)
-    return sendBack
-}
-
-
-fun evaluatePieces(board: Board, playersTurn: String): Int {
+fun helpEvaluatePieces(board: Board, playersTurn: String): Int {
     var value = 0
     if (playersTurn == "G") {
         for (row in 0..10) {
@@ -139,7 +166,7 @@ fun evaluatePieces(board: Board, playersTurn: String): Int {
     return value
 }
 
-fun evaluatePositionBoard(board: Board, playersTurn: String): Pair<Int, Int> {
+fun helpEvaluatePositionBoard(board: Board, playersTurn: String): Pair<Int, Int> {
     var silverEval = 0
     var GFSEval = 0
     for (row in 0..10) {
@@ -155,7 +182,7 @@ fun evaluatePositionBoard(board: Board, playersTurn: String): Pair<Int, Int> {
     return Pair(silverEval, GFSEval)
 }
 
-fun evaluatePositionToGFS(board: Board, playersTurn: String): Int {
+fun helpEvaluatePositionToGFS(board: Board, playersTurn: String): Int {
     var silverEval = 0
     var goldEval = 0
     for (row in 0..10) {
@@ -239,16 +266,16 @@ fun evaluatePositionToGFS(board: Board, playersTurn: String): Int {
 //                    }
                 } else {
                     if (board.board[row - 1][col].color == "S") {
-                        silverEval += 10
+                        silverEval += 25
                     }
                     if (board.board[row + 1][col].color == "S") {
-                        silverEval += 10
+                        silverEval += 25
                     }
                     if (board.board[row][col - 1].color == "S") {
-                        silverEval += 10
+                        silverEval += 25
                     }
                     if (board.board[row][col + 1].color == "S") {
-                        silverEval += 10
+                        silverEval += 25
                     }
                     if (board.board[row - 1][col - 1].color == "S") {
                         silverEval += 50
@@ -295,7 +322,7 @@ fun evaluatePositionToGFS(board: Board, playersTurn: String): Int {
     return 0
 }
 
-fun evaluateFreePassFS(board: Board) : Int{
+fun helpEvaluateFreePassFS(board: Board) : Int{
     var scoreDown = 1000
     var scoreUp = 1000
     var scoreLeft = 1000

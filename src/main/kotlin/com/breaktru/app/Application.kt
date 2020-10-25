@@ -4,9 +4,6 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import java.io.IOException
 
-
-
-
 @SpringBootApplication
 class Application
 
@@ -15,9 +12,10 @@ fun main(args: Array<String>) {
         TextAreaOutputStreamTest.mainRunner(args);
     }
     SpringApplication.run(Application::class.java, *args)
-//    openHomePage();
+    openHomePage();
 }
 
+//open the browser when the application is started
 @Throws(IOException::class)
 fun openHomePage() {
     val rt = Runtime.getRuntime()

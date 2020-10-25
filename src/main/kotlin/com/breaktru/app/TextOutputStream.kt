@@ -6,7 +6,7 @@ import java.io.OutputStream
 import java.io.PrintStream
 import javax.swing.*
 
-
+// class to get a console window open when starting the application
 class TextAreaOutputStreamTest : JPanel() {
     private val textArea = JTextArea(15, 30)
     private val taOutputStream = TextAreaOutputStream(
