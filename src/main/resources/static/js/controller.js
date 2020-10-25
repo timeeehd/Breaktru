@@ -316,7 +316,7 @@ app.controller('BreaktruController', (toastr, $scope, $http) => {
       }
     };
 
-    $http.post("/api/alphaBeta3", genMove, headers).then((response) => {
+    $http.post("/api/alphaBeta", genMove, headers).then((response) => {
       var fromVar = response.data.From;
       var toVar = response.data.To;
       var initial = document.getElementsByClassName(fromVar);
