@@ -6,6 +6,8 @@ import java.io.OutputStream
 import java.io.PrintStream
 import javax.swing.*
 
+//For this part I got help from the internet: https://stackoverflow.com/questions/23909469/spring-boot-jar-double-click
+
 // class to get a console window open when starting the application
 class TextAreaOutputStreamTest : JPanel() {
     private val textArea = JTextArea(15, 30)
